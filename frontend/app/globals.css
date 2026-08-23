@@ -128,3 +128,6 @@
     @apply font-sans;
   }
 }
+@theme inline {
+  --font-sans: var(--font-archivo);
+}
