@@ -5,12 +5,10 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 from google.genai import errors
-import psycopg
-from pgvector.psycopg import register_vector
+import db
 
 load_dotenv()
 client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
-DB = "postgresql://finpath:finpath@localhost:5432/finpath"
 
 BATCH = 20  # items per API call
 PAUSE = 16  # seconds between calls -> ~75 items/min, under the 100 limit
@@ -43,8 +41,8 @@ def embed(texts):
 
 
 def main():
-    conn = psycopg.connect(DB)
-    register_vector(conn)
+    db.ensure_schema()
+    conn = db.connect()
     cur = conn.cursor()
 
     cur.execute("SELECT DISTINCT source FROM documents")
