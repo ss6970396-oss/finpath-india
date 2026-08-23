@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Send, Sparkles, TrendingUp } from "lucide-react";
 
-type Msg = { role: "user" | "ai"; text: string };
+type Src = { n: number; source: string; page: number };
+type Msg = { role: "user" | "ai"; text: string; sources?: Src[] };
 
 export default function Home() {
   const [messages, setMessages] = useState<Msg[]>([]);
@@ -45,10 +47,17 @@ export default function Home() {
         const { done, value } = await reader.read();
         if (done) break;
         acc += decoder.decode(value, { stream: true });
-        const snapshot = acc;
+        const [body, meta] = acc.split("␟SOURCES␟");
+        const snapshot = body;
+        let srcs: Src[] | undefined;
+        try {
+          srcs = meta ? (JSON.parse(meta) as Src[]) : undefined;
+        } catch {
+          srcs = undefined;
+        }
         setMessages((m) => {
           const copy = [...m];
-          copy[copy.length - 1] = { role: "ai", text: snapshot };
+          copy[copy.length - 1] = { role: "ai", text: snapshot, sources: srcs };
           return copy;
         });
       }
@@ -66,19 +75,33 @@ export default function Home() {
     }
   }
 
+  const suggestions = [
+    "Should I get a credit card in college?",
+    "What is a SIP?",
+    "How do I start saving from pocket money?",
+  ];
+
   return (
     <main className="min-h-screen bg-slate-50">
       <header className="border-b bg-white">
-        <div className="mx-auto flex max-w-3xl items-center gap-3 px-6 py-4">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-600">
-            <TrendingUp className="h-5 w-5 text-white" />
+        <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-600">
+              <TrendingUp className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <h1 className="font-semibold tracking-tight">FinPath India</h1>
+              <p className="text-xs text-slate-500">
+                Financial literacy counselor
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="font-semibold tracking-tight">FinPath India</h1>
-            <p className="text-xs text-slate-500">
-              Financial literacy counselor
-            </p>
-          </div>
+          <Link
+            href="/dashboard"
+            className="text-sm font-medium text-emerald-700 hover:underline"
+          >
+            My Spending →
+          </Link>
         </div>
       </header>
 
@@ -87,9 +110,20 @@ export default function Home() {
           <Card className="mb-6 border-dashed p-8 text-center">
             <Sparkles className="mx-auto mb-3 h-8 w-8 text-emerald-600" />
             <h2 className="mb-1 font-medium">Ask me anything about money</h2>
-            <p className="text-sm text-slate-500">
-              Try: &ldquo;Should I get a credit card in college?&rdquo;
+            <p className="mb-5 text-sm text-slate-500">
+              Answers come only from verified RBI, SEBI and NCFE sources.
             </p>
+            <div className="flex flex-wrap justify-center gap-2">
+              {suggestions.map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setInput(s)}
+                  className="rounded-full border bg-white px-3 py-1.5 text-xs text-slate-600 transition hover:border-emerald-300 hover:text-emerald-700"
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
           </Card>
         )}
 
@@ -107,6 +141,18 @@ export default function Home() {
                 }
               >
                 {m.text || "…"}
+                {m.sources && m.sources.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-1.5 border-t pt-2.5">
+                    {m.sources.map((s) => (
+                      <span
+                        key={s.n}
+                        className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] text-slate-600"
+                      >
+                        [{s.n}] {s.source} · p.{s.page}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           ))}

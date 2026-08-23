@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
+from nudge import generate, analyse
 
 load_dotenv()
 
@@ -59,3 +60,8 @@ def chat(req: ChatRequest):
                 yield chunk.text
 
     return StreamingResponse(generate(), media_type="text/plain")
+
+
+@app.get("/api/spending")
+def spending():
+    return analyse(generate())
