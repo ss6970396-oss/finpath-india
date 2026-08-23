@@ -1,10 +1,12 @@
+import glob
 import json
 import os
 from contextlib import asynccontextmanager
+from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from google import genai
@@ -24,7 +26,8 @@ EMBED_DIM = 768  # must match ingest.py and vector(768) in schema.sql
 
 # The frontend (app/counselor/page.tsx) splits the response body on this
 # sentinel and JSON-parses the tail into citation chips. Do not change one
-# side without the other.
+# side without the other. The tail is a list of
+# {n, source, page, snippet} — see _sources_payload().
 SOURCES_DELIM = "\n␟SOURCES␟"
 
 NO_SOURCE_REPLY = "I don't have a verified source for that yet."
@@ -65,6 +68,8 @@ RULES:
 - Simple language, everyday Indian examples (pocket money, UPI, canteen
   spending, hostel fees). Amounts in rupees.
 - Never invent a rule, a number, or a source.
+- Plain text only. No emoji, no decorative symbols, no markdown headings.
+  Analytical and objective in tone.
 """
 
 
@@ -100,8 +105,22 @@ def _is_refusal(text: str) -> bool:
 
 
 def _sources_payload(hits: list[dict]) -> str:
+    """Serialise the citation tail of the streaming contract.
+
+    `snippet` carries the retrieved chunk verbatim so the frontend's source
+    drawer can show the exact clause an answer was drawn from, rather than
+    only naming the document and page.
+    """
     return SOURCES_DELIM + json.dumps(
-        [{"n": h["n"], "source": h["source"], "page": h["page"]} for h in hits]
+        [
+            {
+                "n": h["n"],
+                "source": h["source"],
+                "page": h["page"],
+                "snippet": h["content"],
+            }
+            for h in hits
+        ]
     )
 
 
@@ -155,5 +174,77 @@ def chat(req: ChatRequest):
 
 
 @app.get("/api/spending")
-def spending():
-    return analyse(generate_spending())
+def spending(
+    allowance: int = Query(12000, ge=1000, le=1_000_000),
+    months: int = Query(1, ge=1, le=1),
+):
+    """Simulated month of UPI activity for the given monthly allowance.
+
+    `allowance` drives the profile switcher in the frontend header. `months`
+    is pinned to 1 because analyse() aggregates every transaction into a
+    single monthly total — a wider window would silently inflate the ratios.
+    """
+    return analyse(generate_spending(months=months, allowance=allowance))
+
+
+# --- Regulatory corpus ------------------------------------------------------
+# The vault lists what the RAG index can actually cite. Metadata is read from
+# disk and from the documents table — nothing about a document is invented.
+
+DATA_DIR = Path(__file__).with_name("data")
+
+
+def _indexed_counts() -> dict[str, int]:
+    """chunks per source currently in the index; empty if the DB is down."""
+    try:
+        with db.connect() as conn:
+            rows = conn.execute(
+                "SELECT source, COUNT(*) FROM documents GROUP BY source"
+            ).fetchall()
+        return {src: n for src, n in rows}
+    except Exception as exc:
+        print(f"[sources] index lookup failed: {exc}")
+        return {}
+
+
+@app.get("/api/sources")
+def sources():
+    """Corpus in the ingest path, joined with its live index status."""
+    counts = _indexed_counts()
+    items = []
+    for path in sorted(glob.glob(str(DATA_DIR / "*.pdf"))):
+        name = os.path.basename(path)
+        items.append(
+            {
+                "file": name,
+                "bytes": os.path.getsize(path),
+                "chunks": counts.get(name, 0),
+                "indexed": counts.get(name, 0) > 0,
+            }
+        )
+    # A source can be indexed while its file has been moved out of data/.
+    for name, n in sorted(counts.items()):
+        if not any(i["file"] == name for i in items):
+            items.append(
+                {"file": name, "bytes": None, "chunks": n, "indexed": True}
+            )
+    return {
+        "documents": items,
+        "total_chunks": sum(counts.values()),
+        "index_ready": bool(counts),
+    }
+
+
+@app.get("/api/source/{name}")
+def source_file(name: str):
+    """Serve one corpus PDF for the citation inspector's preview pane.
+
+    `name` is matched against the actual directory listing rather than being
+    joined onto a path, so traversal (`../`) cannot escape DATA_DIR.
+    """
+    allowed = {os.path.basename(p) for p in glob.glob(str(DATA_DIR / "*.pdf"))}
+    if name not in allowed:
+        raise HTTPException(status_code=404, detail="Unknown source document")
+    return FileResponse(
+        DATA_DIR / name, media_type="application/pdf", filename=name
+    )

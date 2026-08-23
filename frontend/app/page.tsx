@@ -1,166 +1,238 @@
 "use client";
 
 import Link from "next/link";
-import { TrendingUp, ShieldCheck, Sparkles, ArrowRight } from "lucide-react";
-import HeroAnimation from "./components/HeroAnimation";
+import {
+  ArrowRight, BookMarked, FileText, Gauge, LineChart, ShieldCheck,
+} from "lucide-react";
+import ImpulseDiagnostic from "./components/ImpulseDiagnostic";
+import { Card, Figure, Label, Pill } from "./components/ui";
+
+const TRUST = [
+  {
+    body: "RBI",
+    label: "Master Directions & investor education",
+    href: "https://www.rbi.org.in/Scripts/BS_ViewMasDirections.aspx",
+  },
+  {
+    body: "SEBI",
+    label: "Investor awareness & education",
+    href: "https://investor.sebi.gov.in/",
+  },
+  {
+    body: "NCFE",
+    label: "National financial education standards",
+    href: "https://www.ncfe.org.in/",
+  },
+];
+
+const PILLARS = [
+  {
+    icon: ShieldCheck,
+    kicker: "Grounding",
+    title: "Zero-hallucination regulatory grounding",
+    body: "Retrieval runs before generation. The counselor sees only the passages the index returned, cites the document and page behind every claim, and declines outright when the corpus has no support.",
+    foot: "Citation viewer with verbatim clause text",
+    href: "/counselor",
+  },
+  {
+    icon: Gauge,
+    kicker: "Behaviour",
+    title: "Behavioural nudges over restrictions",
+    body: "Nothing is blocked and nothing is scolded. A ratio that breaches the 50/30/20 line is restated as the future value it displaces, so the trade-off becomes legible rather than moralised.",
+    foot: "Health score, variance flags, guilt-free allowance",
+    href: "/spending",
+  },
+  {
+    icon: LineChart,
+    kicker: "Simulation",
+    title: "Tactile wealth simulations",
+    body: "Step-up contributions, the cost of a late start, lifestyle creep against financial-independence age, and a liquidity runway measured in days — each recomputed as you move a control.",
+    foot: "Recharts models, no jargon",
+    href: "/simulator",
+  },
+];
 
 export default function Landing() {
   return (
-    <main className="min-h-screen bg-slate-950">
+    <main>
       {/* HERO */}
-      <section className="relative min-h-[92vh] overflow-hidden">
-        {/* animation as the background layer */}
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-[0.28]">
-          <div className="w-[min(1100px,140vw)] translate-y-8">
-            <HeroAnimation />
-          </div>
-        </div>
+      <section className="border-b border-line bg-surface">
+        <div className="mx-auto grid max-w-[1400px] gap-10 px-5 py-14 lg:grid-cols-[1.1fr_minmax(0,460px)] lg:gap-14 lg:py-20">
+          <div>
+            <Pill tone="sage">
+              <ShieldCheck className="h-3 w-3" />
+              Retrieval-grounded · citation-enforced
+            </Pill>
 
-        {/* vignette so the type stays readable */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_5%,rgba(2,6,23,0.85)_75%)]" />
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-slate-950 to-transparent" />
+            <h1 className="mt-5 font-display text-[clamp(2.75rem,6vw,4.25rem)] leading-[1.02] tracking-tight text-ink">
+              Every rupee has a future.
+            </h1>
 
-        {/* nav */}
-        <nav className="relative z-10 mx-auto flex max-w-6xl items-center justify-between px-8 py-7">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-emerald-500">
-              <TrendingUp className="h-4 w-4 text-slate-950" />
+            <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-ink-2">
+              FinPath India pairs a retrieval-augmented counselor — constrained
+              to official RBI, SEBI and NCFE publications, and required to cite
+              a page for every claim — with a behavioural nudge engine that
+              converts today&apos;s spending ratios into the compounded value
+              they displace. Diagnose, simulate, consult, then act.
+            </p>
+
+            <div className="mt-7 flex flex-wrap gap-2.5">
+              <Link
+                href="/spending"
+                className="inline-flex items-center gap-2 rounded-md bg-forest px-5 py-2.5 text-sm font-medium text-on-forest transition hover:bg-forest-hover"
+              >
+                Run the diagnosis <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                href="/counselor"
+                className="inline-flex items-center gap-2 rounded-md border border-line bg-surface px-5 py-2.5 text-sm font-medium text-ink transition hover:border-line-strong hover:bg-surface-2"
+              >
+                Open the counselor
+              </Link>
             </div>
-            <span className="text-sm font-extrabold uppercase tracking-[0.15em]">
-              FinPath India
-            </span>
-          </div>
-          <div className="hidden gap-9 text-sm text-slate-300 sm:flex">
-            <Link href="/counselor" className="transition hover:text-emerald-400">
-              Counselor
-            </Link>
-            <Link href="/dashboard" className="transition hover:text-emerald-400">
-              Spending
-            </Link>
-            <a href="#how" className="transition hover:text-emerald-400">
-              How it works
-            </a>
-          </div>
-        </nav>
 
-        {/* headline */}
-        <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center px-8 pt-[14vh] text-center">
-          <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-4 py-1.5 text-[11px] uppercase tracking-[0.14em] text-emerald-400">
-            <ShieldCheck className="h-3.5 w-3.5" />
-            RBI · SEBI · NCFE grounded
-          </div>
-
-          <h1 className="text-[clamp(2.75rem,8vw,5.5rem)] font-black uppercase leading-[0.92] tracking-tight">
-            Every rupee
-            <br />
-            <span className="text-emerald-400">has a future</span>
-          </h1>
-
-          <p className="mt-7 max-w-lg text-base leading-relaxed text-slate-400">
-            An AI counselor that can only answer from verified regulatory
-            documents — and a nudge engine that shows what today&apos;s spending
-            costs you in ten years.
-          </p>
-
-          <Link
-            href="/counselor"
-            className="mt-10 inline-flex items-center gap-2 rounded-full bg-white px-9 py-4 text-sm font-bold uppercase tracking-[0.12em] text-slate-950 transition hover:bg-emerald-400"
-          >
-            Explore now <ArrowRight className="h-4 w-4" />
-          </Link>
-
-          <p className="mt-6 text-xs text-slate-600">
-            Educational use only · Not investment advice
-          </p>
-        </div>
-      </section>
-
-      {/* STATS */}
-      <section className="border-y border-slate-900">
-        <div className="mx-auto grid max-w-5xl grid-cols-3 divide-x divide-slate-900">
-          {[
-            ["73%", "of Indian youth lack basic financial literacy"],
-            ["1.8%", "Gen-Z credit card default rate"],
-            ["0", "answers without a cited source"],
-          ].map(([n, label]) => (
-            <div key={label} className="px-6 py-10 text-center">
-              <p className="text-3xl font-black tabular-nums text-emerald-400 sm:text-4xl">
-                {n}
-              </p>
-              <p className="mx-auto mt-2 max-w-[16ch] text-xs leading-relaxed text-slate-500">
-                {label}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* HOW */}
-      <section id="how" className="mx-auto max-w-6xl px-8 py-24">
-        <h2 className="mb-3 text-center text-[clamp(1.75rem,4vw,2.75rem)] font-black uppercase tracking-tight">
-          Three things it does
-        </h2>
-        <p className="mx-auto mb-14 max-w-md text-center text-sm text-slate-500">
-          Built for students who have never had access to an advisor.
-        </p>
-
-        <div className="grid gap-5 md:grid-cols-3">
-          {[
-            {
-              icon: ShieldCheck,
-              n: "01",
-              title: "Refuses to guess",
-              body: "Every answer cites an RBI, SEBI or NCFE page number. Ask something outside those documents and it says so — no hallucinated financial advice.",
-            },
-            {
-              icon: Sparkles,
-              n: "02",
-              title: "Nudges, never blocks",
-              body: "The rule engine spots when Wants cross 30% of your allowance, then shows the ten-year cost of that gap. You still make the call.",
-            },
-            {
-              icon: TrendingUp,
-              n: "03",
-              title: "Teaches by dragging",
-              body: "Move one slider and watch compounding work. Abstract maths becomes a number you can feel in your stomach.",
-            },
-          ].map((f) => (
-            <div
-              key={f.n}
-              className="group rounded-2xl border border-slate-900 bg-slate-900/30 p-8 transition hover:border-emerald-500/40"
-            >
-              <div className="mb-5 flex items-center justify-between">
-                <f.icon className="h-5 w-5 text-emerald-400" />
-                <span className="text-xs font-bold tracking-widest text-slate-700">
-                  {f.n}
-                </span>
+            <div className="mt-9">
+              <Label>Source authorities</Label>
+              <div className="mt-2.5 flex flex-wrap gap-2">
+                {TRUST.map((t) => (
+                  <a
+                    key={t.body}
+                    href={t.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group inline-flex items-center gap-2.5 rounded-md border border-line bg-surface px-3 py-2 transition hover:border-line-strong hover:bg-surface-2"
+                  >
+                    <span className="flex h-6 w-6 items-center justify-center rounded border border-sage-line bg-sage text-[10px] font-semibold text-sage-ink">
+                      {t.body === "RBI" ? "RB" : t.body === "SEBI" ? "SE" : "NC"}
+                    </span>
+                    <span className="leading-tight">
+                      <span className="block text-[12px] font-medium text-ink">
+                        {t.body}
+                      </span>
+                      <span className="block text-[11px] text-meta">
+                        {t.label}
+                      </span>
+                    </span>
+                    <ArrowRight className="h-3 w-3 text-meta transition group-hover:translate-x-0.5" />
+                  </a>
+                ))}
               </div>
-              <h3 className="mb-2.5 text-lg font-bold">{f.title}</h3>
-              <p className="text-sm leading-relaxed text-slate-400">{f.body}</p>
+              <p className="mt-2.5 text-[11px] leading-relaxed text-meta">
+                Links open the issuing authority&apos;s own portal. The
+                counselor cites only the documents held in the indexed corpus —
+                see the{" "}
+                <Link href="/vault" className="underline underline-offset-2">
+                  Regulatory Vault
+                </Link>{" "}
+                for exactly what is searchable.
+              </p>
             </div>
-          ))}
-        </div>
+          </div>
 
-        <div className="mt-14 flex justify-center gap-3">
-          <Link
-            href="/counselor"
-            className="rounded-full bg-emerald-500 px-7 py-3 text-sm font-bold uppercase tracking-wider text-slate-950 transition hover:bg-emerald-400"
-          >
-            Ask the Counselor
-          </Link>
-          <Link
-            href="/dashboard"
-            className="rounded-full border border-slate-700 px-7 py-3 text-sm font-bold uppercase tracking-wider text-slate-300 transition hover:border-emerald-500 hover:text-emerald-400"
-          >
-            See the Nudge Engine
-          </Link>
+          <ImpulseDiagnostic />
         </div>
       </section>
 
-      <footer className="border-t border-slate-900 py-10 text-center text-xs text-slate-600">
-        FinPath India · Suraj Pratap Singh · MVSR Engineering College, Dept. of
-        CSIT
-      </footer>
+      {/* PILLARS */}
+      <section className="mx-auto max-w-[1400px] px-5 py-16">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h2 className="font-display text-[clamp(1.75rem,3.5vw,2.5rem)] leading-tight tracking-tight text-ink">
+              Three pillars
+            </h2>
+            <p className="mt-2 max-w-md text-[14px] leading-relaxed text-meta">
+              Built for students who have never had access to an adviser, and
+              held to the standard of one.
+            </p>
+          </div>
+          <Link
+            href="/roadmap"
+            className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink underline-offset-4 hover:underline"
+          >
+            See the milestone ladder <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+
+        <div className="mt-9 grid gap-4 lg:grid-cols-3">
+          {PILLARS.map((p, i) => (
+            <Card
+              key={p.title}
+              as="article"
+              className="flex flex-col transition hover:border-line-strong"
+            >
+              <div className="flex items-center justify-between border-b border-line px-5 py-3.5">
+                <span className="flex items-center gap-2">
+                  <p.icon className="h-4 w-4 text-forest-ink" />
+                  <Label>{p.kicker}</Label>
+                </span>
+                <Figure className="text-[11px] text-meta">
+                  {String(i + 1).padStart(2, "0")}
+                </Figure>
+              </div>
+
+              <div className="flex flex-1 flex-col px-5 py-5">
+                <h3 className="font-display text-xl leading-snug tracking-tight text-ink">
+                  {p.title}
+                </h3>
+                <p className="mt-2.5 flex-1 text-[13px] leading-relaxed text-meta">
+                  {p.body}
+                </p>
+                <Link
+                  href={p.href}
+                  className="mt-5 inline-flex items-center gap-1.5 border-t border-line pt-3.5 text-[12px] font-medium text-ink transition hover:gap-2.5"
+                >
+                  <FileText className="h-3.5 w-3.5 text-meta" />
+                  {p.foot}
+                  <ArrowRight className="ml-auto h-3.5 w-3.5" />
+                </Link>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      {/* FLOW */}
+      <section className="border-y border-line bg-surface">
+        <div className="mx-auto max-w-[1400px] px-5 py-12">
+          <Label>The flow</Label>
+          <div className="mt-4 grid gap-px overflow-hidden rounded-lg border border-line bg-line sm:grid-cols-4">
+            {[
+              ["Diagnose", "Spending Engine", "/spending", "Score the month against 50/30/20."],
+              ["Simulate", "Nudge Simulator", "/simulator", "Model step-ups, delay and shocks."],
+              ["Consult", "AI Counselor", "/counselor", "Ask, and get a cited answer."],
+              ["Act", "Roadmap", "/roadmap", "Work the milestone ladder."],
+            ].map(([step, name, href, body], i) => (
+              <Link
+                key={step}
+                href={href}
+                className="group bg-surface px-5 py-5 transition hover:bg-surface-2"
+              >
+                <Figure className="text-[11px] text-meta">
+                  0{i + 1}
+                </Figure>
+                <p className="mt-1.5 font-display text-lg tracking-tight text-ink">
+                  {step}
+                </p>
+                <p className="mt-0.5 text-[12px] font-medium text-forest-ink">
+                  {name}
+                </p>
+                <p className="mt-1.5 text-[12px] leading-relaxed text-meta">
+                  {body}
+                </p>
+              </Link>
+            ))}
+          </div>
+
+          <p className="mt-5 flex items-center gap-2 text-[12px] text-meta">
+            <BookMarked className="h-3.5 w-3.5" />
+            Press{" "}
+            <kbd className="figure rounded border border-line bg-surface-2 px-1.5 py-0.5 text-[10px]">
+              ⌘K
+            </kbd>{" "}
+            anywhere to search citations, calculators and tools.
+          </p>
+        </div>
+      </section>
     </main>
   );
 }

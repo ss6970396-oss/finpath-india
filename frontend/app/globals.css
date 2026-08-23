@@ -4,25 +4,111 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ============================================================
+   DESIGN TOKENS — institutional editorial fintech
+   ============================================================ */
+
+:root {
+  /* surfaces */
+  --canvas: #fafaf9; /* neutral porcelain */
+  --canvas-alt: #f5f5f4;
+  --surface: #ffffff; /* solid card, never translucent */
+  --surface-2: #fafaf9; /* insets, table headers */
+  --line: #e7e5e4; /* stone-200 hairline */
+  --line-strong: #d6d3d1;
+
+  /* type */
+  --ink: #0f172a; /* slate ink — headings and body */
+  --ink-2: #334155;
+  --meta: #64748b; /* slate grey — metadata */
+
+  /* brand */
+  --forest: #0f382a; /* deep forest emerald — buttons, indicators */
+  --forest-hover: #144533;
+  --on-forest: #ffffff;
+  --sage: #e8efe9; /* muted sage — badges, pills, table headers */
+  --sage-line: #cbdccf;
+  --sage-ink: #14503a; /* readable forest text on sage/white */
+
+  /* risk */
+  --ochre: #8a6d3b; /* indicator fill: meters, bars, icons */
+  --ochre-tint: #f6f1e7;
+  --rust: #8c3b3b;
+  --rust-tint: #f8eeee;
+
+  /* Text-only variants. Indicators need 3:1, body text needs 4.5:1, and
+     #8a6d3b on its own tint is only 4.31:1 — so type gets its own value
+     while the specified accent stays exact for fills. In light mode forest
+     already clears 12:1, so forest-ink matches it. */
+  --forest-ink: #0f382a;
+  --ochre-ink: #7d6234;
+}
+
+.dark {
+  --canvas: #0c0a09;
+  --canvas-alt: #1c1917;
+  --surface: #1c1917;
+  --surface-2: #262322;
+  --line: #292524;
+  --line-strong: #44403c;
+
+  --ink: #f5f5f4;
+  --ink-2: #d6d3d1;
+  --meta: #a8a29e;
+
+  --forest: #2f6b52;
+  --forest-hover: #3d8567;
+  --on-forest: #ffffff;
+  --sage: #1a2f26;
+  --sage-line: #2f4d3e;
+  --sage-ink: #a7d3bc;
+
+  --ochre: #d0a86a;
+  --ochre-tint: #2a2318;
+  --rust: #d08a8a;
+  --rust-tint: #2a1c1c;
+
+  /* Dark: the solid forest is a button ground, far too dark to read as type
+     (2.79:1 on the dark surface), so text takes a lighter value. */
+  --forest-ink: #5ec49b;
+  --ochre-ink: #d0a86a;
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-canvas-alt: var(--canvas-alt);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-meta: var(--meta);
+
+  --color-forest: var(--forest);
+  --color-forest-ink: var(--forest-ink);
+  --color-forest-hover: var(--forest-hover);
+  --color-on-forest: var(--on-forest);
+  --color-sage: var(--sage);
+  --color-sage-line: var(--sage-line);
+  --color-sage-ink: var(--sage-ink);
+
+  --color-ochre: var(--ochre);
+  --color-ochre-ink: var(--ochre-ink);
+  --color-ochre-tint: var(--ochre-tint);
+  --color-rust: var(--rust);
+  --color-rust-tint: var(--rust-tint);
+
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-newsreader);
+  --font-mono: var(--font-plex-mono);
+}
+
+/* shadcn primitives read these */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -44,77 +130,28 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) * 1.4);
   --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: var(--canvas);
+  --foreground: var(--ink);
+  --card: var(--surface);
+  --card-foreground: var(--ink);
+  --popover: var(--surface);
+  --popover-foreground: var(--ink);
+  --primary: var(--forest);
+  --primary-foreground: var(--on-forest);
+  --secondary: var(--sage);
+  --secondary-foreground: var(--sage-ink);
+  --muted: var(--surface-2);
+  --muted-foreground: var(--meta);
+  --accent: var(--sage);
+  --accent-foreground: var(--sage-ink);
+  --destructive: var(--rust);
+  --border: var(--line);
+  --input: var(--line);
+  --ring: var(--forest);
+  --radius: 0.5rem;
 }
 
 @layer base {
@@ -127,7 +164,94 @@
   html {
     @apply font-sans;
   }
+
+  /* Uniform 1.5px stroke on every Lucide icon. CSS beats the presentation
+     attribute lucide-react renders, so this needs no per-icon prop. */
+  svg.lucide {
+    stroke-width: 1.5;
+  }
+
+  /* Every rupee amount and percentage is monospace tabular by default. */
+  .figure {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
 }
-@theme inline {
-  --font-sans: var(--font-archivo);
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+
+@utility rule-grid {
+  background-image: linear-gradient(
+      to right,
+      var(--line) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+@keyframes fp-caret {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@utility caret-stream {
+  &::after {
+    content: "";
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    margin-left: 2px;
+    vertical-align: -0.15em;
+    background-color: var(--forest);
+    animation: fp-caret 1s steps(2, start) infinite;
+  }
+}
+
+@keyframes fp-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility fade-up {
+  animation: fp-fade-up 0.22s ease-out both;
+}
+
+@keyframes fp-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@utility scale-in {
+  animation: fp-scale-in 0.16s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-up,
+  .scale-in {
+    animation: none;
+  }
+  .caret-stream::after {
+    animation: none;
+  }
 }
