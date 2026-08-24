@@ -1,0 +1,1848 @@
+{
+  "constants": {
+    "SIP_ANNUAL_RATE": 0.12,
+    "PROJECTION_YEARS": 10,
+    "WANTS_THRESHOLD": 0.3
+  },
+  "sip_future_value": [
+    {
+      "monthly": 0,
+      "years": 0,
+      "rate": 0,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 0,
+      "rate": 0.08,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 0,
+      "rate": 0.12,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 0,
+      "rate": 0.15,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 1,
+      "rate": 0,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 1,
+      "rate": 0.08,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 1,
+      "rate": 0.12,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 1,
+      "rate": 0.15,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 5,
+      "rate": 0,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 5,
+      "rate": 0.08,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 5,
+      "rate": 0.12,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 5,
+      "rate": 0.15,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 10,
+      "rate": 0,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 10,
+      "rate": 0.08,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 10,
+      "rate": 0.12,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 10,
+      "rate": 0.15,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 20,
+      "rate": 0,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 20,
+      "rate": 0.08,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 20,
+      "rate": 0.12,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 20,
+      "rate": 0.15,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 30,
+      "rate": 0,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 30,
+      "rate": 0.08,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 30,
+      "rate": 0.12,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 30,
+      "rate": 0.15,
+      "value": 0
+    },
+    {
+      "monthly": 500,
+      "years": 0,
+      "rate": 0,
+      "value": 0
+    },
+    {
+      "monthly": 500,
+      "years": 0,
+      "rate": 0.08,
+      "value": 0
+    },
+    {
+      "monthly": 500,
+      "years": 0,
+      "rate": 0.12,
+      "value": 0
+    },
+    {
+      "monthly": 500,
+      "years": 0,
+      "rate": 0.15,
+      "value": 0
+    },
+    {
+      "monthly": 500,
+      "years": 1,
+      "rate": 0,
+      "raises": "ZeroDivisionError"
+    },
+    {
+      "monthly": 500,
+      "years": 1,
+      "rate": 0.08,
+      "value": 6266
+    },
+    {
+      "monthly": 500,
+      "years": 1,
+      "rate": 0.12,
+      "value": 6405
+    },
+    {
+      "monthly": 500,
+      "years": 1,
+      "rate": 0.15,
+      "value": 6511
+    },
+    {
+      "monthly": 500,
+      "years": 5,
+      "rate": 0,
+      "raises": "ZeroDivisionError"
+    },
+    {
+      "monthly": 500,
+      "years": 5,
+      "rate": 0.08,
+      "value": 36983
+    },
+    {
+      "monthly": 500,
+      "years": 5,
+      "rate": 0.12,
+      "value": 41243
+    },
+    {
+      "monthly": 500,
+      "years": 5,
+      "rate": 0.15,
+      "value": 44841
+    },
+    {
+      "monthly": 500,
+      "years": 10,
+      "rate": 0,
+      "raises": "ZeroDivisionError"
+    },
+    {
+      "monthly": 500,
+      "years": 10,
+      "rate": 0.08,
+      "value": 92083
+    },
+    {
+      "monthly": 500,
+      "years": 10,
+      "rate": 0.12,
+      "value": 116170
+    },
+    {
+      "monthly": 500,
+      "years": 10,
+      "rate": 0.15,
+      "value": 139329
+    },
+    {
+      "monthly": 500,
+      "years": 20,
+      "rate": 0,
+      "raises": "ZeroDivisionError"
+    },
+    {
+      "monthly": 500,
+      "years": 20,
+      "rate": 0.08,
+      "value": 296474
+    },
+    {
+      "monthly": 500,
+      "years": 20,
+      "rate": 0.12,
+      "value": 499574
+    },
+    {
+      "monthly": 500,
+      "years": 20,
+      "rate": 0.15,
+      "value": 757977
+    },
+    {
+      "monthly": 500,
+      "years": 30,
+      "rate": 0,
+      "raises": "ZeroDivisionError"
+    },
+    {
+      "monthly": 500,
+      "years": 30,
+      "rate": 0.08,
+      "value": 750148
+    },
+    {
+      "monthly": 500,
+      "years": 30,
+      "rate": 0.12,
+      "value": 1764957
+    },
+    {
+      "monthly": 500,
+      "years": 30,
+      "rate": 0.15,
+      "value": 3504910
+    },
+    {
+      "monthly": 1500,
+      "years": 0,
+      "rate": 0,
+      "value": 0
+    },
+    {
+      "monthly": 1500,
+      "years": 0,
+      "rate": 0.08,
+      "value": 0
+    },
+    {
+      "monthly": 1500,
+      "years": 0,
+      "rate": 0.12,
+      "value": 0
+    },
+    {
+      "monthly": 1500,
+      "years": 0,
+      "rate": 0.15,
+      "value": 0
+    },
+    {
+      "monthly": 1500,
+      "years": 1,
+      "rate": 0,
+      "raises": "ZeroDivisionError"
+    },
+    {
+      "monthly": 1500,
+      "years": 1,
+      "rate": 0.08,
+      "value": 18799
+    },
+    {
+      "monthly": 1500,
+      "years": 1,
+      "rate": 0.12,
+      "value": 19214
+    },
+    {
+      "monthly": 1500,
+      "years": 1,
+      "rate": 0.15,
+      "value": 19532
+    },
+    {
+      "monthly": 1500,
+      "years": 5,
+      "rate": 0,
+      "raises": "ZeroDivisionError"
+    },
+    {
+      "monthly": 1500,
+      "years": 5,
+      "rate": 0.08,
+      "value": 110950
+    },
+    {
+      "monthly": 1500,
+      "years": 5,
+      "rate": 0.12,
+      "value": 123730
+    },
+    {
+      "monthly": 1500,
+      "years": 5,
+      "rate": 0.15,
+      "value": 134523
+    },
+    {
+      "monthly": 1500,
+      "years": 10,
+      "rate": 0,
+      "raises": "ZeroDivisionError"
+    },
+    {
+      "monthly": 1500,
+      "years": 10,
+      "rate": 0.08,
+      "value": 276249
+    },
+    {
+      "monthly": 1500,
+      "years": 10,
+      "rate": 0.12,
+      "value": 348509
+    },
+    {
+      "monthly": 1500,
+      "years": 10,
+      "rate": 0.15,
+      "value": 417986
+    },
+    {
+      "monthly": 1500,
+      "years": 20,
+      "rate": 0,
+      "raises": "ZeroDivisionError"
+    },
+    {
+      "monthly": 1500,
+      "years": 20,
+      "rate": 0.08,
+      "value": 889421
+    },
+    {
+      "monthly": 1500,
+      "years": 20,
+      "rate": 0.12,
+      "value": 1498722
+    },
+    {
+      "monthly": 1500,
+      "years": 20,
+      "rate": 0.15,
+      "value": 2273932
+    },
+    {
+      "monthly": 1500,
+      "years": 30,
+      "rate": 0,
+      "raises": "ZeroDivisionError"
+    },
+    {
+      "monthly": 1500,
+      "years": 30,
+      "rate": 0.08,
+      "value": 2250443
+    },
+    {
+      "monthly": 1500,
+      "years": 30,
+      "rate": 0.12,
+      "value": 5294871
+    },
+    {
+      "monthly": 1500,
+      "years": 30,
+      "rate": 0.15,
+      "value": 10514731
+    },
+    {
+      "monthly": 4500,
+      "years": 0,
+      "rate": 0,
+      "value": 0
+    },
+    {
+      "monthly": 4500,
+      "years": 0,
+      "rate": 0.08,
+      "value": 0
+    },
+    {
+      "monthly": 4500,
+      "years": 0,
+      "rate": 0.12,
+      "value": 0
+    },
+    {
+      "monthly": 4500,
+      "years": 0,
+      "rate": 0.15,
+      "value": 0
+    },
+    {
+      "monthly": 4500,
+      "years": 1,
+      "rate": 0,
+      "raises": "ZeroDivisionError"
+    },
+    {
+      "monthly": 4500,
+      "years": 1,
+      "rate": 0.08,
+      "value": 56398
+    },
+    {
+      "monthly": 4500,
+      "years": 1,
+      "rate": 0.12,
+      "value": 57642
+    },
+    {
+      "monthly": 4500,
+      "years": 1,
+      "rate": 0.15,
+      "value": 58595
+    },
+    {
+      "monthly": 4500,
+      "years": 5,
+      "rate": 0,
+      "raises": "ZeroDivisionError"
+    },
+    {
+      "monthly": 4500,
+      "years": 5,
+      "rate": 0.08,
+      "value": 332850
+    },
+    {
+      "monthly": 4500,
+      "years": 5,
+      "rate": 0.12,
+      "value": 371189
+    },
+    {
+      "monthly": 4500,
+      "years": 5,
+      "rate": 0.15,
+      "value": 403568
+    },
+    {
+      "monthly": 4500,
+      "years": 10,
+      "rate": 0,
+      "raises": "ZeroDivisionError"
+    },
+    {
+      "monthly": 4500,
+      "years": 10,
+      "rate": 0.08,
+      "value": 828746
+    },
+    {
+      "monthly": 4500,
+      "years": 10,
+      "rate": 0.12,
+      "value": 1045526
+    },
+    {
+      "monthly": 4500,
+      "years": 10,
+      "rate": 0.15,
+      "value": 1253958
+    },
+    {
+      "monthly": 4500,
+      "years": 20,
+      "rate": 0,
+      "raises": "ZeroDivisionError"
+    },
+    {
+      "monthly": 4500,
+      "years": 20,
+      "rate": 0.08,
+      "value": 2668262
+    },
+    {
+      "monthly": 4500,
+      "years": 20,
+      "rate": 0.12,
+      "value": 4496166
+    },
+    {
+      "monthly": 4500,
+      "years": 20,
+      "rate": 0.15,
+      "value": 6821797
+    },
+    {
+      "monthly": 4500,
+      "years": 30,
+      "rate": 0,
+      "raises": "ZeroDivisionError"
+    },
+    {
+      "monthly": 4500,
+      "years": 30,
+      "rate": 0.08,
+      "value": 6751328
+    },
+    {
+      "monthly": 4500,
+      "years": 30,
+      "rate": 0.12,
+      "value": 15884612
+    },
+    {
+      "monthly": 4500,
+      "years": 30,
+      "rate": 0.15,
+      "value": 31544193
+    },
+    {
+      "monthly": 25000,
+      "years": 0,
+      "rate": 0,
+      "value": 0
+    },
+    {
+      "monthly": 25000,
+      "years": 0,
+      "rate": 0.08,
+      "value": 0
+    },
+    {
+      "monthly": 25000,
+      "years": 0,
+      "rate": 0.12,
+      "value": 0
+    },
+    {
+      "monthly": 25000,
+      "years": 0,
+      "rate": 0.15,
+      "value": 0
+    },
+    {
+      "monthly": 25000,
+      "years": 1,
+      "rate": 0,
+      "raises": "ZeroDivisionError"
+    },
+    {
+      "monthly": 25000,
+      "years": 1,
+      "rate": 0.08,
+      "value": 313323
+    },
+    {
+      "monthly": 25000,
+      "years": 1,
+      "rate": 0.12,
+      "value": 320233
+    },
+    {
+      "monthly": 25000,
+      "years": 1,
+      "rate": 0.15,
+      "value": 325528
+    },
+    {
+      "monthly": 25000,
+      "years": 5,
+      "rate": 0,
+      "raises": "ZeroDivisionError"
+    },
+    {
+      "monthly": 25000,
+      "years": 5,
+      "rate": 0.08,
+      "value": 1849168
+    },
+    {
+      "monthly": 25000,
+      "years": 5,
+      "rate": 0.12,
+      "value": 2062159
+    },
+    {
+      "monthly": 25000,
+      "years": 5,
+      "rate": 0.15,
+      "value": 2242042
+    },
+    {
+      "monthly": 25000,
+      "years": 10,
+      "rate": 0,
+      "raises": "ZeroDivisionError"
+    },
+    {
+      "monthly": 25000,
+      "years": 10,
+      "rate": 0.08,
+      "value": 4604142
+    },
+    {
+      "monthly": 25000,
+      "years": 10,
+      "rate": 0.12,
+      "value": 5808477
+    },
+    {
+      "monthly": 25000,
+      "years": 10,
+      "rate": 0.15,
+      "value": 6966432
+    },
+    {
+      "monthly": 25000,
+      "years": 20,
+      "rate": 0,
+      "raises": "ZeroDivisionError"
+    },
+    {
+      "monthly": 25000,
+      "years": 20,
+      "rate": 0.08,
+      "value": 14823680
+    },
+    {
+      "monthly": 25000,
+      "years": 20,
+      "rate": 0.12,
+      "value": 24978698
+    },
+    {
+      "monthly": 25000,
+      "years": 20,
+      "rate": 0.15,
+      "value": 37898874
+    },
+    {
+      "monthly": 25000,
+      "years": 30,
+      "rate": 0,
+      "raises": "ZeroDivisionError"
+    },
+    {
+      "monthly": 25000,
+      "years": 30,
+      "rate": 0.08,
+      "value": 37507379
+    },
+    {
+      "monthly": 25000,
+      "years": 30,
+      "rate": 0.12,
+      "value": 88247844
+    },
+    {
+      "monthly": 25000,
+      "years": 30,
+      "rate": 0.15,
+      "value": 175245515
+    }
+  ],
+  "build_projection": [
+    {
+      "monthly": 0,
+      "series": [
+        {
+          "year": 0,
+          "value": 0
+        },
+        {
+          "year": 1,
+          "value": 0
+        },
+        {
+          "year": 2,
+          "value": 0
+        },
+        {
+          "year": 3,
+          "value": 0
+        },
+        {
+          "year": 4,
+          "value": 0
+        },
+        {
+          "year": 5,
+          "value": 0
+        },
+        {
+          "year": 6,
+          "value": 0
+        },
+        {
+          "year": 7,
+          "value": 0
+        },
+        {
+          "year": 8,
+          "value": 0
+        },
+        {
+          "year": 9,
+          "value": 0
+        },
+        {
+          "year": 10,
+          "value": 0
+        }
+      ]
+    },
+    {
+      "monthly": 1200,
+      "series": [
+        {
+          "year": 0,
+          "value": 0
+        },
+        {
+          "year": 1,
+          "value": 15371
+        },
+        {
+          "year": 2,
+          "value": 32692
+        },
+        {
+          "year": 3,
+          "value": 52209
+        },
+        {
+          "year": 4,
+          "value": 74202
+        },
+        {
+          "year": 5,
+          "value": 98984
+        },
+        {
+          "year": 6,
+          "value": 126908
+        },
+        {
+          "year": 7,
+          "value": 158375
+        },
+        {
+          "year": 8,
+          "value": 193832
+        },
+        {
+          "year": 9,
+          "value": 233786
+        },
+        {
+          "year": 10,
+          "value": 278807
+        }
+      ]
+    },
+    {
+      "monthly": 4280,
+      "series": [
+        {
+          "year": 0,
+          "value": 0
+        },
+        {
+          "year": 1,
+          "value": 54824
+        },
+        {
+          "year": 2,
+          "value": 116601
+        },
+        {
+          "year": 3,
+          "value": 186213
+        },
+        {
+          "year": 4,
+          "value": 264653
+        },
+        {
+          "year": 5,
+          "value": 353042
+        },
+        {
+          "year": 6,
+          "value": 452640
+        },
+        {
+          "year": 7,
+          "value": 564870
+        },
+        {
+          "year": 8,
+          "value": 691334
+        },
+        {
+          "year": 9,
+          "value": 833836
+        },
+        {
+          "year": 10,
+          "value": 994411
+        }
+      ]
+    }
+  ],
+  "analyse": [
+    {
+      "id": "01-wants-just-under-threshold",
+      "input": {
+        "allowance": 15000,
+        "transactions": [
+          {
+            "id": 2,
+            "date": "2026-08-02",
+            "merchant": "Hostel Mess Fee",
+            "amount": 3000,
+            "category": "Needs"
+          },
+          {
+            "id": 3,
+            "date": "2026-08-03",
+            "merchant": "Mobile Recharge",
+            "amount": 299,
+            "category": "Needs"
+          },
+          {
+            "id": 5,
+            "date": "2026-08-05",
+            "merchant": "Swiggy",
+            "amount": 340,
+            "category": "Wants"
+          },
+          {
+            "id": 8,
+            "date": "2026-08-08",
+            "merchant": "Myntra",
+            "amount": 1400,
+            "category": "Wants"
+          },
+          {
+            "id": 11,
+            "date": "2026-08-11",
+            "merchant": "BookMyShow",
+            "amount": 600,
+            "category": "Wants"
+          },
+          {
+            "id": 14,
+            "date": "2026-08-14",
+            "merchant": "Steam Games",
+            "amount": 900,
+            "category": "Wants"
+          },
+          {
+            "id": 17,
+            "date": "2026-08-17",
+            "merchant": "Zomato",
+            "amount": 460,
+            "category": "Wants"
+          },
+          {
+            "id": 19,
+            "date": "2026-08-19",
+            "merchant": "Cafe Coffee Day",
+            "amount": 380,
+            "category": "Wants"
+          },
+          {
+            "id": 22,
+            "date": "2026-08-22",
+            "merchant": "Blinkit",
+            "amount": 320,
+            "category": "Wants"
+          },
+          {
+            "id": 25,
+            "date": "2026-08-25",
+            "merchant": "SIP",
+            "amount": 500,
+            "category": "Savings"
+          }
+        ]
+      },
+      "output": {
+        "allowance": 15000,
+        "totals": {
+          "Needs": 3299,
+          "Wants": 4400,
+          "Savings": 500
+        },
+        "spent": 8199,
+        "wants_pct": 53.7,
+        "triggered": false,
+        "monthly_excess": 0,
+        "projection": [
+          {
+            "year": 0,
+            "value": 0
+          },
+          {
+            "year": 1,
+            "value": 0
+          },
+          {
+            "year": 2,
+            "value": 0
+          },
+          {
+            "year": 3,
+            "value": 0
+          },
+          {
+            "year": 4,
+            "value": 0
+          },
+          {
+            "year": 5,
+            "value": 0
+          },
+          {
+            "year": 6,
+            "value": 0
+          },
+          {
+            "year": 7,
+            "value": 0
+          },
+          {
+            "year": 8,
+            "value": 0
+          },
+          {
+            "year": 9,
+            "value": 0
+          },
+          {
+            "year": 10,
+            "value": 0
+          }
+        ],
+        "ten_year_value": 0,
+        "projection_params": {
+          "annual_rate": 0.12,
+          "years": 10,
+          "wants_threshold": 0.3
+        },
+        "transactions": [
+          {
+            "id": 25,
+            "date": "2026-08-25",
+            "merchant": "SIP",
+            "amount": 500,
+            "category": "Savings"
+          },
+          {
+            "id": 22,
+            "date": "2026-08-22",
+            "merchant": "Blinkit",
+            "amount": 320,
+            "category": "Wants"
+          },
+          {
+            "id": 19,
+            "date": "2026-08-19",
+            "merchant": "Cafe Coffee Day",
+            "amount": 380,
+            "category": "Wants"
+          },
+          {
+            "id": 17,
+            "date": "2026-08-17",
+            "merchant": "Zomato",
+            "amount": 460,
+            "category": "Wants"
+          },
+          {
+            "id": 14,
+            "date": "2026-08-14",
+            "merchant": "Steam Games",
+            "amount": 900,
+            "category": "Wants"
+          },
+          {
+            "id": 11,
+            "date": "2026-08-11",
+            "merchant": "BookMyShow",
+            "amount": 600,
+            "category": "Wants"
+          },
+          {
+            "id": 8,
+            "date": "2026-08-08",
+            "merchant": "Myntra",
+            "amount": 1400,
+            "category": "Wants"
+          },
+          {
+            "id": 5,
+            "date": "2026-08-05",
+            "merchant": "Swiggy",
+            "amount": 340,
+            "category": "Wants"
+          },
+          {
+            "id": 3,
+            "date": "2026-08-03",
+            "merchant": "Mobile Recharge",
+            "amount": 299,
+            "category": "Needs"
+          },
+          {
+            "id": 2,
+            "date": "2026-08-02",
+            "merchant": "Hostel Mess Fee",
+            "amount": 3000,
+            "category": "Needs"
+          }
+        ]
+      }
+    },
+    {
+      "id": "02-wants-well-under-threshold",
+      "input": {
+        "allowance": 15000,
+        "transactions": [
+          {
+            "id": 2,
+            "date": "2026-08-02",
+            "merchant": "Hostel Mess Fee",
+            "amount": 3000,
+            "category": "Needs"
+          },
+          {
+            "id": 5,
+            "date": "2026-08-05",
+            "merchant": "Swiggy",
+            "amount": 340,
+            "category": "Wants"
+          },
+          {
+            "id": 25,
+            "date": "2026-08-25",
+            "merchant": "SIP",
+            "amount": 1500,
+            "category": "Savings"
+          }
+        ]
+      },
+      "output": {
+        "allowance": 15000,
+        "totals": {
+          "Needs": 3000,
+          "Wants": 340,
+          "Savings": 1500
+        },
+        "spent": 4840,
+        "wants_pct": 7.0,
+        "triggered": false,
+        "monthly_excess": 0,
+        "projection": [
+          {
+            "year": 0,
+            "value": 0
+          },
+          {
+            "year": 1,
+            "value": 0
+          },
+          {
+            "year": 2,
+            "value": 0
+          },
+          {
+            "year": 3,
+            "value": 0
+          },
+          {
+            "year": 4,
+            "value": 0
+          },
+          {
+            "year": 5,
+            "value": 0
+          },
+          {
+            "year": 6,
+            "value": 0
+          },
+          {
+            "year": 7,
+            "value": 0
+          },
+          {
+            "year": 8,
+            "value": 0
+          },
+          {
+            "year": 9,
+            "value": 0
+          },
+          {
+            "year": 10,
+            "value": 0
+          }
+        ],
+        "ten_year_value": 0,
+        "projection_params": {
+          "annual_rate": 0.12,
+          "years": 10,
+          "wants_threshold": 0.3
+        },
+        "transactions": [
+          {
+            "id": 25,
+            "date": "2026-08-25",
+            "merchant": "SIP",
+            "amount": 1500,
+            "category": "Savings"
+          },
+          {
+            "id": 5,
+            "date": "2026-08-05",
+            "merchant": "Swiggy",
+            "amount": 340,
+            "category": "Wants"
+          },
+          {
+            "id": 2,
+            "date": "2026-08-02",
+            "merchant": "Hostel Mess Fee",
+            "amount": 3000,
+            "category": "Needs"
+          }
+        ]
+      }
+    },
+    {
+      "id": "03-exactly-at-threshold",
+      "input": {
+        "allowance": 10000,
+        "transactions": [
+          {
+            "id": 5,
+            "date": "2026-08-05",
+            "merchant": "Myntra",
+            "amount": 3000,
+            "category": "Wants"
+          }
+        ]
+      },
+      "output": {
+        "allowance": 10000,
+        "totals": {
+          "Needs": 0,
+          "Wants": 3000,
+          "Savings": 0
+        },
+        "spent": 3000,
+        "wants_pct": 100.0,
+        "triggered": false,
+        "monthly_excess": 0,
+        "projection": [
+          {
+            "year": 0,
+            "value": 0
+          },
+          {
+            "year": 1,
+            "value": 0
+          },
+          {
+            "year": 2,
+            "value": 0
+          },
+          {
+            "year": 3,
+            "value": 0
+          },
+          {
+            "year": 4,
+            "value": 0
+          },
+          {
+            "year": 5,
+            "value": 0
+          },
+          {
+            "year": 6,
+            "value": 0
+          },
+          {
+            "year": 7,
+            "value": 0
+          },
+          {
+            "year": 8,
+            "value": 0
+          },
+          {
+            "year": 9,
+            "value": 0
+          },
+          {
+            "year": 10,
+            "value": 0
+          }
+        ],
+        "ten_year_value": 0,
+        "projection_params": {
+          "annual_rate": 0.12,
+          "years": 10,
+          "wants_threshold": 0.3
+        },
+        "transactions": [
+          {
+            "id": 5,
+            "date": "2026-08-05",
+            "merchant": "Myntra",
+            "amount": 3000,
+            "category": "Wants"
+          }
+        ]
+      }
+    },
+    {
+      "id": "04-no-transactions",
+      "input": {
+        "allowance": 15000,
+        "transactions": []
+      },
+      "output": {
+        "allowance": 15000,
+        "totals": {
+          "Needs": 0,
+          "Wants": 0,
+          "Savings": 0
+        },
+        "spent": 0,
+        "wants_pct": 0.0,
+        "triggered": false,
+        "monthly_excess": 0,
+        "projection": [
+          {
+            "year": 0,
+            "value": 0
+          },
+          {
+            "year": 1,
+            "value": 0
+          },
+          {
+            "year": 2,
+            "value": 0
+          },
+          {
+            "year": 3,
+            "value": 0
+          },
+          {
+            "year": 4,
+            "value": 0
+          },
+          {
+            "year": 5,
+            "value": 0
+          },
+          {
+            "year": 6,
+            "value": 0
+          },
+          {
+            "year": 7,
+            "value": 0
+          },
+          {
+            "year": 8,
+            "value": 0
+          },
+          {
+            "year": 9,
+            "value": 0
+          },
+          {
+            "year": 10,
+            "value": 0
+          }
+        ],
+        "ten_year_value": 0,
+        "projection_params": {
+          "annual_rate": 0.12,
+          "years": 10,
+          "wants_threshold": 0.3
+        },
+        "transactions": []
+      }
+    },
+    {
+      "id": "05-zero-allowance",
+      "input": {
+        "allowance": 0,
+        "transactions": [
+          {
+            "id": 5,
+            "date": "2026-08-05",
+            "merchant": "Swiggy",
+            "amount": 340,
+            "category": "Wants"
+          }
+        ]
+      },
+      "output": {
+        "allowance": 0,
+        "totals": {
+          "Needs": 0,
+          "Wants": 340,
+          "Savings": 0
+        },
+        "spent": 340,
+        "wants_pct": 100.0,
+        "triggered": true,
+        "monthly_excess": 340,
+        "projection": [
+          {
+            "year": 0,
+            "value": 0
+          },
+          {
+            "year": 1,
+            "value": 4355
+          },
+          {
+            "year": 2,
+            "value": 9263
+          },
+          {
+            "year": 3,
+            "value": 14793
+          },
+          {
+            "year": 4,
+            "value": 21024
+          },
+          {
+            "year": 5,
+            "value": 28045
+          },
+          {
+            "year": 6,
+            "value": 35957
+          },
+          {
+            "year": 7,
+            "value": 44873
+          },
+          {
+            "year": 8,
+            "value": 54919
+          },
+          {
+            "year": 9,
+            "value": 66239
+          },
+          {
+            "year": 10,
+            "value": 78995
+          }
+        ],
+        "ten_year_value": 78995,
+        "projection_params": {
+          "annual_rate": 0.12,
+          "years": 10,
+          "wants_threshold": 0.3
+        },
+        "transactions": [
+          {
+            "id": 5,
+            "date": "2026-08-05",
+            "merchant": "Swiggy",
+            "amount": 340,
+            "category": "Wants"
+          }
+        ]
+      }
+    },
+    {
+      "id": "06-savings-only",
+      "input": {
+        "allowance": 15000,
+        "transactions": [
+          {
+            "id": 25,
+            "date": "2026-08-25",
+            "merchant": "SIP",
+            "amount": 5000,
+            "category": "Savings"
+          }
+        ]
+      },
+      "output": {
+        "allowance": 15000,
+        "totals": {
+          "Needs": 0,
+          "Wants": 0,
+          "Savings": 5000
+        },
+        "spent": 5000,
+        "wants_pct": 0.0,
+        "triggered": false,
+        "monthly_excess": 0,
+        "projection": [
+          {
+            "year": 0,
+            "value": 0
+          },
+          {
+            "year": 1,
+            "value": 0
+          },
+          {
+            "year": 2,
+            "value": 0
+          },
+          {
+            "year": 3,
+            "value": 0
+          },
+          {
+            "year": 4,
+            "value": 0
+          },
+          {
+            "year": 5,
+            "value": 0
+          },
+          {
+            "year": 6,
+            "value": 0
+          },
+          {
+            "year": 7,
+            "value": 0
+          },
+          {
+            "year": 8,
+            "value": 0
+          },
+          {
+            "year": 9,
+            "value": 0
+          },
+          {
+            "year": 10,
+            "value": 0
+          }
+        ],
+        "ten_year_value": 0,
+        "projection_params": {
+          "annual_rate": 0.12,
+          "years": 10,
+          "wants_threshold": 0.3
+        },
+        "transactions": [
+          {
+            "id": 25,
+            "date": "2026-08-25",
+            "merchant": "SIP",
+            "amount": 5000,
+            "category": "Savings"
+          }
+        ]
+      }
+    },
+    {
+      "id": "07-large-single-want",
+      "input": {
+        "allowance": 15000,
+        "transactions": [
+          {
+            "id": 4,
+            "date": "2026-08-04",
+            "merchant": "Myntra",
+            "amount": 250000,
+            "category": "Wants"
+          }
+        ]
+      },
+      "output": {
+        "allowance": 15000,
+        "totals": {
+          "Needs": 0,
+          "Wants": 250000,
+          "Savings": 0
+        },
+        "spent": 250000,
+        "wants_pct": 100.0,
+        "triggered": true,
+        "monthly_excess": 245500,
+        "projection": [
+          {
+            "year": 0,
+            "value": 0
+          },
+          {
+            "year": 1,
+            "value": 3144690
+          },
+          {
+            "year": 2,
+            "value": 6688205
+          },
+          {
+            "year": 3,
+            "value": 10681127
+          },
+          {
+            "year": 4,
+            "value": 15180452
+          },
+          {
+            "year": 5,
+            "value": 20250403
+          },
+          {
+            "year": 6,
+            "value": 25963351
+          },
+          {
+            "year": 7,
+            "value": 32400844
+          },
+          {
+            "year": 8,
+            "value": 39654772
+          },
+          {
+            "year": 9,
+            "value": 47828679
+          },
+          {
+            "year": 10,
+            "value": 57039243
+          }
+        ],
+        "ten_year_value": 57039243,
+        "projection_params": {
+          "annual_rate": 0.12,
+          "years": 10,
+          "wants_threshold": 0.3
+        },
+        "transactions": [
+          {
+            "id": 4,
+            "date": "2026-08-04",
+            "merchant": "Myntra",
+            "amount": 250000,
+            "category": "Wants"
+          }
+        ]
+      }
+    },
+    {
+      "id": "08-wants-just-over-threshold",
+      "input": {
+        "allowance": 15000,
+        "transactions": [
+          {
+            "id": 2,
+            "date": "2026-08-02",
+            "merchant": "Hostel Mess Fee",
+            "amount": 3000,
+            "category": "Needs"
+          },
+          {
+            "id": 3,
+            "date": "2026-08-03",
+            "merchant": "Mobile Recharge",
+            "amount": 299,
+            "category": "Needs"
+          },
+          {
+            "id": 5,
+            "date": "2026-08-05",
+            "merchant": "Swiggy",
+            "amount": 340,
+            "category": "Wants"
+          },
+          {
+            "id": 8,
+            "date": "2026-08-08",
+            "merchant": "Myntra",
+            "amount": 1600,
+            "category": "Wants"
+          },
+          {
+            "id": 11,
+            "date": "2026-08-11",
+            "merchant": "BookMyShow",
+            "amount": 600,
+            "category": "Wants"
+          },
+          {
+            "id": 14,
+            "date": "2026-08-14",
+            "merchant": "Steam Games",
+            "amount": 900,
+            "category": "Wants"
+          },
+          {
+            "id": 17,
+            "date": "2026-08-17",
+            "merchant": "Zomato",
+            "amount": 460,
+            "category": "Wants"
+          },
+          {
+            "id": 19,
+            "date": "2026-08-19",
+            "merchant": "Cafe Coffee Day",
+            "amount": 380,
+            "category": "Wants"
+          },
+          {
+            "id": 22,
+            "date": "2026-08-22",
+            "merchant": "Blinkit",
+            "amount": 320,
+            "category": "Wants"
+          },
+          {
+            "id": 25,
+            "date": "2026-08-25",
+            "merchant": "SIP",
+            "amount": 500,
+            "category": "Savings"
+          }
+        ]
+      },
+      "output": {
+        "allowance": 15000,
+        "totals": {
+          "Needs": 3299,
+          "Wants": 4600,
+          "Savings": 500
+        },
+        "spent": 8399,
+        "wants_pct": 54.8,
+        "triggered": true,
+        "monthly_excess": 100,
+        "projection": [
+          {
+            "year": 0,
+            "value": 0
+          },
+          {
+            "year": 1,
+            "value": 1281
+          },
+          {
+            "year": 2,
+            "value": 2724
+          },
+          {
+            "year": 3,
+            "value": 4351
+          },
+          {
+            "year": 4,
+            "value": 6183
+          },
+          {
+            "year": 5,
+            "value": 8249
+          },
+          {
+            "year": 6,
+            "value": 10576
+          },
+          {
+            "year": 7,
+            "value": 13198
+          },
+          {
+            "year": 8,
+            "value": 16153
+          },
+          {
+            "year": 9,
+            "value": 19482
+          },
+          {
+            "year": 10,
+            "value": 23234
+          }
+        ],
+        "ten_year_value": 23234,
+        "projection_params": {
+          "annual_rate": 0.12,
+          "years": 10,
+          "wants_threshold": 0.3
+        },
+        "transactions": [
+          {
+            "id": 25,
+            "date": "2026-08-25",
+            "merchant": "SIP",
+            "amount": 500,
+            "category": "Savings"
+          },
+          {
+            "id": 22,
+            "date": "2026-08-22",
+            "merchant": "Blinkit",
+            "amount": 320,
+            "category": "Wants"
+          },
+          {
+            "id": 19,
+            "date": "2026-08-19",
+            "merchant": "Cafe Coffee Day",
+            "amount": 380,
+            "category": "Wants"
+          },
+          {
+            "id": 17,
+            "date": "2026-08-17",
+            "merchant": "Zomato",
+            "amount": 460,
+            "category": "Wants"
+          },
+          {
+            "id": 14,
+            "date": "2026-08-14",
+            "merchant": "Steam Games",
+            "amount": 900,
+            "category": "Wants"
+          },
+          {
+            "id": 11,
+            "date": "2026-08-11",
+            "merchant": "BookMyShow",
+            "amount": 600,
+            "category": "Wants"
+          },
+          {
+            "id": 8,
+            "date": "2026-08-08",
+            "merchant": "Myntra",
+            "amount": 1600,
+            "category": "Wants"
+          },
+          {
+            "id": 5,
+            "date": "2026-08-05",
+            "merchant": "Swiggy",
+            "amount": 340,
+            "category": "Wants"
+          },
+          {
+            "id": 3,
+            "date": "2026-08-03",
+            "merchant": "Mobile Recharge",
+            "amount": 299,
+            "category": "Needs"
+          },
+          {
+            "id": 2,
+            "date": "2026-08-02",
+            "merchant": "Hostel Mess Fee",
+            "amount": 3000,
+            "category": "Needs"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,1228 @@
+{
+  "sipFutureValue": [
+    {
+      "monthly": 0,
+      "years": 0,
+      "rate": 0,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 0,
+      "rate": 0.08,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 0,
+      "rate": 0.12,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 0,
+      "rate": 0.15,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 1,
+      "rate": 0,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 1,
+      "rate": 0.08,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 1,
+      "rate": 0.12,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 1,
+      "rate": 0.15,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 5,
+      "rate": 0,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 5,
+      "rate": 0.08,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 5,
+      "rate": 0.12,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 5,
+      "rate": 0.15,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 10,
+      "rate": 0,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 10,
+      "rate": 0.08,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 10,
+      "rate": 0.12,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 10,
+      "rate": 0.15,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 20,
+      "rate": 0,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 20,
+      "rate": 0.08,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 20,
+      "rate": 0.12,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 20,
+      "rate": 0.15,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 30,
+      "rate": 0,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 30,
+      "rate": 0.08,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 30,
+      "rate": 0.12,
+      "value": 0
+    },
+    {
+      "monthly": 0,
+      "years": 30,
+      "rate": 0.15,
+      "value": 0
+    },
+    {
+      "monthly": 500,
+      "years": 0,
+      "rate": 0,
+      "value": 0
+    },
+    {
+      "monthly": 500,
+      "years": 0,
+      "rate": 0.08,
+      "value": 0
+    },
+    {
+      "monthly": 500,
+      "years": 0,
+      "rate": 0.12,
+      "value": 0
+    },
+    {
+      "monthly": 500,
+      "years": 0,
+      "rate": 0.15,
+      "value": 0
+    },
+    {
+      "monthly": 500,
+      "years": 1,
+      "rate": 0,
+      "value": "NaN"
+    },
+    {
+      "monthly": 500,
+      "years": 1,
+      "rate": 0.08,
+      "value": 6266
+    },
+    {
+      "monthly": 500,
+      "years": 1,
+      "rate": 0.12,
+      "value": 6405
+    },
+    {
+      "monthly": 500,
+      "years": 1,
+      "rate": 0.15,
+      "value": 6511
+    },
+    {
+      "monthly": 500,
+      "years": 5,
+      "rate": 0,
+      "value": "NaN"
+    },
+    {
+      "monthly": 500,
+      "years": 5,
+      "rate": 0.08,
+      "value": 36983
+    },
+    {
+      "monthly": 500,
+      "years": 5,
+      "rate": 0.12,
+      "value": 41243
+    },
+    {
+      "monthly": 500,
+      "years": 5,
+      "rate": 0.15,
+      "value": 44841
+    },
+    {
+      "monthly": 500,
+      "years": 10,
+      "rate": 0,
+      "value": "NaN"
+    },
+    {
+      "monthly": 500,
+      "years": 10,
+      "rate": 0.08,
+      "value": 92083
+    },
+    {
+      "monthly": 500,
+      "years": 10,
+      "rate": 0.12,
+      "value": 116170
+    },
+    {
+      "monthly": 500,
+      "years": 10,
+      "rate": 0.15,
+      "value": 139329
+    },
+    {
+      "monthly": 500,
+      "years": 20,
+      "rate": 0,
+      "value": "NaN"
+    },
+    {
+      "monthly": 500,
+      "years": 20,
+      "rate": 0.08,
+      "value": 296474
+    },
+    {
+      "monthly": 500,
+      "years": 20,
+      "rate": 0.12,
+      "value": 499574
+    },
+    {
+      "monthly": 500,
+      "years": 20,
+      "rate": 0.15,
+      "value": 757977
+    },
+    {
+      "monthly": 500,
+      "years": 30,
+      "rate": 0,
+      "value": "NaN"
+    },
+    {
+      "monthly": 500,
+      "years": 30,
+      "rate": 0.08,
+      "value": 750148
+    },
+    {
+      "monthly": 500,
+      "years": 30,
+      "rate": 0.12,
+      "value": 1764957
+    },
+    {
+      "monthly": 500,
+      "years": 30,
+      "rate": 0.15,
+      "value": 3504910
+    },
+    {
+      "monthly": 1500,
+      "years": 0,
+      "rate": 0,
+      "value": 0
+    },
+    {
+      "monthly": 1500,
+      "years": 0,
+      "rate": 0.08,
+      "value": 0
+    },
+    {
+      "monthly": 1500,
+      "years": 0,
+      "rate": 0.12,
+      "value": 0
+    },
+    {
+      "monthly": 1500,
+      "years": 0,
+      "rate": 0.15,
+      "value": 0
+    },
+    {
+      "monthly": 1500,
+      "years": 1,
+      "rate": 0,
+      "value": "NaN"
+    },
+    {
+      "monthly": 1500,
+      "years": 1,
+      "rate": 0.08,
+      "value": 18799
+    },
+    {
+      "monthly": 1500,
+      "years": 1,
+      "rate": 0.12,
+      "value": 19214
+    },
+    {
+      "monthly": 1500,
+      "years": 1,
+      "rate": 0.15,
+      "value": 19532
+    },
+    {
+      "monthly": 1500,
+      "years": 5,
+      "rate": 0,
+      "value": "NaN"
+    },
+    {
+      "monthly": 1500,
+      "years": 5,
+      "rate": 0.08,
+      "value": 110950
+    },
+    {
+      "monthly": 1500,
+      "years": 5,
+      "rate": 0.12,
+      "value": 123730
+    },
+    {
+      "monthly": 1500,
+      "years": 5,
+      "rate": 0.15,
+      "value": 134523
+    },
+    {
+      "monthly": 1500,
+      "years": 10,
+      "rate": 0,
+      "value": "NaN"
+    },
+    {
+      "monthly": 1500,
+      "years": 10,
+      "rate": 0.08,
+      "value": 276249
+    },
+    {
+      "monthly": 1500,
+      "years": 10,
+      "rate": 0.12,
+      "value": 348509
+    },
+    {
+      "monthly": 1500,
+      "years": 10,
+      "rate": 0.15,
+      "value": 417986
+    },
+    {
+      "monthly": 1500,
+      "years": 20,
+      "rate": 0,
+      "value": "NaN"
+    },
+    {
+      "monthly": 1500,
+      "years": 20,
+      "rate": 0.08,
+      "value": 889421
+    },
+    {
+      "monthly": 1500,
+      "years": 20,
+      "rate": 0.12,
+      "value": 1498722
+    },
+    {
+      "monthly": 1500,
+      "years": 20,
+      "rate": 0.15,
+      "value": 2273932
+    },
+    {
+      "monthly": 1500,
+      "years": 30,
+      "rate": 0,
+      "value": "NaN"
+    },
+    {
+      "monthly": 1500,
+      "years": 30,
+      "rate": 0.08,
+      "value": 2250443
+    },
+    {
+      "monthly": 1500,
+      "years": 30,
+      "rate": 0.12,
+      "value": 5294871
+    },
+    {
+      "monthly": 1500,
+      "years": 30,
+      "rate": 0.15,
+      "value": 10514731
+    },
+    {
+      "monthly": 4500,
+      "years": 0,
+      "rate": 0,
+      "value": 0
+    },
+    {
+      "monthly": 4500,
+      "years": 0,
+      "rate": 0.08,
+      "value": 0
+    },
+    {
+      "monthly": 4500,
+      "years": 0,
+      "rate": 0.12,
+      "value": 0
+    },
+    {
+      "monthly": 4500,
+      "years": 0,
+      "rate": 0.15,
+      "value": 0
+    },
+    {
+      "monthly": 4500,
+      "years": 1,
+      "rate": 0,
+      "value": "NaN"
+    },
+    {
+      "monthly": 4500,
+      "years": 1,
+      "rate": 0.08,
+      "value": 56398
+    },
+    {
+      "monthly": 4500,
+      "years": 1,
+      "rate": 0.12,
+      "value": 57642
+    },
+    {
+      "monthly": 4500,
+      "years": 1,
+      "rate": 0.15,
+      "value": 58595
+    },
+    {
+      "monthly": 4500,
+      "years": 5,
+      "rate": 0,
+      "value": "NaN"
+    },
+    {
+      "monthly": 4500,
+      "years": 5,
+      "rate": 0.08,
+      "value": 332850
+    },
+    {
+      "monthly": 4500,
+      "years": 5,
+      "rate": 0.12,
+      "value": 371189
+    },
+    {
+      "monthly": 4500,
+      "years": 5,
+      "rate": 0.15,
+      "value": 403568
+    },
+    {
+      "monthly": 4500,
+      "years": 10,
+      "rate": 0,
+      "value": "NaN"
+    },
+    {
+      "monthly": 4500,
+      "years": 10,
+      "rate": 0.08,
+      "value": 828746
+    },
+    {
+      "monthly": 4500,
+      "years": 10,
+      "rate": 0.12,
+      "value": 1045526
+    },
+    {
+      "monthly": 4500,
+      "years": 10,
+      "rate": 0.15,
+      "value": 1253958
+    },
+    {
+      "monthly": 4500,
+      "years": 20,
+      "rate": 0,
+      "value": "NaN"
+    },
+    {
+      "monthly": 4500,
+      "years": 20,
+      "rate": 0.08,
+      "value": 2668262
+    },
+    {
+      "monthly": 4500,
+      "years": 20,
+      "rate": 0.12,
+      "value": 4496166
+    },
+    {
+      "monthly": 4500,
+      "years": 20,
+      "rate": 0.15,
+      "value": 6821797
+    },
+    {
+      "monthly": 4500,
+      "years": 30,
+      "rate": 0,
+      "value": "NaN"
+    },
+    {
+      "monthly": 4500,
+      "years": 30,
+      "rate": 0.08,
+      "value": 6751328
+    },
+    {
+      "monthly": 4500,
+      "years": 30,
+      "rate": 0.12,
+      "value": 15884612
+    },
+    {
+      "monthly": 4500,
+      "years": 30,
+      "rate": 0.15,
+      "value": 31544193
+    },
+    {
+      "monthly": 25000,
+      "years": 0,
+      "rate": 0,
+      "value": 0
+    },
+    {
+      "monthly": 25000,
+      "years": 0,
+      "rate": 0.08,
+      "value": 0
+    },
+    {
+      "monthly": 25000,
+      "years": 0,
+      "rate": 0.12,
+      "value": 0
+    },
+    {
+      "monthly": 25000,
+      "years": 0,
+      "rate": 0.15,
+      "value": 0
+    },
+    {
+      "monthly": 25000,
+      "years": 1,
+      "rate": 0,
+      "value": "NaN"
+    },
+    {
+      "monthly": 25000,
+      "years": 1,
+      "rate": 0.08,
+      "value": 313323
+    },
+    {
+      "monthly": 25000,
+      "years": 1,
+      "rate": 0.12,
+      "value": 320233
+    },
+    {
+      "monthly": 25000,
+      "years": 1,
+      "rate": 0.15,
+      "value": 325528
+    },
+    {
+      "monthly": 25000,
+      "years": 5,
+      "rate": 0,
+      "value": "NaN"
+    },
+    {
+      "monthly": 25000,
+      "years": 5,
+      "rate": 0.08,
+      "value": 1849168
+    },
+    {
+      "monthly": 25000,
+      "years": 5,
+      "rate": 0.12,
+      "value": 2062159
+    },
+    {
+      "monthly": 25000,
+      "years": 5,
+      "rate": 0.15,
+      "value": 2242042
+    },
+    {
+      "monthly": 25000,
+      "years": 10,
+      "rate": 0,
+      "value": "NaN"
+    },
+    {
+      "monthly": 25000,
+      "years": 10,
+      "rate": 0.08,
+      "value": 4604142
+    },
+    {
+      "monthly": 25000,
+      "years": 10,
+      "rate": 0.12,
+      "value": 5808477
+    },
+    {
+      "monthly": 25000,
+      "years": 10,
+      "rate": 0.15,
+      "value": 6966432
+    },
+    {
+      "monthly": 25000,
+      "years": 20,
+      "rate": 0,
+      "value": "NaN"
+    },
+    {
+      "monthly": 25000,
+      "years": 20,
+      "rate": 0.08,
+      "value": 14823680
+    },
+    {
+      "monthly": 25000,
+      "years": 20,
+      "rate": 0.12,
+      "value": 24978698
+    },
+    {
+      "monthly": 25000,
+      "years": 20,
+      "rate": 0.15,
+      "value": 37898874
+    },
+    {
+      "monthly": 25000,
+      "years": 30,
+      "rate": 0,
+      "value": "NaN"
+    },
+    {
+      "monthly": 25000,
+      "years": 30,
+      "rate": 0.08,
+      "value": 37507379
+    },
+    {
+      "monthly": 25000,
+      "years": 30,
+      "rate": 0.12,
+      "value": 88247844
+    },
+    {
+      "monthly": 25000,
+      "years": 30,
+      "rate": 0.15,
+      "value": 175245515
+    }
+  ],
+  "lumpSumFutureValue": [
+    {
+      "amount": 0,
+      "years": 0,
+      "rate": 0.08,
+      "future": 0,
+      "multiple": 0
+    },
+    {
+      "amount": 0,
+      "years": 0,
+      "rate": 0.12,
+      "future": 0,
+      "multiple": 0
+    },
+    {
+      "amount": 0,
+      "years": 5,
+      "rate": 0.08,
+      "future": 0,
+      "multiple": 0
+    },
+    {
+      "amount": 0,
+      "years": 5,
+      "rate": 0.12,
+      "future": 0,
+      "multiple": 0
+    },
+    {
+      "amount": 0,
+      "years": 10,
+      "rate": 0.08,
+      "future": 0,
+      "multiple": 0
+    },
+    {
+      "amount": 0,
+      "years": 10,
+      "rate": 0.12,
+      "future": 0,
+      "multiple": 0
+    },
+    {
+      "amount": 0,
+      "years": 20,
+      "rate": 0.08,
+      "future": 0,
+      "multiple": 0
+    },
+    {
+      "amount": 0,
+      "years": 20,
+      "rate": 0.12,
+      "future": 0,
+      "multiple": 0
+    },
+    {
+      "amount": -500,
+      "years": 0,
+      "rate": 0.08,
+      "future": 0,
+      "multiple": 0
+    },
+    {
+      "amount": -500,
+      "years": 0,
+      "rate": 0.12,
+      "future": 0,
+      "multiple": 0
+    },
+    {
+      "amount": -500,
+      "years": 5,
+      "rate": 0.08,
+      "future": 0,
+      "multiple": 0
+    },
+    {
+      "amount": -500,
+      "years": 5,
+      "rate": 0.12,
+      "future": 0,
+      "multiple": 0
+    },
+    {
+      "amount": -500,
+      "years": 10,
+      "rate": 0.08,
+      "future": 0,
+      "multiple": 0
+    },
+    {
+      "amount": -500,
+      "years": 10,
+      "rate": 0.12,
+      "future": 0,
+      "multiple": 0
+    },
+    {
+      "amount": -500,
+      "years": 20,
+      "rate": 0.08,
+      "future": 0,
+      "multiple": 0
+    },
+    {
+      "amount": -500,
+      "years": 20,
+      "rate": 0.12,
+      "future": 0,
+      "multiple": 0
+    },
+    {
+      "amount": 1500,
+      "years": 0,
+      "rate": 0.08,
+      "future": 1500,
+      "multiple": 1
+    },
+    {
+      "amount": 1500,
+      "years": 0,
+      "rate": 0.12,
+      "future": 1500,
+      "multiple": 1
+    },
+    {
+      "amount": 1500,
+      "years": 5,
+      "rate": 0.08,
+      "future": 2204,
+      "multiple": 1.47
+    },
+    {
+      "amount": 1500,
+      "years": 5,
+      "rate": 0.12,
+      "future": 2644,
+      "multiple": 1.76
+    },
+    {
+      "amount": 1500,
+      "years": 10,
+      "rate": 0.08,
+      "future": 3238,
+      "multiple": 2.16
+    },
+    {
+      "amount": 1500,
+      "years": 10,
+      "rate": 0.12,
+      "future": 4659,
+      "multiple": 3.11
+    },
+    {
+      "amount": 1500,
+      "years": 20,
+      "rate": 0.08,
+      "future": 6991,
+      "multiple": 4.66
+    },
+    {
+      "amount": 1500,
+      "years": 20,
+      "rate": 0.12,
+      "future": 14469,
+      "multiple": 9.65
+    },
+    {
+      "amount": 3500,
+      "years": 0,
+      "rate": 0.08,
+      "future": 3500,
+      "multiple": 1
+    },
+    {
+      "amount": 3500,
+      "years": 0,
+      "rate": 0.12,
+      "future": 3500,
+      "multiple": 1
+    },
+    {
+      "amount": 3500,
+      "years": 5,
+      "rate": 0.08,
+      "future": 5143,
+      "multiple": 1.47
+    },
+    {
+      "amount": 3500,
+      "years": 5,
+      "rate": 0.12,
+      "future": 6168,
+      "multiple": 1.76
+    },
+    {
+      "amount": 3500,
+      "years": 10,
+      "rate": 0.08,
+      "future": 7556,
+      "multiple": 2.16
+    },
+    {
+      "amount": 3500,
+      "years": 10,
+      "rate": 0.12,
+      "future": 10870,
+      "multiple": 3.11
+    },
+    {
+      "amount": 3500,
+      "years": 20,
+      "rate": 0.08,
+      "future": 16313,
+      "multiple": 4.66
+    },
+    {
+      "amount": 3500,
+      "years": 20,
+      "rate": 0.12,
+      "future": 33762,
+      "multiple": 9.65
+    },
+    {
+      "amount": 8000,
+      "years": 0,
+      "rate": 0.08,
+      "future": 8000,
+      "multiple": 1
+    },
+    {
+      "amount": 8000,
+      "years": 0,
+      "rate": 0.12,
+      "future": 8000,
+      "multiple": 1
+    },
+    {
+      "amount": 8000,
+      "years": 5,
+      "rate": 0.08,
+      "future": 11755,
+      "multiple": 1.47
+    },
+    {
+      "amount": 8000,
+      "years": 5,
+      "rate": 0.12,
+      "future": 14099,
+      "multiple": 1.76
+    },
+    {
+      "amount": 8000,
+      "years": 10,
+      "rate": 0.08,
+      "future": 17271,
+      "multiple": 2.16
+    },
+    {
+      "amount": 8000,
+      "years": 10,
+      "rate": 0.12,
+      "future": 24847,
+      "multiple": 3.11
+    },
+    {
+      "amount": 8000,
+      "years": 20,
+      "rate": 0.08,
+      "future": 37288,
+      "multiple": 4.66
+    },
+    {
+      "amount": 8000,
+      "years": 20,
+      "rate": 0.12,
+      "future": 77170,
+      "multiple": 9.65
+    },
+    {
+      "amount": 15000,
+      "years": 0,
+      "rate": 0.08,
+      "future": 15000,
+      "multiple": 1
+    },
+    {
+      "amount": 15000,
+      "years": 0,
+      "rate": 0.12,
+      "future": 15000,
+      "multiple": 1
+    },
+    {
+      "amount": 15000,
+      "years": 5,
+      "rate": 0.08,
+      "future": 22040,
+      "multiple": 1.47
+    },
+    {
+      "amount": 15000,
+      "years": 5,
+      "rate": 0.12,
+      "future": 26435,
+      "multiple": 1.76
+    },
+    {
+      "amount": 15000,
+      "years": 10,
+      "rate": 0.08,
+      "future": 32384,
+      "multiple": 2.16
+    },
+    {
+      "amount": 15000,
+      "years": 10,
+      "rate": 0.12,
+      "future": 46588,
+      "multiple": 3.11
+    },
+    {
+      "amount": 15000,
+      "years": 20,
+      "rate": 0.08,
+      "future": 69914,
+      "multiple": 4.66
+    },
+    {
+      "amount": 15000,
+      "years": 20,
+      "rate": 0.12,
+      "future": 144694,
+      "multiple": 9.65
+    },
+    {
+      "amount": 250000,
+      "years": 0,
+      "rate": 0.08,
+      "future": 250000,
+      "multiple": 1
+    },
+    {
+      "amount": 250000,
+      "years": 0,
+      "rate": 0.12,
+      "future": 250000,
+      "multiple": 1
+    },
+    {
+      "amount": 250000,
+      "years": 5,
+      "rate": 0.08,
+      "future": 367332,
+      "multiple": 1.47
+    },
+    {
+      "amount": 250000,
+      "years": 5,
+      "rate": 0.12,
+      "future": 440585,
+      "multiple": 1.76
+    },
+    {
+      "amount": 250000,
+      "years": 10,
+      "rate": 0.08,
+      "future": 539731,
+      "multiple": 2.16
+    },
+    {
+      "amount": 250000,
+      "years": 10,
+      "rate": 0.12,
+      "future": 776462,
+      "multiple": 3.11
+    },
+    {
+      "amount": 250000,
+      "years": 20,
+      "rate": 0.08,
+      "future": 1165239,
+      "multiple": 4.66
+    },
+    {
+      "amount": 250000,
+      "years": 20,
+      "rate": 0.12,
+      "future": 2411573,
+      "multiple": 9.65
+    }
+  ],
+  "buildProjection": [
+    {
+      "monthly": 1200,
+      "params": {
+        "annual_rate": 0.12,
+        "years": 10,
+        "wants_threshold": 0.3
+      },
+      "series": [
+        {
+          "year": 0,
+          "value": 0
+        },
+        {
+          "year": 1,
+          "value": 15371
+        },
+        {
+          "year": 2,
+          "value": 32692
+        },
+        {
+          "year": 3,
+          "value": 52209
+        },
+        {
+          "year": 4,
+          "value": 74202
+        },
+        {
+          "year": 5,
+          "value": 98984
+        },
+        {
+          "year": 6,
+          "value": 126908
+        },
+        {
+          "year": 7,
+          "value": 158375
+        },
+        {
+          "year": 8,
+          "value": 193832
+        },
+        {
+          "year": 9,
+          "value": 233786
+        },
+        {
+          "year": 10,
+          "value": 278807
+        }
+      ]
+    },
+    {
+      "monthly": 4280,
+      "params": {
+        "annual_rate": 0.12,
+        "years": 10,
+        "wants_threshold": 0.3
+      },
+      "series": [
+        {
+          "year": 0,
+          "value": 0
+        },
+        {
+          "year": 1,
+          "value": 54824
+        },
+        {
+          "year": 2,
+          "value": 116601
+        },
+        {
+          "year": 3,
+          "value": 186213
+        },
+        {
+          "year": 4,
+          "value": 264653
+        },
+        {
+          "year": 5,
+          "value": 353042
+        },
+        {
+          "year": 6,
+          "value": 452640
+        },
+        {
+          "year": 7,
+          "value": 564870
+        },
+        {
+          "year": 8,
+          "value": 691334
+        },
+        {
+          "year": 9,
+          "value": 833836
+        },
+        {
+          "year": 10,
+          "value": 994411
+        }
+      ]
+    }
+  ]
+}

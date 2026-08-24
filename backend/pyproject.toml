@@ -22,3 +22,15 @@ backend = "backend:main"
 [build-system]
 requires = ["uv_build>=0.12.5,<0.13.0"]
 build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
+
+[tool.pytest.ini_options]
+# main.py, nudge.py and db.py use flat imports (`from nudge import ...`) and
+# every backend command is run from backend/. Put the package root on the path
+# so the test modules resolve them the same way the app does.
+pythonpath = ["."]
+testpaths = ["tests"]

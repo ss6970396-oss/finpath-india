@@ -1,0 +1,1093 @@
+[
+  {
+    "id": "01-normal-income",
+    "intent": "An ordinary hostel month: allowance credited, spend spread across all three buckets.",
+    "allowance": 15000,
+    "parse": {
+      "shape": "debit-credit",
+      "magnitudesOnly": false,
+      "skipped": 0,
+      "errors": [],
+      "txnCount": 10,
+      "categories": [
+        {
+          "merchant": "RD Deposit",
+          "amount": 500,
+          "direction": "out",
+          "category": "Savings",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "SIP - Index Fund",
+          "amount": 1500,
+          "direction": "out",
+          "category": "Savings",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Spotify Premium",
+          "amount": 119,
+          "direction": "out",
+          "category": "Needs",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Myntra",
+          "amount": 1250,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Zomato",
+          "amount": 380,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Swiggy",
+          "amount": 340,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Apollo Pharmacy",
+          "amount": 410,
+          "direction": "out",
+          "category": "Needs",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Mobile Recharge",
+          "amount": 299,
+          "direction": "out",
+          "category": "Needs",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Hostel Mess Fee",
+          "amount": 3000,
+          "direction": "out",
+          "category": "Needs",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Monthly Allowance from Parents",
+          "amount": 15000,
+          "direction": "in",
+          "category": "Income",
+          "categorySource": "rule"
+        }
+      ]
+    },
+    "totals": {
+      "Needs": 3828,
+      "Wants": 1970,
+      "Savings": 2000,
+      "Uncategorised": 0
+    },
+    "income": 15000,
+    "spend": 7798,
+    "ratios": {
+      "Needs": 0.26,
+      "Wants": 0.13,
+      "Savings": 0.13
+    },
+    "variance": {
+      "Needs": -0.24,
+      "Wants": -0.17,
+      "Savings": -0.07
+    },
+    "health": {
+      "score": 87,
+      "band": "Strong",
+      "parts": {
+        "savings": 27,
+        "wants": 30,
+        "needs": 15,
+        "buffer": 15
+      }
+    },
+    "guiltFree": {
+      "fixed": 3828,
+      "investmentTarget": 3000,
+      "safeToSpend": 8172,
+      "alreadySpentOnWants": 1970,
+      "remaining": 6202,
+      "perDay": 206.73
+    }
+  },
+  {
+    "id": "02-zero-income",
+    "intent": "Allowance is zero. Every ratio divides by income, so this is the division-guard case.",
+    "allowance": 0,
+    "parse": {
+      "shape": "debit-credit",
+      "magnitudesOnly": false,
+      "skipped": 0,
+      "errors": [],
+      "txnCount": 3,
+      "categories": [
+        {
+          "merchant": "SIP - Index Fund",
+          "amount": 1500,
+          "direction": "out",
+          "category": "Savings",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Swiggy",
+          "amount": 340,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Hostel Mess Fee",
+          "amount": 3000,
+          "direction": "out",
+          "category": "Needs",
+          "categorySource": "rule"
+        }
+      ]
+    },
+    "totals": {
+      "Needs": 3000,
+      "Wants": 340,
+      "Savings": 1500,
+      "Uncategorised": 0
+    },
+    "income": 0,
+    "spend": 4840,
+    "ratios": {
+      "Needs": 3000,
+      "Wants": 340,
+      "Savings": 1500
+    },
+    "variance": {
+      "Needs": 2999.5,
+      "Wants": 339.7,
+      "Savings": 1499.8
+    },
+    "health": {
+      "score": 40,
+      "band": "Strained",
+      "parts": {
+        "savings": 40,
+        "wants": 0,
+        "needs": 0,
+        "buffer": 0
+      }
+    },
+    "guiltFree": {
+      "fixed": 3000,
+      "investmentTarget": 0,
+      "safeToSpend": 0,
+      "alreadySpentOnWants": 340,
+      "remaining": 0,
+      "perDay": 0
+    }
+  },
+  {
+    "id": "03-income-below-expenses",
+    "intent": "Spend exceeds the allowance. Ratios go above 1.0 and the unspent buffer must not go negative.",
+    "allowance": 8000,
+    "parse": {
+      "shape": "debit-credit",
+      "magnitudesOnly": false,
+      "skipped": 0,
+      "errors": [],
+      "txnCount": 7,
+      "categories": [
+        {
+          "merchant": "Steam Games",
+          "amount": 900,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "BookMyShow",
+          "amount": 600,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Myntra",
+          "amount": 1400,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Zomato",
+          "amount": 460,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Tuition Fees",
+          "amount": 4000,
+          "direction": "out",
+          "category": "Needs",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Hostel Mess Fee",
+          "amount": 3200,
+          "direction": "out",
+          "category": "Needs",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Monthly Allowance from Parents",
+          "amount": 8000,
+          "direction": "in",
+          "category": "Income",
+          "categorySource": "rule"
+        }
+      ]
+    },
+    "totals": {
+      "Needs": 7200,
+      "Wants": 3360,
+      "Savings": 0,
+      "Uncategorised": 0
+    },
+    "income": 8000,
+    "spend": 10560,
+    "ratios": {
+      "Needs": 0.9,
+      "Wants": 0.42,
+      "Savings": 0
+    },
+    "variance": {
+      "Needs": 0.4,
+      "Wants": 0.12,
+      "Savings": -0.2
+    },
+    "health": {
+      "score": 21,
+      "band": "At risk",
+      "parts": {
+        "savings": 0,
+        "wants": 18,
+        "needs": 3,
+        "buffer": 0
+      }
+    },
+    "guiltFree": {
+      "fixed": 7200,
+      "investmentTarget": 1600,
+      "safeToSpend": 0,
+      "alreadySpentOnWants": 3360,
+      "remaining": 0,
+      "perDay": 0
+    }
+  },
+  {
+    "id": "04-no-transactions",
+    "intent": "Header only. Nothing was spent, so the score must reflect a full buffer, not a crash.",
+    "allowance": 15000,
+    "parse": {
+      "shape": "none",
+      "magnitudesOnly": false,
+      "skipped": 0,
+      "errors": [
+        "File appears empty, or has a header with no rows."
+      ],
+      "txnCount": 0,
+      "categories": []
+    },
+    "totals": {
+      "Needs": 0,
+      "Wants": 0,
+      "Savings": 0,
+      "Uncategorised": 0
+    },
+    "income": 0,
+    "spend": 0,
+    "ratios": {
+      "Needs": 0,
+      "Wants": 0,
+      "Savings": 0
+    },
+    "variance": {
+      "Needs": -0.5,
+      "Wants": -0.3,
+      "Savings": -0.2
+    },
+    "health": {
+      "score": 60,
+      "band": "Stable",
+      "parts": {
+        "savings": 0,
+        "wants": 30,
+        "needs": 15,
+        "buffer": 15
+      }
+    },
+    "guiltFree": {
+      "fixed": 0,
+      "investmentTarget": 3000,
+      "safeToSpend": 12000,
+      "alreadySpentOnWants": 0,
+      "remaining": 12000,
+      "perDay": 400
+    }
+  },
+  {
+    "id": "05-unclassifiable-merchant",
+    "intent": "A merchant no rule claims. It must land in Uncategorised — never silently in Wants.",
+    "allowance": 15000,
+    "parse": {
+      "shape": "debit-credit",
+      "magnitudesOnly": false,
+      "skipped": 0,
+      "errors": [],
+      "txnCount": 4,
+      "categories": [
+        {
+          "merchant": "POS 4412 XXXX",
+          "amount": 750,
+          "direction": "out",
+          "category": "Uncategorised",
+          "categorySource": "none"
+        },
+        {
+          "merchant": "UPI/DR/443982/RAJESH",
+          "amount": 1200,
+          "direction": "out",
+          "category": "Uncategorised",
+          "categorySource": "none"
+        },
+        {
+          "merchant": "PAYTM*QR9F82K",
+          "amount": 900,
+          "direction": "out",
+          "category": "Uncategorised",
+          "categorySource": "none"
+        },
+        {
+          "merchant": "Monthly Allowance from Parents",
+          "amount": 15000,
+          "direction": "in",
+          "category": "Income",
+          "categorySource": "rule"
+        }
+      ]
+    },
+    "totals": {
+      "Needs": 0,
+      "Wants": 0,
+      "Savings": 0,
+      "Uncategorised": 2850
+    },
+    "income": 15000,
+    "spend": 2850,
+    "ratios": {
+      "Needs": 0,
+      "Wants": 0,
+      "Savings": 0
+    },
+    "variance": {
+      "Needs": -0.5,
+      "Wants": -0.3,
+      "Savings": -0.2
+    },
+    "health": {
+      "score": 60,
+      "band": "Stable",
+      "parts": {
+        "savings": 0,
+        "wants": 30,
+        "needs": 15,
+        "buffer": 15
+      }
+    },
+    "guiltFree": {
+      "fixed": 0,
+      "investmentTarget": 3000,
+      "safeToSpend": 9150,
+      "alreadySpentOnWants": 0,
+      "remaining": 9150,
+      "perDay": 305
+    }
+  },
+  {
+    "id": "06-unknown-merchant",
+    "intent": "Unknown merchants alongside known ones. The known rows still classify; the rest stay Uncategorised.",
+    "allowance": 15000,
+    "parse": {
+      "shape": "debit-credit",
+      "magnitudesOnly": false,
+      "skipped": 0,
+      "errors": [],
+      "txnCount": 6,
+      "categories": [
+        {
+          "merchant": "Auto Rickshaw",
+          "amount": 160,
+          "direction": "out",
+          "category": "Uncategorised",
+          "categorySource": "none"
+        },
+        {
+          "merchant": "Sharma General Store",
+          "amount": 480,
+          "direction": "out",
+          "category": "Uncategorised",
+          "categorySource": "none"
+        },
+        {
+          "merchant": "Swiggy",
+          "amount": 340,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Grocery Wala",
+          "amount": 620,
+          "direction": "out",
+          "category": "Uncategorised",
+          "categorySource": "none"
+        },
+        {
+          "merchant": "Hostel Mess Fee",
+          "amount": 3000,
+          "direction": "out",
+          "category": "Needs",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Monthly Allowance from Parents",
+          "amount": 15000,
+          "direction": "in",
+          "category": "Income",
+          "categorySource": "rule"
+        }
+      ]
+    },
+    "totals": {
+      "Needs": 3000,
+      "Wants": 340,
+      "Savings": 0,
+      "Uncategorised": 1260
+    },
+    "income": 15000,
+    "spend": 4600,
+    "ratios": {
+      "Needs": 0.2,
+      "Wants": 0.02,
+      "Savings": 0
+    },
+    "variance": {
+      "Needs": -0.3,
+      "Wants": -0.28,
+      "Savings": -0.2
+    },
+    "health": {
+      "score": 60,
+      "band": "Stable",
+      "parts": {
+        "savings": 0,
+        "wants": 30,
+        "needs": 15,
+        "buffer": 15
+      }
+    },
+    "guiltFree": {
+      "fixed": 3000,
+      "investmentTarget": 3000,
+      "safeToSpend": 7740,
+      "alreadySpentOnWants": 340,
+      "remaining": 7400,
+      "perDay": 246.67
+    }
+  },
+  {
+    "id": "07-negative-transaction",
+    "intent": "A debit written as a negative figure. Magnitude, not sign, must reach the bucket.",
+    "allowance": 15000,
+    "parse": {
+      "shape": "debit-credit",
+      "magnitudesOnly": false,
+      "skipped": 0,
+      "errors": [],
+      "txnCount": 4,
+      "categories": [
+        {
+          "merchant": "SIP - Index Fund",
+          "amount": 1500,
+          "direction": "out",
+          "category": "Savings",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Swiggy",
+          "amount": 340,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Hostel Mess Fee",
+          "amount": 3000,
+          "direction": "out",
+          "category": "Needs",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Monthly Allowance from Parents",
+          "amount": 15000,
+          "direction": "in",
+          "category": "Income",
+          "categorySource": "rule"
+        }
+      ]
+    },
+    "totals": {
+      "Needs": 3000,
+      "Wants": 340,
+      "Savings": 1500,
+      "Uncategorised": 0
+    },
+    "income": 15000,
+    "spend": 4840,
+    "ratios": {
+      "Needs": 0.2,
+      "Wants": 0.02,
+      "Savings": 0.1
+    },
+    "variance": {
+      "Needs": -0.3,
+      "Wants": -0.28,
+      "Savings": -0.1
+    },
+    "health": {
+      "score": 80,
+      "band": "Strong",
+      "parts": {
+        "savings": 20,
+        "wants": 30,
+        "needs": 15,
+        "buffer": 15
+      }
+    },
+    "guiltFree": {
+      "fixed": 3000,
+      "investmentTarget": 3000,
+      "safeToSpend": 9000,
+      "alreadySpentOnWants": 340,
+      "remaining": 8660,
+      "perDay": 288.67
+    }
+  },
+  {
+    "id": "08-refund",
+    "intent": "A merchant refund arrives as a credit. Credits are income, never negative spend, and never enter a bucket.",
+    "allowance": 15000,
+    "parse": {
+      "shape": "debit-credit",
+      "magnitudesOnly": false,
+      "skipped": 0,
+      "errors": [],
+      "txnCount": 4,
+      "categories": [
+        {
+          "merchant": "Swiggy",
+          "amount": 340,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Myntra Refund",
+          "amount": 1250,
+          "direction": "in",
+          "category": "Income",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Myntra",
+          "amount": 1250,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Monthly Allowance from Parents",
+          "amount": 15000,
+          "direction": "in",
+          "category": "Income",
+          "categorySource": "rule"
+        }
+      ]
+    },
+    "totals": {
+      "Needs": 0,
+      "Wants": 1590,
+      "Savings": 0,
+      "Uncategorised": 0
+    },
+    "income": 16250,
+    "spend": 1590,
+    "ratios": {
+      "Needs": 0,
+      "Wants": 0.11,
+      "Savings": 0
+    },
+    "variance": {
+      "Needs": -0.5,
+      "Wants": -0.19,
+      "Savings": -0.2
+    },
+    "health": {
+      "score": 60,
+      "band": "Stable",
+      "parts": {
+        "savings": 0,
+        "wants": 30,
+        "needs": 15,
+        "buffer": 15
+      }
+    },
+    "guiltFree": {
+      "fixed": 0,
+      "investmentTarget": 3000,
+      "safeToSpend": 12000,
+      "alreadySpentOnWants": 1590,
+      "remaining": 10410,
+      "perDay": 347
+    }
+  },
+  {
+    "id": "09-duplicate-transaction",
+    "intent": "The same charge appears twice. Both count — de-duplication is not a parser responsibility.",
+    "allowance": 15000,
+    "parse": {
+      "shape": "debit-credit",
+      "magnitudesOnly": false,
+      "skipped": 0,
+      "errors": [],
+      "txnCount": 4,
+      "categories": [
+        {
+          "merchant": "Swiggy",
+          "amount": 340,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Swiggy",
+          "amount": 340,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Swiggy",
+          "amount": 340,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Monthly Allowance from Parents",
+          "amount": 15000,
+          "direction": "in",
+          "category": "Income",
+          "categorySource": "rule"
+        }
+      ]
+    },
+    "totals": {
+      "Needs": 0,
+      "Wants": 1020,
+      "Savings": 0,
+      "Uncategorised": 0
+    },
+    "income": 15000,
+    "spend": 1020,
+    "ratios": {
+      "Needs": 0,
+      "Wants": 0.07,
+      "Savings": 0
+    },
+    "variance": {
+      "Needs": -0.5,
+      "Wants": -0.23,
+      "Savings": -0.2
+    },
+    "health": {
+      "score": 60,
+      "band": "Stable",
+      "parts": {
+        "savings": 0,
+        "wants": 30,
+        "needs": 15,
+        "buffer": 15
+      }
+    },
+    "guiltFree": {
+      "fixed": 0,
+      "investmentTarget": 3000,
+      "safeToSpend": 12000,
+      "alreadySpentOnWants": 1020,
+      "remaining": 10980,
+      "perDay": 366
+    }
+  },
+  {
+    "id": "10-multiple-categories",
+    "intent": "All four spend buckets populated at once, including Uncategorised.",
+    "allowance": 15000,
+    "parse": {
+      "shape": "debit-credit",
+      "magnitudesOnly": false,
+      "skipped": 0,
+      "errors": [],
+      "txnCount": 10,
+      "categories": [
+        {
+          "merchant": "Sharma General Store",
+          "amount": 480,
+          "direction": "out",
+          "category": "Uncategorised",
+          "categorySource": "none"
+        },
+        {
+          "merchant": "PAYTM*QR9F82K",
+          "amount": 900,
+          "direction": "out",
+          "category": "Uncategorised",
+          "categorySource": "none"
+        },
+        {
+          "merchant": "PPF Contribution",
+          "amount": 1000,
+          "direction": "out",
+          "category": "Savings",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "SIP - Index Fund",
+          "amount": 1500,
+          "direction": "out",
+          "category": "Savings",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Netflix",
+          "amount": 199,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Cafe Coffee Day",
+          "amount": 220,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Swiggy",
+          "amount": 340,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Metro Card Topup",
+          "amount": 300,
+          "direction": "out",
+          "category": "Needs",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Hostel Mess Fee",
+          "amount": 3000,
+          "direction": "out",
+          "category": "Needs",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Monthly Allowance from Parents",
+          "amount": 15000,
+          "direction": "in",
+          "category": "Income",
+          "categorySource": "rule"
+        }
+      ]
+    },
+    "totals": {
+      "Needs": 3300,
+      "Wants": 759,
+      "Savings": 2500,
+      "Uncategorised": 1380
+    },
+    "income": 15000,
+    "spend": 7939,
+    "ratios": {
+      "Needs": 0.22,
+      "Wants": 0.05,
+      "Savings": 0.17
+    },
+    "variance": {
+      "Needs": -0.28,
+      "Wants": -0.25,
+      "Savings": -0.03
+    },
+    "health": {
+      "score": 93,
+      "band": "Strong",
+      "parts": {
+        "savings": 33,
+        "wants": 30,
+        "needs": 15,
+        "buffer": 15
+      }
+    },
+    "guiltFree": {
+      "fixed": 3300,
+      "investmentTarget": 3000,
+      "safeToSpend": 7320,
+      "alreadySpentOnWants": 759,
+      "remaining": 6561,
+      "perDay": 218.7
+    }
+  },
+  {
+    "id": "11-large-transaction",
+    "intent": "A single outflow far larger than the allowance. Ratios and the score must degrade smoothly, not wrap.",
+    "allowance": 15000,
+    "parse": {
+      "shape": "debit-credit",
+      "magnitudesOnly": false,
+      "skipped": 0,
+      "errors": [],
+      "txnCount": 3,
+      "categories": [
+        {
+          "merchant": "Hostel Mess Fee",
+          "amount": 3000,
+          "direction": "out",
+          "category": "Needs",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Myntra",
+          "amount": 250000,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Monthly Allowance from Parents",
+          "amount": 15000,
+          "direction": "in",
+          "category": "Income",
+          "categorySource": "rule"
+        }
+      ]
+    },
+    "totals": {
+      "Needs": 3000,
+      "Wants": 250000,
+      "Savings": 0,
+      "Uncategorised": 0
+    },
+    "income": 15000,
+    "spend": 253000,
+    "ratios": {
+      "Needs": 0.2,
+      "Wants": 16.67,
+      "Savings": 0
+    },
+    "variance": {
+      "Needs": -0.3,
+      "Wants": 16.37,
+      "Savings": -0.2
+    },
+    "health": {
+      "score": 15,
+      "band": "At risk",
+      "parts": {
+        "savings": 0,
+        "wants": 0,
+        "needs": 15,
+        "buffer": 0
+      }
+    },
+    "guiltFree": {
+      "fixed": 3000,
+      "investmentTarget": 3000,
+      "safeToSpend": 9000,
+      "alreadySpentOnWants": 250000,
+      "remaining": 0,
+      "perDay": 0
+    }
+  },
+  {
+    "id": "12-unusual-distribution",
+    "intent": "Everything in one bucket. Wants at ~92% of allowance, nothing else — the shape the 30% rule exists for.",
+    "allowance": 15000,
+    "parse": {
+      "shape": "debit-credit",
+      "magnitudesOnly": false,
+      "skipped": 0,
+      "errors": [],
+      "txnCount": 15,
+      "categories": [
+        {
+          "merchant": "Dominos",
+          "amount": 780,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Zepto",
+          "amount": 290,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Nykaa",
+          "amount": 1350,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "PVR",
+          "amount": 700,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Flipkart",
+          "amount": 3100,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Amazon",
+          "amount": 2400,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Blinkit",
+          "amount": 320,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Starbucks",
+          "amount": 480,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Netflix",
+          "amount": 649,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Steam Games",
+          "amount": 900,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Myntra",
+          "amount": 1400,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "BookMyShow",
+          "amount": 600,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Zomato",
+          "amount": 460,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Swiggy",
+          "amount": 420,
+          "direction": "out",
+          "category": "Wants",
+          "categorySource": "rule"
+        },
+        {
+          "merchant": "Monthly Allowance from Parents",
+          "amount": 15000,
+          "direction": "in",
+          "category": "Income",
+          "categorySource": "rule"
+        }
+      ]
+    },
+    "totals": {
+      "Needs": 0,
+      "Wants": 13849,
+      "Savings": 0,
+      "Uncategorised": 0
+    },
+    "income": 15000,
+    "spend": 13849,
+    "ratios": {
+      "Needs": 0,
+      "Wants": 0.92,
+      "Savings": 0
+    },
+    "variance": {
+      "Needs": -0.5,
+      "Wants": 0.62,
+      "Savings": -0.2
+    },
+    "health": {
+      "score": 27,
+      "band": "At risk",
+      "parts": {
+        "savings": 0,
+        "wants": 0,
+        "needs": 15,
+        "buffer": 12
+      }
+    },
+    "guiltFree": {
+      "fixed": 0,
+      "investmentTarget": 3000,
+      "safeToSpend": 12000,
+      "alreadySpentOnWants": 13849,
+      "remaining": 0,
+      "perDay": 0
+    }
+  }
+]

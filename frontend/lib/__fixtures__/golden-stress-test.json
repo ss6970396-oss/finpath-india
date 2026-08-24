@@ -1,0 +1,1275 @@
+{
+  "shocks": [
+    {
+      "id": "stipend",
+      "label": "Stipend / salary delayed 2 months",
+      "detail": "Two months of income withheld, fixed costs continue.",
+      "oneOff": 0,
+      "incomeMonthsLost": 2
+    },
+    {
+      "id": "medical",
+      "label": "Emergency medical deductible",
+      "detail": "A one-off hospital deductible not covered by insurance.",
+      "oneOff": 25000,
+      "incomeMonthsLost": 0
+    },
+    {
+      "id": "hardware",
+      "label": "Essential tech hardware failure",
+      "detail": "Laptop replacement required to continue coursework.",
+      "oneOff": 55000,
+      "incomeMonthsLost": 0
+    }
+  ],
+  "cases": [
+    {
+      "shockId": null,
+      "liquid": 0,
+      "monthlyFixed": 0,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": 0,
+        "monthlyFixed": 0,
+        "survivedDays": 999,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": null,
+      "liquid": 0,
+      "monthlyFixed": 0,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": 0,
+        "monthlyFixed": 0,
+        "survivedDays": 999,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": null,
+      "liquid": 0,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": 0,
+        "monthlyFixed": 6000,
+        "survivedDays": 0,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": null,
+      "liquid": 0,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": 0,
+        "monthlyFixed": 6000,
+        "survivedDays": 0,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": null,
+      "liquid": 0,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": 0,
+        "monthlyFixed": 30000,
+        "survivedDays": 0,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": null,
+      "liquid": 0,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": 0,
+        "monthlyFixed": 30000,
+        "survivedDays": 0,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": null,
+      "liquid": 15000,
+      "monthlyFixed": 0,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": 15000,
+        "monthlyFixed": 0,
+        "survivedDays": 999,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": null,
+      "liquid": 15000,
+      "monthlyFixed": 0,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": 15000,
+        "monthlyFixed": 0,
+        "survivedDays": 999,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": null,
+      "liquid": 15000,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": 15000,
+        "monthlyFixed": 6000,
+        "survivedDays": 75,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": null,
+      "liquid": 15000,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": 15000,
+        "monthlyFixed": 6000,
+        "survivedDays": 75,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": null,
+      "liquid": 15000,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": 15000,
+        "monthlyFixed": 30000,
+        "survivedDays": 15,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": null,
+      "liquid": 15000,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": 15000,
+        "monthlyFixed": 30000,
+        "survivedDays": 15,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": null,
+      "liquid": 50000,
+      "monthlyFixed": 0,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": 50000,
+        "monthlyFixed": 0,
+        "survivedDays": 999,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": null,
+      "liquid": 50000,
+      "monthlyFixed": 0,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": 50000,
+        "monthlyFixed": 0,
+        "survivedDays": 999,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": null,
+      "liquid": 50000,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": 50000,
+        "monthlyFixed": 6000,
+        "survivedDays": 250,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": null,
+      "liquid": 50000,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": 50000,
+        "monthlyFixed": 6000,
+        "survivedDays": 250,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": null,
+      "liquid": 50000,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": 50000,
+        "monthlyFixed": 30000,
+        "survivedDays": 50,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": null,
+      "liquid": 50000,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": 50000,
+        "monthlyFixed": 30000,
+        "survivedDays": 50,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": null,
+      "liquid": 200000,
+      "monthlyFixed": 0,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": 200000,
+        "monthlyFixed": 0,
+        "survivedDays": 999,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": null,
+      "liquid": 200000,
+      "monthlyFixed": 0,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": 200000,
+        "monthlyFixed": 0,
+        "survivedDays": 999,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": null,
+      "liquid": 200000,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": 200000,
+        "monthlyFixed": 6000,
+        "survivedDays": 1000,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": null,
+      "liquid": 200000,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": 200000,
+        "monthlyFixed": 6000,
+        "survivedDays": 1000,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": null,
+      "liquid": 200000,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": 200000,
+        "monthlyFixed": 30000,
+        "survivedDays": 200,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": null,
+      "liquid": 200000,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": 200000,
+        "monthlyFixed": 30000,
+        "survivedDays": 200,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": "stipend",
+      "liquid": 0,
+      "monthlyFixed": 0,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": -30000,
+        "monthlyFixed": 0,
+        "survivedDays": 0,
+        "shortfall": 30000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "stipend",
+      "liquid": 0,
+      "monthlyFixed": 0,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": -120000,
+        "monthlyFixed": 0,
+        "survivedDays": 0,
+        "shortfall": 120000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "stipend",
+      "liquid": 0,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": -30000,
+        "monthlyFixed": 6000,
+        "survivedDays": 0,
+        "shortfall": 30000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "stipend",
+      "liquid": 0,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": -120000,
+        "monthlyFixed": 6000,
+        "survivedDays": 0,
+        "shortfall": 120000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "stipend",
+      "liquid": 0,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": -30000,
+        "monthlyFixed": 30000,
+        "survivedDays": 0,
+        "shortfall": 30000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "stipend",
+      "liquid": 0,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": -120000,
+        "monthlyFixed": 30000,
+        "survivedDays": 0,
+        "shortfall": 120000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "stipend",
+      "liquid": 15000,
+      "monthlyFixed": 0,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": -15000,
+        "monthlyFixed": 0,
+        "survivedDays": 0,
+        "shortfall": 15000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "stipend",
+      "liquid": 15000,
+      "monthlyFixed": 0,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": -105000,
+        "monthlyFixed": 0,
+        "survivedDays": 0,
+        "shortfall": 105000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "stipend",
+      "liquid": 15000,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": -15000,
+        "monthlyFixed": 6000,
+        "survivedDays": 0,
+        "shortfall": 15000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "stipend",
+      "liquid": 15000,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": -105000,
+        "monthlyFixed": 6000,
+        "survivedDays": 0,
+        "shortfall": 105000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "stipend",
+      "liquid": 15000,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": -15000,
+        "monthlyFixed": 30000,
+        "survivedDays": 0,
+        "shortfall": 15000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "stipend",
+      "liquid": 15000,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": -105000,
+        "monthlyFixed": 30000,
+        "survivedDays": 0,
+        "shortfall": 105000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "stipend",
+      "liquid": 50000,
+      "monthlyFixed": 0,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": 20000,
+        "monthlyFixed": 0,
+        "survivedDays": 999,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": "stipend",
+      "liquid": 50000,
+      "monthlyFixed": 0,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": -70000,
+        "monthlyFixed": 0,
+        "survivedDays": 0,
+        "shortfall": 70000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "stipend",
+      "liquid": 50000,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": 20000,
+        "monthlyFixed": 6000,
+        "survivedDays": 100,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": "stipend",
+      "liquid": 50000,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": -70000,
+        "monthlyFixed": 6000,
+        "survivedDays": 0,
+        "shortfall": 70000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "stipend",
+      "liquid": 50000,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": 20000,
+        "monthlyFixed": 30000,
+        "survivedDays": 20,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": "stipend",
+      "liquid": 50000,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": -70000,
+        "monthlyFixed": 30000,
+        "survivedDays": 0,
+        "shortfall": 70000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "stipend",
+      "liquid": 200000,
+      "monthlyFixed": 0,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": 170000,
+        "monthlyFixed": 0,
+        "survivedDays": 999,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": "stipend",
+      "liquid": 200000,
+      "monthlyFixed": 0,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": 80000,
+        "monthlyFixed": 0,
+        "survivedDays": 999,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": "stipend",
+      "liquid": 200000,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": 170000,
+        "monthlyFixed": 6000,
+        "survivedDays": 850,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": "stipend",
+      "liquid": 200000,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": 80000,
+        "monthlyFixed": 6000,
+        "survivedDays": 400,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": "stipend",
+      "liquid": 200000,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": 170000,
+        "monthlyFixed": 30000,
+        "survivedDays": 170,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": "stipend",
+      "liquid": 200000,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": 80000,
+        "monthlyFixed": 30000,
+        "survivedDays": 80,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": "medical",
+      "liquid": 0,
+      "monthlyFixed": 0,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": -25000,
+        "monthlyFixed": 0,
+        "survivedDays": 0,
+        "shortfall": 25000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "medical",
+      "liquid": 0,
+      "monthlyFixed": 0,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": -25000,
+        "monthlyFixed": 0,
+        "survivedDays": 0,
+        "shortfall": 25000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "medical",
+      "liquid": 0,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": -25000,
+        "monthlyFixed": 6000,
+        "survivedDays": 0,
+        "shortfall": 25000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "medical",
+      "liquid": 0,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": -25000,
+        "monthlyFixed": 6000,
+        "survivedDays": 0,
+        "shortfall": 25000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "medical",
+      "liquid": 0,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": -25000,
+        "monthlyFixed": 30000,
+        "survivedDays": 0,
+        "shortfall": 25000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "medical",
+      "liquid": 0,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": -25000,
+        "monthlyFixed": 30000,
+        "survivedDays": 0,
+        "shortfall": 25000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "medical",
+      "liquid": 15000,
+      "monthlyFixed": 0,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": -10000,
+        "monthlyFixed": 0,
+        "survivedDays": 0,
+        "shortfall": 10000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "medical",
+      "liquid": 15000,
+      "monthlyFixed": 0,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": -10000,
+        "monthlyFixed": 0,
+        "survivedDays": 0,
+        "shortfall": 10000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "medical",
+      "liquid": 15000,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": -10000,
+        "monthlyFixed": 6000,
+        "survivedDays": 0,
+        "shortfall": 10000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "medical",
+      "liquid": 15000,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": -10000,
+        "monthlyFixed": 6000,
+        "survivedDays": 0,
+        "shortfall": 10000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "medical",
+      "liquid": 15000,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": -10000,
+        "monthlyFixed": 30000,
+        "survivedDays": 0,
+        "shortfall": 10000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "medical",
+      "liquid": 15000,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": -10000,
+        "monthlyFixed": 30000,
+        "survivedDays": 0,
+        "shortfall": 10000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "medical",
+      "liquid": 50000,
+      "monthlyFixed": 0,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": 25000,
+        "monthlyFixed": 0,
+        "survivedDays": 999,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": "medical",
+      "liquid": 50000,
+      "monthlyFixed": 0,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": 25000,
+        "monthlyFixed": 0,
+        "survivedDays": 999,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": "medical",
+      "liquid": 50000,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": 25000,
+        "monthlyFixed": 6000,
+        "survivedDays": 125,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": "medical",
+      "liquid": 50000,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": 25000,
+        "monthlyFixed": 6000,
+        "survivedDays": 125,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": "medical",
+      "liquid": 50000,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": 25000,
+        "monthlyFixed": 30000,
+        "survivedDays": 25,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": "medical",
+      "liquid": 50000,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": 25000,
+        "monthlyFixed": 30000,
+        "survivedDays": 25,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": "medical",
+      "liquid": 200000,
+      "monthlyFixed": 0,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": 175000,
+        "monthlyFixed": 0,
+        "survivedDays": 999,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": "medical",
+      "liquid": 200000,
+      "monthlyFixed": 0,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": 175000,
+        "monthlyFixed": 0,
+        "survivedDays": 999,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": "medical",
+      "liquid": 200000,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": 175000,
+        "monthlyFixed": 6000,
+        "survivedDays": 875,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": "medical",
+      "liquid": 200000,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": 175000,
+        "monthlyFixed": 6000,
+        "survivedDays": 875,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": "medical",
+      "liquid": 200000,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": 175000,
+        "monthlyFixed": 30000,
+        "survivedDays": 175,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": "medical",
+      "liquid": 200000,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": 175000,
+        "monthlyFixed": 30000,
+        "survivedDays": 175,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": "hardware",
+      "liquid": 0,
+      "monthlyFixed": 0,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": -55000,
+        "monthlyFixed": 0,
+        "survivedDays": 0,
+        "shortfall": 55000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "hardware",
+      "liquid": 0,
+      "monthlyFixed": 0,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": -55000,
+        "monthlyFixed": 0,
+        "survivedDays": 0,
+        "shortfall": 55000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "hardware",
+      "liquid": 0,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": -55000,
+        "monthlyFixed": 6000,
+        "survivedDays": 0,
+        "shortfall": 55000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "hardware",
+      "liquid": 0,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": -55000,
+        "monthlyFixed": 6000,
+        "survivedDays": 0,
+        "shortfall": 55000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "hardware",
+      "liquid": 0,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": -55000,
+        "monthlyFixed": 30000,
+        "survivedDays": 0,
+        "shortfall": 55000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "hardware",
+      "liquid": 0,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": -55000,
+        "monthlyFixed": 30000,
+        "survivedDays": 0,
+        "shortfall": 55000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "hardware",
+      "liquid": 15000,
+      "monthlyFixed": 0,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": -40000,
+        "monthlyFixed": 0,
+        "survivedDays": 0,
+        "shortfall": 40000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "hardware",
+      "liquid": 15000,
+      "monthlyFixed": 0,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": -40000,
+        "monthlyFixed": 0,
+        "survivedDays": 0,
+        "shortfall": 40000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "hardware",
+      "liquid": 15000,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": -40000,
+        "monthlyFixed": 6000,
+        "survivedDays": 0,
+        "shortfall": 40000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "hardware",
+      "liquid": 15000,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": -40000,
+        "monthlyFixed": 6000,
+        "survivedDays": 0,
+        "shortfall": 40000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "hardware",
+      "liquid": 15000,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": -40000,
+        "monthlyFixed": 30000,
+        "survivedDays": 0,
+        "shortfall": 40000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "hardware",
+      "liquid": 15000,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": -40000,
+        "monthlyFixed": 30000,
+        "survivedDays": 0,
+        "shortfall": 40000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "hardware",
+      "liquid": 50000,
+      "monthlyFixed": 0,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": -5000,
+        "monthlyFixed": 0,
+        "survivedDays": 0,
+        "shortfall": 5000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "hardware",
+      "liquid": 50000,
+      "monthlyFixed": 0,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": -5000,
+        "monthlyFixed": 0,
+        "survivedDays": 0,
+        "shortfall": 5000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "hardware",
+      "liquid": 50000,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": -5000,
+        "monthlyFixed": 6000,
+        "survivedDays": 0,
+        "shortfall": 5000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "hardware",
+      "liquid": 50000,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": -5000,
+        "monthlyFixed": 6000,
+        "survivedDays": 0,
+        "shortfall": 5000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "hardware",
+      "liquid": 50000,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": -5000,
+        "monthlyFixed": 30000,
+        "survivedDays": 0,
+        "shortfall": 5000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "hardware",
+      "liquid": 50000,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": -5000,
+        "monthlyFixed": 30000,
+        "survivedDays": 0,
+        "shortfall": 5000,
+        "covered": false
+      }
+    },
+    {
+      "shockId": "hardware",
+      "liquid": 200000,
+      "monthlyFixed": 0,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": 145000,
+        "monthlyFixed": 0,
+        "survivedDays": 999,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": "hardware",
+      "liquid": 200000,
+      "monthlyFixed": 0,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": 145000,
+        "monthlyFixed": 0,
+        "survivedDays": 999,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": "hardware",
+      "liquid": 200000,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": 145000,
+        "monthlyFixed": 6000,
+        "survivedDays": 725,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": "hardware",
+      "liquid": 200000,
+      "monthlyFixed": 6000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": 145000,
+        "monthlyFixed": 6000,
+        "survivedDays": 725,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": "hardware",
+      "liquid": 200000,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 15000,
+      "result": {
+        "liquid": 145000,
+        "monthlyFixed": 30000,
+        "survivedDays": 145,
+        "shortfall": 0,
+        "covered": true
+      }
+    },
+    {
+      "shockId": "hardware",
+      "liquid": 200000,
+      "monthlyFixed": 30000,
+      "monthlyIncome": 60000,
+      "result": {
+        "liquid": 145000,
+        "monthlyFixed": 30000,
+        "survivedDays": 145,
+        "shortfall": 0,
+        "covered": true
+      }
+    }
+  ]
+}

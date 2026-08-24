@@ -1,0 +1,197 @@
+[
+  {
+    "merchant": "Hostel Mess Fee",
+    "category": "Needs",
+    "source": "rule"
+  },
+  {
+    "merchant": "Mobile Recharge",
+    "category": "Needs",
+    "source": "rule"
+  },
+  {
+    "merchant": "Apollo Pharmacy",
+    "category": "Needs",
+    "source": "rule"
+  },
+  {
+    "merchant": "Metro Card Topup",
+    "category": "Needs",
+    "source": "rule"
+  },
+  {
+    "merchant": "Xerox & Stationery",
+    "category": "Needs",
+    "source": "rule"
+  },
+  {
+    "merchant": "Local Kirana",
+    "category": "Wants",
+    "source": "rule"
+  },
+  {
+    "merchant": "Laundry",
+    "category": "Needs",
+    "source": "rule"
+  },
+  {
+    "merchant": "Tuition Fees",
+    "category": "Needs",
+    "source": "rule"
+  },
+  {
+    "merchant": "Electricity Bill",
+    "category": "Needs",
+    "source": "rule"
+  },
+  {
+    "merchant": "Swiggy",
+    "category": "Wants",
+    "source": "rule"
+  },
+  {
+    "merchant": "Zomato",
+    "category": "Wants",
+    "source": "rule"
+  },
+  {
+    "merchant": "BookMyShow",
+    "category": "Wants",
+    "source": "rule"
+  },
+  {
+    "merchant": "Blinkit — Snacks",
+    "category": "Wants",
+    "source": "rule"
+  },
+  {
+    "merchant": "Cafe Coffee Day",
+    "category": "Wants",
+    "source": "rule"
+  },
+  {
+    "merchant": "Myntra",
+    "category": "Wants",
+    "source": "rule"
+  },
+  {
+    "merchant": "Steam Games",
+    "category": "Wants",
+    "source": "rule"
+  },
+  {
+    "merchant": "Spotify Premium",
+    "category": "Needs",
+    "source": "rule"
+  },
+  {
+    "merchant": "Netflix",
+    "category": "Wants",
+    "source": "rule"
+  },
+  {
+    "merchant": "Amazon",
+    "category": "Wants",
+    "source": "rule"
+  },
+  {
+    "merchant": "Flipkart",
+    "category": "Wants",
+    "source": "rule"
+  },
+  {
+    "merchant": "Starbucks",
+    "category": "Wants",
+    "source": "rule"
+  },
+  {
+    "merchant": "Dominos",
+    "category": "Wants",
+    "source": "rule"
+  },
+  {
+    "merchant": "PVR",
+    "category": "Wants",
+    "source": "rule"
+  },
+  {
+    "merchant": "Nykaa",
+    "category": "Wants",
+    "source": "rule"
+  },
+  {
+    "merchant": "Zepto",
+    "category": "Wants",
+    "source": "rule"
+  },
+  {
+    "merchant": "SIP - Index Fund",
+    "category": "Savings",
+    "source": "rule"
+  },
+  {
+    "merchant": "RD Deposit",
+    "category": "Savings",
+    "source": "rule"
+  },
+  {
+    "merchant": "PPF Contribution",
+    "category": "Savings",
+    "source": "rule"
+  },
+  {
+    "merchant": "NPS Tier 1",
+    "category": "Savings",
+    "source": "rule"
+  },
+  {
+    "merchant": "ELSS Investment",
+    "category": "Savings",
+    "source": "rule"
+  },
+  {
+    "merchant": "Card Topup",
+    "category": "Uncategorised",
+    "source": "none"
+  },
+  {
+    "merchant": "Coffee Day",
+    "category": "Wants",
+    "source": "rule"
+  },
+  {
+    "merchant": "PAYTM*QR9F82K",
+    "category": "Uncategorised",
+    "source": "none"
+  },
+  {
+    "merchant": "UPI/DR/443982/RAJESH",
+    "category": "Uncategorised",
+    "source": "none"
+  },
+  {
+    "merchant": "Sharma General Store",
+    "category": "Uncategorised",
+    "source": "none"
+  },
+  {
+    "merchant": "Grocery Wala",
+    "category": "Uncategorised",
+    "source": "none"
+  },
+  {
+    "merchant": "Auto Rickshaw",
+    "category": "Uncategorised",
+    "source": "none"
+  },
+  {
+    "merchant": "POS 4412 XXXX",
+    "category": "Uncategorised",
+    "source": "none"
+  },
+  {
+    "merchant": "",
+    "category": "Uncategorised",
+    "source": "none"
+  }
+]

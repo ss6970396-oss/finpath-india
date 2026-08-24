@@ -1,0 +1,770 @@
+[
+  {
+    "annualIncome": 180000,
+    "investShare": 0,
+    "annualRate": 0.08,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 15000,
+      "monthlyInvested": 0,
+      "monthlyOverhead": 15000,
+      "annualOverhead": 180000,
+      "corpusTarget": 4500000,
+      "yearsToFI": null,
+      "fiAge": null
+    }
+  },
+  {
+    "annualIncome": 180000,
+    "investShare": 0,
+    "annualRate": 0.12,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 15000,
+      "monthlyInvested": 0,
+      "monthlyOverhead": 15000,
+      "annualOverhead": 180000,
+      "corpusTarget": 4500000,
+      "yearsToFI": null,
+      "fiAge": null
+    }
+  },
+  {
+    "annualIncome": 180000,
+    "investShare": 0.05,
+    "annualRate": 0.08,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 15000,
+      "monthlyInvested": 750,
+      "monthlyOverhead": 14250,
+      "annualOverhead": 171000,
+      "corpusTarget": 4275000,
+      "yearsToFI": 46,
+      "fiAge": 68
+    }
+  },
+  {
+    "annualIncome": 180000,
+    "investShare": 0.05,
+    "annualRate": 0.12,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 15000,
+      "monthlyInvested": 750,
+      "monthlyOverhead": 14250,
+      "annualOverhead": 171000,
+      "corpusTarget": 4275000,
+      "yearsToFI": 34,
+      "fiAge": 56
+    }
+  },
+  {
+    "annualIncome": 180000,
+    "investShare": 0.2,
+    "annualRate": 0.08,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 15000,
+      "monthlyInvested": 3000,
+      "monthlyOverhead": 12000,
+      "annualOverhead": 144000,
+      "corpusTarget": 3600000,
+      "yearsToFI": 28,
+      "fiAge": 50
+    }
+  },
+  {
+    "annualIncome": 180000,
+    "investShare": 0.2,
+    "annualRate": 0.12,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 15000,
+      "monthlyInvested": 3000,
+      "monthlyOverhead": 12000,
+      "annualOverhead": 144000,
+      "corpusTarget": 3600000,
+      "yearsToFI": 22,
+      "fiAge": 44
+    }
+  },
+  {
+    "annualIncome": 180000,
+    "investShare": 0.5,
+    "annualRate": 0.08,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 15000,
+      "monthlyInvested": 7500,
+      "monthlyOverhead": 7500,
+      "annualOverhead": 90000,
+      "corpusTarget": 2250000,
+      "yearsToFI": 14,
+      "fiAge": 36
+    }
+  },
+  {
+    "annualIncome": 180000,
+    "investShare": 0.5,
+    "annualRate": 0.12,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 15000,
+      "monthlyInvested": 7500,
+      "monthlyOverhead": 7500,
+      "annualOverhead": 90000,
+      "corpusTarget": 2250000,
+      "yearsToFI": 12,
+      "fiAge": 34
+    }
+  },
+  {
+    "annualIncome": 180000,
+    "investShare": 0.8,
+    "annualRate": 0.08,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 15000,
+      "monthlyInvested": 12000,
+      "monthlyOverhead": 3000,
+      "annualOverhead": 36000,
+      "corpusTarget": 900000,
+      "yearsToFI": 6,
+      "fiAge": 28
+    }
+  },
+  {
+    "annualIncome": 180000,
+    "investShare": 0.8,
+    "annualRate": 0.12,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 15000,
+      "monthlyInvested": 12000,
+      "monthlyOverhead": 3000,
+      "annualOverhead": 36000,
+      "corpusTarget": 900000,
+      "yearsToFI": 5,
+      "fiAge": 27
+    }
+  },
+  {
+    "annualIncome": 180000,
+    "investShare": 1,
+    "annualRate": 0.08,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 15000,
+      "monthlyInvested": 15000,
+      "monthlyOverhead": 0,
+      "annualOverhead": 0,
+      "corpusTarget": 0,
+      "yearsToFI": 1,
+      "fiAge": 23
+    }
+  },
+  {
+    "annualIncome": 180000,
+    "investShare": 1,
+    "annualRate": 0.12,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 15000,
+      "monthlyInvested": 15000,
+      "monthlyOverhead": 0,
+      "annualOverhead": 0,
+      "corpusTarget": 0,
+      "yearsToFI": 1,
+      "fiAge": 23
+    }
+  },
+  {
+    "annualIncome": 600000,
+    "investShare": 0,
+    "annualRate": 0.08,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 50000,
+      "monthlyInvested": 0,
+      "monthlyOverhead": 50000,
+      "annualOverhead": 600000,
+      "corpusTarget": 15000000,
+      "yearsToFI": null,
+      "fiAge": null
+    }
+  },
+  {
+    "annualIncome": 600000,
+    "investShare": 0,
+    "annualRate": 0.12,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 50000,
+      "monthlyInvested": 0,
+      "monthlyOverhead": 50000,
+      "annualOverhead": 600000,
+      "corpusTarget": 15000000,
+      "yearsToFI": null,
+      "fiAge": null
+    }
+  },
+  {
+    "annualIncome": 600000,
+    "investShare": 0.05,
+    "annualRate": 0.08,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 50000,
+      "monthlyInvested": 2500,
+      "monthlyOverhead": 47500,
+      "annualOverhead": 570000,
+      "corpusTarget": 14250000,
+      "yearsToFI": 46,
+      "fiAge": 68
+    }
+  },
+  {
+    "annualIncome": 600000,
+    "investShare": 0.05,
+    "annualRate": 0.12,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 50000,
+      "monthlyInvested": 2500,
+      "monthlyOverhead": 47500,
+      "annualOverhead": 570000,
+      "corpusTarget": 14250000,
+      "yearsToFI": 34,
+      "fiAge": 56
+    }
+  },
+  {
+    "annualIncome": 600000,
+    "investShare": 0.2,
+    "annualRate": 0.08,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 50000,
+      "monthlyInvested": 10000,
+      "monthlyOverhead": 40000,
+      "annualOverhead": 480000,
+      "corpusTarget": 12000000,
+      "yearsToFI": 28,
+      "fiAge": 50
+    }
+  },
+  {
+    "annualIncome": 600000,
+    "investShare": 0.2,
+    "annualRate": 0.12,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 50000,
+      "monthlyInvested": 10000,
+      "monthlyOverhead": 40000,
+      "annualOverhead": 480000,
+      "corpusTarget": 12000000,
+      "yearsToFI": 22,
+      "fiAge": 44
+    }
+  },
+  {
+    "annualIncome": 600000,
+    "investShare": 0.5,
+    "annualRate": 0.08,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 50000,
+      "monthlyInvested": 25000,
+      "monthlyOverhead": 25000,
+      "annualOverhead": 300000,
+      "corpusTarget": 7500000,
+      "yearsToFI": 14,
+      "fiAge": 36
+    }
+  },
+  {
+    "annualIncome": 600000,
+    "investShare": 0.5,
+    "annualRate": 0.12,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 50000,
+      "monthlyInvested": 25000,
+      "monthlyOverhead": 25000,
+      "annualOverhead": 300000,
+      "corpusTarget": 7500000,
+      "yearsToFI": 12,
+      "fiAge": 34
+    }
+  },
+  {
+    "annualIncome": 600000,
+    "investShare": 0.8,
+    "annualRate": 0.08,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 50000,
+      "monthlyInvested": 40000,
+      "monthlyOverhead": 10000,
+      "annualOverhead": 120000,
+      "corpusTarget": 3000000,
+      "yearsToFI": 6,
+      "fiAge": 28
+    }
+  },
+  {
+    "annualIncome": 600000,
+    "investShare": 0.8,
+    "annualRate": 0.12,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 50000,
+      "monthlyInvested": 40000,
+      "monthlyOverhead": 10000,
+      "annualOverhead": 120000,
+      "corpusTarget": 3000000,
+      "yearsToFI": 5,
+      "fiAge": 27
+    }
+  },
+  {
+    "annualIncome": 600000,
+    "investShare": 1,
+    "annualRate": 0.08,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 50000,
+      "monthlyInvested": 50000,
+      "monthlyOverhead": 0,
+      "annualOverhead": 0,
+      "corpusTarget": 0,
+      "yearsToFI": 1,
+      "fiAge": 23
+    }
+  },
+  {
+    "annualIncome": 600000,
+    "investShare": 1,
+    "annualRate": 0.12,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 50000,
+      "monthlyInvested": 50000,
+      "monthlyOverhead": 0,
+      "annualOverhead": 0,
+      "corpusTarget": 0,
+      "yearsToFI": 1,
+      "fiAge": 23
+    }
+  },
+  {
+    "annualIncome": 1200000,
+    "investShare": 0,
+    "annualRate": 0.08,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 100000,
+      "monthlyInvested": 0,
+      "monthlyOverhead": 100000,
+      "annualOverhead": 1200000,
+      "corpusTarget": 30000000,
+      "yearsToFI": null,
+      "fiAge": null
+    }
+  },
+  {
+    "annualIncome": 1200000,
+    "investShare": 0,
+    "annualRate": 0.12,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 100000,
+      "monthlyInvested": 0,
+      "monthlyOverhead": 100000,
+      "annualOverhead": 1200000,
+      "corpusTarget": 30000000,
+      "yearsToFI": null,
+      "fiAge": null
+    }
+  },
+  {
+    "annualIncome": 1200000,
+    "investShare": 0.05,
+    "annualRate": 0.08,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 100000,
+      "monthlyInvested": 5000,
+      "monthlyOverhead": 95000,
+      "annualOverhead": 1140000,
+      "corpusTarget": 28500000,
+      "yearsToFI": 46,
+      "fiAge": 68
+    }
+  },
+  {
+    "annualIncome": 1200000,
+    "investShare": 0.05,
+    "annualRate": 0.12,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 100000,
+      "monthlyInvested": 5000,
+      "monthlyOverhead": 95000,
+      "annualOverhead": 1140000,
+      "corpusTarget": 28500000,
+      "yearsToFI": 34,
+      "fiAge": 56
+    }
+  },
+  {
+    "annualIncome": 1200000,
+    "investShare": 0.2,
+    "annualRate": 0.08,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 100000,
+      "monthlyInvested": 20000,
+      "monthlyOverhead": 80000,
+      "annualOverhead": 960000,
+      "corpusTarget": 24000000,
+      "yearsToFI": 28,
+      "fiAge": 50
+    }
+  },
+  {
+    "annualIncome": 1200000,
+    "investShare": 0.2,
+    "annualRate": 0.12,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 100000,
+      "monthlyInvested": 20000,
+      "monthlyOverhead": 80000,
+      "annualOverhead": 960000,
+      "corpusTarget": 24000000,
+      "yearsToFI": 22,
+      "fiAge": 44
+    }
+  },
+  {
+    "annualIncome": 1200000,
+    "investShare": 0.5,
+    "annualRate": 0.08,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 100000,
+      "monthlyInvested": 50000,
+      "monthlyOverhead": 50000,
+      "annualOverhead": 600000,
+      "corpusTarget": 15000000,
+      "yearsToFI": 14,
+      "fiAge": 36
+    }
+  },
+  {
+    "annualIncome": 1200000,
+    "investShare": 0.5,
+    "annualRate": 0.12,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 100000,
+      "monthlyInvested": 50000,
+      "monthlyOverhead": 50000,
+      "annualOverhead": 600000,
+      "corpusTarget": 15000000,
+      "yearsToFI": 12,
+      "fiAge": 34
+    }
+  },
+  {
+    "annualIncome": 1200000,
+    "investShare": 0.8,
+    "annualRate": 0.08,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 100000,
+      "monthlyInvested": 80000,
+      "monthlyOverhead": 20000,
+      "annualOverhead": 240000,
+      "corpusTarget": 6000000,
+      "yearsToFI": 6,
+      "fiAge": 28
+    }
+  },
+  {
+    "annualIncome": 1200000,
+    "investShare": 0.8,
+    "annualRate": 0.12,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 100000,
+      "monthlyInvested": 80000,
+      "monthlyOverhead": 20000,
+      "annualOverhead": 240000,
+      "corpusTarget": 6000000,
+      "yearsToFI": 5,
+      "fiAge": 27
+    }
+  },
+  {
+    "annualIncome": 1200000,
+    "investShare": 1,
+    "annualRate": 0.08,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 100000,
+      "monthlyInvested": 100000,
+      "monthlyOverhead": 0,
+      "annualOverhead": 0,
+      "corpusTarget": 0,
+      "yearsToFI": 1,
+      "fiAge": 23
+    }
+  },
+  {
+    "annualIncome": 1200000,
+    "investShare": 1,
+    "annualRate": 0.12,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 100000,
+      "monthlyInvested": 100000,
+      "monthlyOverhead": 0,
+      "annualOverhead": 0,
+      "corpusTarget": 0,
+      "yearsToFI": 1,
+      "fiAge": 23
+    }
+  },
+  {
+    "annualIncome": 2500000,
+    "investShare": 0,
+    "annualRate": 0.08,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 208333.33,
+      "monthlyInvested": 0,
+      "monthlyOverhead": 208333.33,
+      "annualOverhead": 2500000,
+      "corpusTarget": 62500000,
+      "yearsToFI": null,
+      "fiAge": null
+    }
+  },
+  {
+    "annualIncome": 2500000,
+    "investShare": 0,
+    "annualRate": 0.12,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 208333.33,
+      "monthlyInvested": 0,
+      "monthlyOverhead": 208333.33,
+      "annualOverhead": 2500000,
+      "corpusTarget": 62500000,
+      "yearsToFI": null,
+      "fiAge": null
+    }
+  },
+  {
+    "annualIncome": 2500000,
+    "investShare": 0.05,
+    "annualRate": 0.08,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 208333.33,
+      "monthlyInvested": 10416.67,
+      "monthlyOverhead": 197916.67,
+      "annualOverhead": 2375000,
+      "corpusTarget": 59375000,
+      "yearsToFI": 46,
+      "fiAge": 68
+    }
+  },
+  {
+    "annualIncome": 2500000,
+    "investShare": 0.05,
+    "annualRate": 0.12,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 208333.33,
+      "monthlyInvested": 10416.67,
+      "monthlyOverhead": 197916.67,
+      "annualOverhead": 2375000,
+      "corpusTarget": 59375000,
+      "yearsToFI": 34,
+      "fiAge": 56
+    }
+  },
+  {
+    "annualIncome": 2500000,
+    "investShare": 0.2,
+    "annualRate": 0.08,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 208333.33,
+      "monthlyInvested": 41666.67,
+      "monthlyOverhead": 166666.67,
+      "annualOverhead": 2000000,
+      "corpusTarget": 50000000,
+      "yearsToFI": 28,
+      "fiAge": 50
+    }
+  },
+  {
+    "annualIncome": 2500000,
+    "investShare": 0.2,
+    "annualRate": 0.12,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 208333.33,
+      "monthlyInvested": 41666.67,
+      "monthlyOverhead": 166666.67,
+      "annualOverhead": 2000000,
+      "corpusTarget": 50000000,
+      "yearsToFI": 22,
+      "fiAge": 44
+    }
+  },
+  {
+    "annualIncome": 2500000,
+    "investShare": 0.5,
+    "annualRate": 0.08,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 208333.33,
+      "monthlyInvested": 104166.67,
+      "monthlyOverhead": 104166.67,
+      "annualOverhead": 1250000,
+      "corpusTarget": 31250000,
+      "yearsToFI": 14,
+      "fiAge": 36
+    }
+  },
+  {
+    "annualIncome": 2500000,
+    "investShare": 0.5,
+    "annualRate": 0.12,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 208333.33,
+      "monthlyInvested": 104166.67,
+      "monthlyOverhead": 104166.67,
+      "annualOverhead": 1250000,
+      "corpusTarget": 31250000,
+      "yearsToFI": 12,
+      "fiAge": 34
+    }
+  },
+  {
+    "annualIncome": 2500000,
+    "investShare": 0.8,
+    "annualRate": 0.08,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 208333.33,
+      "monthlyInvested": 166666.67,
+      "monthlyOverhead": 41666.67,
+      "annualOverhead": 500000,
+      "corpusTarget": 12500000,
+      "yearsToFI": 6,
+      "fiAge": 28
+    }
+  },
+  {
+    "annualIncome": 2500000,
+    "investShare": 0.8,
+    "annualRate": 0.12,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 208333.33,
+      "monthlyInvested": 166666.67,
+      "monthlyOverhead": 41666.67,
+      "annualOverhead": 500000,
+      "corpusTarget": 12500000,
+      "yearsToFI": 5,
+      "fiAge": 27
+    }
+  },
+  {
+    "annualIncome": 2500000,
+    "investShare": 1,
+    "annualRate": 0.08,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 208333.33,
+      "monthlyInvested": 208333.33,
+      "monthlyOverhead": 0,
+      "annualOverhead": 0,
+      "corpusTarget": 0,
+      "yearsToFI": 1,
+      "fiAge": 23
+    }
+  },
+  {
+    "annualIncome": 2500000,
+    "investShare": 1,
+    "annualRate": 0.12,
+    "currentAge": 22,
+    "withdrawalRate": 0.04,
+    "result": {
+      "monthlyIncome": 208333.33,
+      "monthlyInvested": 208333.33,
+      "monthlyOverhead": 0,
+      "annualOverhead": 0,
+      "corpusTarget": 0,
+      "yearsToFI": 1,
+      "fiAge": 23
+    }
+  }
+]
