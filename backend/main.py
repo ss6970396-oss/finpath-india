@@ -1,6 +1,7 @@
 import glob
 import json
 import os
+import re
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -12,6 +13,8 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 from pgvector import Vector
+
+import traceback
 
 import db
 from nudge import generate as generate_spending, analyse
@@ -64,9 +67,22 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="FinPath India API", lifespan=lifespan)
 
+# Both spellings of the dev host are listed deliberately. Node 18+ resolves
+# "localhost" to ::1 while uvicorn on 0.0.0.0 binds IPv4 only, so the frontend
+# may legitimately arrive as either origin depending on how it was started.
+#
+# These are explicit rather than ["*"] because allow_credentials=True and a
+# wildcard origin are mutually exclusive per the CORS spec: the browser rejects
+# the pair, and it surfaces as a bare "Failed to fetch" with no clue attached.
+ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -122,6 +138,41 @@ RULES:
 
 class ChatRequest(BaseModel):
     message: str
+
+
+def _generation_failure_reason(exc: Exception) -> str:
+    """One readable sentence explaining why generation failed.
+
+    The provider's own 429 payload is several hundred characters of JSON with
+    documentation links in it — accurate, but not something to paste into a
+    chat bubble. The full object still goes to the server log; this is the part
+    the student needs, which is almost always "wait, then retry".
+    """
+    text = str(exc)
+
+    if "RESOURCE_EXHAUSTED" in text or "429" in text:
+        retry = re.search(r"retry in ([\d.]+)s", text)
+        wait = (
+            f" Retry in about {round(float(retry.group(1)))}s."
+            if retry
+            else " Wait a minute before retrying."
+        )
+        return (
+            "The model provider is rate-limiting this API key (HTTP 429): the "
+            f"free tier allows only a few requests per minute.{wait}"
+        )
+
+    if "API_KEY" in text.upper() or "PERMISSION_DENIED" in text:
+        return (
+            "The model provider rejected the API key (check GOOGLE_API_KEY in "
+            "backend/.env)."
+        )
+
+    # Anything else: name the exception and its first line, and stop there.
+    first_line = text.strip().splitlines()[0] if text.strip() else "no detail"
+    if len(first_line) > 200:
+        first_line = f"{first_line[:200]}…"
+    return f"{type(exc).__name__}: {first_line} (full traceback in the API log)."
 
 
 def retrieve(query: str, k: int = 5) -> list[dict]:
@@ -189,9 +240,44 @@ def _meta_payload(
     )
 
 
+def _document_count() -> int | None:
+    """Rows in the documents table, or None when the database is unreachable."""
+    try:
+        with db.connect() as conn:
+            row = conn.execute("SELECT count(*) FROM documents").fetchone()
+        return int(row[0]) if row else 0
+    except Exception:
+        return None
+
+
+def _health_payload() -> dict:
+    """Liveness plus the one number that says whether RAG can actually work.
+
+    Never raises. This endpoint is what the frontend uses to tell "the server
+    is down" apart from "the server is up and rejected that request", so it has
+    to answer even when the database behind it does not: a 500 here would make
+    a healthy API look dead.
+    """
+    documents = _document_count()
+    if documents is None:
+        return {
+            "status": "degraded",
+            "service": "finpath-backend",
+            "documents": None,
+            "detail": "API is up but the database is unreachable, so retrieval will refuse.",
+        }
+    return {"status": "ok", "service": "finpath-backend", "documents": documents}
+
+
+@app.get("/health")
+def health_root():
+    """Unprefixed alias. Conventional for probes, and what the frontend calls."""
+    return _health_payload()
+
+
 @app.get("/api/health")
 def health():
-    return {"status": "ok", "service": "finpath-backend"}
+    return _health_payload()
 
 
 @app.post("/api/chat")
@@ -236,18 +322,36 @@ def chat(req: ChatRequest):
         prompt = f"CONTEXT:\n{context}\n\nQUESTION: {req.message}"
 
     def stream():
+        # StreamingResponse has already sent 200 and the headers by the time
+        # this generator runs, so an exception in here cannot become an error
+        # status: it just drops the connection, and the browser reports a bare
+        # "TypeError: network error" with no cause. Anything raised by the
+        # model call has to be caught and written INTO the stream instead.
         answer = ""
-        for chunk in client.models.generate_content_stream(
-            model=CHAT_MODEL,
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                system_instruction=system_prompt,
-                temperature=0.3,
-            ),
-        ):
-            if chunk.text:
-                answer += chunk.text
-                yield chunk.text
+        try:
+            for chunk in client.models.generate_content_stream(
+                model=CHAT_MODEL,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    system_instruction=system_prompt,
+                    temperature=0.3,
+                ),
+            ):
+                if chunk.text:
+                    answer += chunk.text
+                    yield chunk.text
+        except Exception as exc:
+            # Full detail to the server log; a readable sentence to the client.
+            traceback.print_exc()
+            print(f"[chat] generation failed: {type(exc).__name__}: {exc}")
+            reason = _generation_failure_reason(exc)
+            if answer:
+                # Partial answer already on the wire; mark where it stopped.
+                yield f"\n\n[The answer was cut short. {reason}]"
+            else:
+                yield f"The counsellor could not generate an answer. {reason}"
+            yield _meta_payload([], "grounded", top_distance)
+            return
 
         if general:
             yield _meta_payload([], "general", top_distance)

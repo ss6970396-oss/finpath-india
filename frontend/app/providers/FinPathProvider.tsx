@@ -8,8 +8,9 @@ import type { ProjectionParams, ProjectionPoint } from "@/lib/sip";
 import type { ParsedTxn, SpendCategory } from "@/lib/csv";
 import { healthScore, ratios, type Health, type BucketRatios } from "@/lib/finance";
 import { createPersistedStore } from "@/lib/persist";
+import { apiJson, describeApiFailure } from "@/lib/api";
 
-export const API = "http://localhost:8000";
+export const API = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
 
 export type Txn = {
   id: number;
@@ -133,22 +134,17 @@ export function FinPathProvider({ children }: { children: React.ReactNode }) {
     let cancelled = false;
     const key = reqKey;
 
-    fetch(`${API}/api/spending?allowance=${profile.allowance}`)
-      .then((r) => {
-        if (!r.ok) throw new Error(`API returned ${r.status}`);
-        return r.json();
-      })
-      .then((d: Spending) => {
+    const url = `${API}/api/spending?allowance=${profile.allowance}`;
+
+    apiJson<Spending>(url)
+      .then((d) => {
         if (!cancelled) setRes({ key, data: d, error: null });
       })
-      .catch(() => {
-        if (!cancelled) {
-          setRes({
-            key,
-            data: null,
-            error: "Could not reach the API on port 8000.",
-          });
-        }
+      .catch(async (err) => {
+        // describeApiFailure probes /health before it blames the server, so
+        // this reports what actually went wrong rather than guessing.
+        const message = await describeApiFailure(err, url);
+        if (!cancelled) setRes({ key, data: null, error: message });
       });
 
     return () => {

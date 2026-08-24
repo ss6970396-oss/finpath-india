@@ -7,6 +7,7 @@ import {
   CircleCheck, CircleSlash, Info,
 } from "lucide-react";
 import { API } from "../providers/FinPathProvider";
+import { apiJson, describeApiFailure } from "@/lib/api";
 import { Card, CardHead, Figure, Label, Pill, Empty, Button } from "../components/ui";
 import { metaFor, type Category, type Issuer } from "@/lib/corpus";
 
@@ -45,20 +46,19 @@ export default function Vault() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch(`${API}/api/sources`)
-      .then((r) => {
-        if (!r.ok) throw new Error(String(r.status));
-        return r.json();
-      })
-      .then((d: SourcesPayload) => {
+    const url = `${API}/api/sources`;
+
+    apiJson<SourcesPayload>(url)
+      .then((d) => {
         if (!cancelled) {
           setPayload(d);
           setLoading(false);
         }
       })
-      .catch(() => {
+      .catch(async (err) => {
+        const message = await describeApiFailure(err, url);
         if (!cancelled) {
-          setError("Could not reach the API on port 8000.");
+          setError(message);
           setLoading(false);
         }
       });

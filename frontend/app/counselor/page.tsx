@@ -14,6 +14,37 @@ import CitationInspector, { type Src } from "../components/CitationInspector";
 import { Card, Figure, Label, Pill } from "../components/ui";
 import { API } from "../providers/FinPathProvider";
 import { metaFor } from "@/lib/corpus";
+import {
+  ApiError,
+  apiFetch,
+  checkHealth,
+  describeApiFailure,
+  type HealthState,
+} from "@/lib/api";
+
+/**
+ * Connection state, shown before anyone types. The point is that a down
+ * backend is visible up front rather than discovered by asking a question and
+ * waiting for it to fail.
+ */
+function ConnectionPill({ health }: { health: HealthState }) {
+  if (health.status === "checking") {
+    return <Pill tone="neutral">Checking connection…</Pill>;
+  }
+  if (health.status === "down") {
+    return <Pill tone="critical">Backend unreachable</Pill>;
+  }
+  if (health.status === "degraded") {
+    return <Pill tone="caution">Index unavailable</Pill>;
+  }
+  return (
+    <Pill tone="positive">
+      {health.documents === null
+        ? "Connected"
+        : `Connected · ${health.documents.toLocaleString("en-IN")} chunks indexed`}
+    </Pill>
+  );
+}
 
 type Mode = "grounded" | "general";
 
@@ -27,6 +58,8 @@ type Msg = {
   role: "user" | "ai";
   text: string;
   sources?: Src[];
+  /** True when this bubble is a transport failure, not a model answer. */
+  failed?: boolean;
   /** "general" answers come from the model's own knowledge, not the corpus. */
   mode?: Mode;
 };
@@ -95,12 +128,29 @@ function CounselorWorkspace() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [activeN, setActiveN] = useState<number | null>(null);
+  const [health, setHealth] = useState<HealthState>({ status: "checking" });
   const endRef = useRef<HTMLDivElement>(null);
   const sentPreset = useRef(false);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // Probe on mount so a down backend is visible before anyone types a
+  // question and waits for it to fail.
+  useEffect(() => {
+    let cancelled = false;
+    checkHealth(API).then((h) => {
+      if (!cancelled) setHealth(h);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Printed by apiFetch in dev on every call, so the resolved host is visible
+  // in the console rather than inferred from the bundle.
+  const chatUrl = `${API}/api/chat`;
 
   const send = useCallback(
     async (preset?: string) => {
@@ -116,18 +166,37 @@ function CounselorWorkspace() {
       ]);
 
       try {
-        const res = await fetch(`${API}/api/chat`, {
+        const res = await apiFetch(chatUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ message: question }),
         });
 
-        const reader = res.body!.getReader();
+        if (!res.body) {
+          throw new ApiError({
+            url: chatUrl,
+            kind: "network",
+            message: "The server returned 200 with no response body.",
+          });
+        }
+        const reader = res.body.getReader();
         const decoder = new TextDecoder();
         let acc = "";
 
         while (true) {
-          const { done, value } = await reader.read();
+          let chunk: ReadableStreamReadResult<Uint8Array>;
+          try {
+            chunk = await reader.read();
+          } catch (streamErr) {
+            const e = streamErr as Error;
+            throw new ApiError({
+              url: chatUrl,
+              kind: "network",
+              message: `The connection dropped mid-answer (${e.name}: ${e.message}). The server accepted the request and then stopped sending.`,
+              cause: streamErr,
+            });
+          }
+          const { done, value } = chunk;
           if (done) break;
           acc += decoder.decode(value, { stream: true });
           const [body, meta] = acc.split("␟SOURCES␟");
@@ -162,20 +231,23 @@ function CounselorWorkspace() {
           });
           if (srcs?.length) setActiveN(srcs[0].n);
         }
-      } catch {
+      } catch (err) {
+        // What actually happened, not a guess. describeApiFailure probes
+        // /health before it suggests the server is down, so a CORS rejection,
+        // a 500 and an unreachable port no longer read identically.
+        const message = await describeApiFailure(err, chatUrl);
         setMessages((m) => {
           const copy = [...m];
-          copy[copy.length - 1] = {
-            role: "ai",
-            text: "Could not reach the API on port 8000. Start it with `fastapi dev main.py` from the backend directory.",
-          };
+          copy[copy.length - 1] = { role: "ai", text: message, failed: true };
           return copy;
         });
+        // A failed request is itself a signal about the connection.
+        setHealth(await checkHealth(API));
       } finally {
         setLoading(false);
       }
     },
-    [input, loading],
+    [input, loading, chatUrl],
   );
 
   // A ?q= link from the command palette asks its question once.
@@ -221,13 +293,34 @@ function CounselorWorkspace() {
 
         {/* RIGHT — chat console */}
         <Card className="order-1 flex max-h-[720px] min-h-[520px] flex-col overflow-hidden lg:order-2">
-          <div className="flex items-center justify-between gap-3 border-b border-rule px-5 py-3.5">
-            <Label>Conversation</Label>
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-rule px-5 py-3.5">
+            <span className="flex items-center gap-2">
+              <Label>Conversation</Label>
+              <ConnectionPill health={health} />
+            </span>
             <Pill tone="positive">
               <Lock className="h-3 w-3" />
               Grounded in official regulatory documents, or labelled when not
             </Pill>
           </div>
+
+          {health.status === "down" && (
+            <p
+              role="alert"
+              className="border-b border-rule bg-critical-weak px-5 py-2.5 text-[12px] leading-relaxed text-critical"
+            >
+              {health.detail}
+            </p>
+          )}
+
+          {health.status === "degraded" && (
+            <p
+              role="status"
+              className="border-b border-rule bg-caution-weak px-5 py-2.5 text-[12px] leading-relaxed text-caution"
+            >
+              {health.detail}
+            </p>
+          )}
 
           <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5">
             {messages.length === 0 ? (
