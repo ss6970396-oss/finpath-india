@@ -16,13 +16,22 @@ type Entry = {
   icon: React.ComponentType<{ className?: string }>;
 };
 
+/** Fired by other components (the mobile menu) to open the palette. */
+export const OPEN_PALETTE_EVENT = "finpath:open-palette";
+
+export function openCommandPalette() {
+  window.dispatchEvent(new CustomEvent(OPEN_PALETTE_EVENT));
+}
+
+// `hint` carries the former system name so searching "Nudge Simulator" or
+// "Regulatory Vault" still finds the page after the plain-language rename.
 const ENTRIES: Entry[] = [
-  { id: "nav-overview", label: "Overview", group: "Navigate", href: "/", icon: LayoutGrid },
-  { id: "nav-spending", label: "Spending Engine", group: "Navigate", href: "/spending", icon: Wallet },
-  { id: "nav-sim", label: "Nudge Simulator", group: "Navigate", href: "/simulator", icon: Calculator },
-  { id: "nav-counselor", label: "AI Counselor", group: "Navigate", href: "/counselor", icon: MessageSquare },
-  { id: "nav-vault", label: "Regulatory Vault", group: "Navigate", href: "/vault", icon: BookMarked },
-  { id: "nav-roadmap", label: "Roadmap", group: "Navigate", href: "/roadmap", icon: Route },
+  { id: "nav-overview", label: "Home", group: "Navigate", hint: "Overview", href: "/", icon: LayoutGrid },
+  { id: "nav-spending", label: "My Spending", group: "Navigate", hint: "Spending Engine", href: "/spending", icon: Wallet },
+  { id: "nav-sim", label: "What-If", group: "Navigate", hint: "Nudge Simulator", href: "/simulator", icon: Calculator },
+  { id: "nav-counselor", label: "Ask", group: "Navigate", hint: "AI Counselor", href: "/counselor", icon: MessageSquare },
+  { id: "nav-vault", label: "Sources", group: "Navigate", hint: "Regulatory Vault", href: "/vault", icon: BookMarked },
+  { id: "nav-roadmap", label: "My Plan", group: "Navigate", hint: "Roadmap", href: "/roadmap", icon: Route },
 
   { id: "t-health", label: "Financial health score", group: "Tools", hint: "50/30/20 diagnosis", href: "/spending", icon: Calculator },
   { id: "t-guilt", label: "Guilt-free spending allowance", group: "Tools", hint: "Safe-to-burn calculator", href: "/spending", icon: Calculator },
@@ -40,7 +49,16 @@ const ENTRIES: Entry[] = [
   { id: "r-80c", label: "Tax saving under 80C / 80D", group: "Regulatory", hint: "Ask the counselor", href: "/counselor?q=Tax+Saving+Under+80C+80D", icon: MessageSquare },
 ];
 
-export default function CommandPalette() {
+/**
+ * `triggerClassName` hides the trigger button at narrow widths without
+ * unmounting the component — the ⌘K listener must stay alive at every size,
+ * and mounting two copies would toggle two dialogs at once.
+ */
+export default function CommandPalette({
+  triggerClassName = "",
+}: {
+  triggerClassName?: string;
+}) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
@@ -70,8 +88,12 @@ export default function CommandPalette() {
       }
     }
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
+    window.addEventListener(OPEN_PALETTE_EVENT, openPalette);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener(OPEN_PALETTE_EVENT, openPalette);
+    };
+  }, [openPalette]);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -119,16 +141,16 @@ export default function CommandPalette() {
 
   return (
     <>
+      {/* Icon only: the header has no room for a field, and the shortcut
+          hint lives inside the palette instead of beside the trigger. */}
       <button
         onClick={openPalette}
-        className="hidden items-center gap-2 rounded-md border border-line bg-surface px-2.5 py-1.5 text-[13px] text-meta transition hover:border-line-strong hover:text-ink sm:inline-flex"
-        aria-label="Open command palette"
+        title="Search (Ctrl+K)"
+        aria-label="Search pages and tools"
+        aria-keyshortcuts="Control+K Meta+K"
+        className={`h-8 w-8 items-center justify-center rounded-md border border-line bg-surface text-meta transition hover:border-line-strong hover:text-ink ${triggerClassName || "inline-flex"}`}
       >
-        <Search className="h-3.5 w-3.5" />
-        <span>Search</span>
-        <kbd className="figure rounded border border-line bg-surface-2 px-1.5 py-0.5 text-[10px] text-meta">
-          ⌘K
-        </kbd>
+        <Search className="h-4 w-4" />
       </button>
 
       {open && (
@@ -158,6 +180,9 @@ export default function CommandPalette() {
                 aria-label="Search citations, calculators and tools"
                 className="w-full bg-transparent py-3.5 text-sm text-ink outline-none placeholder:text-meta"
               />
+              <kbd className="figure hidden shrink-0 rounded border border-line bg-surface-2 px-1.5 py-0.5 text-[10px] text-meta sm:inline">
+                ⌘K
+              </kbd>
             </div>
 
             <ul className="max-h-80 overflow-y-auto py-1.5">

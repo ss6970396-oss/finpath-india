@@ -161,9 +161,9 @@ export default function Roadmap() {
     <main className="mx-auto w-full max-w-[1400px] flex-1 px-5 py-8">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <Label>Act</Label>
+          <Label>Act · Financial Progression Roadmap</Label>
           <h1 className="mt-1.5 font-display text-[clamp(2rem,4vw,2.75rem)] leading-tight tracking-tight text-ink">
-            Financial Progression Roadmap
+            My Plan
           </h1>
           <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-meta">
             Four stages, in order. Each one is scored from the same diagnosis

@@ -159,9 +159,9 @@ function CounselorWorkspace() {
   return (
     <main className="mx-auto flex w-full max-w-[1400px] flex-1 flex-col px-5 py-8">
       <header>
-        <Label>Consult</Label>
+        <Label>Consult · AI Counselor</Label>
         <h1 className="mt-1.5 font-display text-[clamp(2rem,4vw,2.75rem)] leading-tight tracking-tight text-ink">
-          AI Counselor
+          Ask
         </h1>
         <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-meta">
           Retrieval runs before generation. The model sees only the passages

@@ -89,9 +89,9 @@ export default function SpendingEngine() {
     <main className="mx-auto w-full max-w-[1400px] flex-1 px-5 py-8">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <Label>Diagnose</Label>
+          <Label>Diagnose · Spending Engine</Label>
           <h1 className="mt-1.5 font-display text-[clamp(2rem,4vw,2.75rem)] leading-tight tracking-tight text-ink">
-            Spending Engine
+            My Spending
           </h1>
           <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-meta">
             Every ratio below is a share of your{" "}
