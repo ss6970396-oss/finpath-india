@@ -44,7 +44,15 @@ There is **no test suite** — no pytest, no vitest/jest, no test files. Verify 
 
 `/api/chat` retrieves before it generates: `retrieve()` embeds the question with the same model and dimensionality, then orders `documents` by cosine distance (`<=>`, matching the HNSW index). The hits become a numbered `CONTEXT` block; the system prompt forbids answering from anything else and requires inline `[1]`-style citations.
 
-**The streaming contract is shared with the frontend and both ends must change together:** the body is the model's text, then `\n␟SOURCES␟`, then `json.dumps([{n, source, page}])`. `app/counselor/page.tsx` splits on that sentinel and renders the tail as citation chips. `SOURCES_DELIM` in `main.py` is the backend half.
+**The streaming contract is shared with the frontend and both ends must change together:** the body is the model's text, then `\n␟SOURCES␟`, then `json.dumps({mode, top_distance, sources})` — where `mode` is `"grounded" | "general"`, `top_distance` is the cosine distance of the nearest chunk (or `null` when retrieval never ran), and `sources` is a list of `{n, source, page, snippet}`. `app/counselor/page.tsx` splits on that sentinel, renders `sources` as citation chips and `mode` as a badge; it still accepts a bare array tail for compatibility. `SOURCES_DELIM` and `_meta_payload()` in `main.py` are the backend half.
+
+Retrieval routes the request three ways:
+
+- nearest chunk within `RELEVANCE_MAX_DISTANCE` → grounded path, `SYSTEM_PROMPT`, citations attached
+- nearest chunk beyond it → the corpus does not cover the question, so `GENERAL_PROMPT` answers from the model's own knowledge with `mode: "general"` and an empty source list; the frontend shows an amber "not from a verified source" badge and no chips. The general prompt keeps every other guardrail — no named stocks or funds, education only, under 180 words, no invented figures.
+- retrieval returned nothing at all (empty index or DB down) → still a flat refusal, not a general answer: an outage is not the same as a question the corpus does not cover, and falling back would hide it
+
+`RELEVANCE_MAX_DISTANCE` is tuned against the live index, not guessed — `backend/probe_threshold.py` prints the top distance for covered, adjacent and unrelated questions and is how to re-tune it after ingesting more of the corpus. Financial questions the corpus only half-covers deliberately stay on the grounded path, where the model's own `NO_SOURCE_REPLY` refusal handles them.
 
 Two deliberate refusal paths, both emitting an empty source list so no chips hang off a non-answer:
 

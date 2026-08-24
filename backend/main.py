@@ -25,12 +25,32 @@ EMBED_MODEL = "gemini-embedding-001"
 EMBED_DIM = 768  # must match ingest.py and vector(768) in schema.sql
 
 # The frontend (app/counselor/page.tsx) splits the response body on this
-# sentinel and JSON-parses the tail into citation chips. Do not change one
-# side without the other. The tail is a list of
-# {n, source, page, snippet} — see _sources_payload().
+# sentinel and JSON-parses the tail. Do not change one side without the other.
+# The tail is an object:
+#   {mode: "grounded" | "general",
+#    top_distance: float | null,
+#    sources: [{n, source, page, snippet}]}
+# — see _meta_payload().
 SOURCES_DELIM = "\n␟SOURCES␟"
 
 NO_SOURCE_REPLY = "I don't have a verified source for that yet."
+
+# Cosine distance (pgvector `<=>`) of the nearest chunk, above which the corpus
+# is treated as not covering the question and /api/chat answers from general
+# knowledge instead — tagged as unverified, with no citations.
+#
+# Tuned against the live index, not guessed. Questions the corpus covers land
+# at 0.26-0.42 (allowance budgeting 0.26, health insurance deductibles 0.42);
+# questions with no financial content at all land at 0.48-0.56 (passport
+# renewal 0.48, cricket world cup 0.56). 0.50 sits in that gap with headroom
+# above the covered band, so a covered question is never demoted to general.
+# Finance questions the corpus only half-covers stay on the grounded path by
+# design: the grounded prompt's own NO_SOURCE_REPLY refusal is the right
+# handler for "retrieved, but not answerable from what came back".
+#
+# Re-measure after ingesting more of the corpus — distances move as the index
+# grows. backend/probe_threshold.py reproduces the numbers above.
+RELEVANCE_MAX_DISTANCE = 0.50
 
 
 @asynccontextmanager
@@ -73,12 +93,43 @@ RULES:
 """
 
 
+# Used when the nearest chunk sits further away than RELEVANCE_MAX_DISTANCE.
+# Same guardrails as SYSTEM_PROMPT — the one rule that relaxes is answering
+# from CONTEXT, because there is no usable CONTEXT to answer from.
+GENERAL_PROMPT = """You are the FinPath India Counselor, a financial literacy
+educator for Indian college students.
+
+The index holds no passage close enough to this question, so answer from
+general financial-literacy knowledge. The interface labels this answer as
+unverified.
+
+RULES:
+- There are no sources. Never write [1], [2], and never name or quote RBI,
+  SEBI, NCFE or any other document as though you had it in front of you.
+- Stay on general principles and mechanics. Where the answer turns on a
+  current rule, limit, rate or tax slab, say the figure needs checking against
+  the regulator's latest circular rather than stating one.
+- NEVER name a specific stock, mutual fund, or company. Explain the category
+  instead and say a SEBI-registered advisor handles specifics.
+- Under 180 words.
+- Simple language, everyday Indian examples (pocket money, UPI, canteen
+  spending, hostel fees). Amounts in rupees.
+- Never invent a rule, a number, or a source. Say plainly when you are unsure.
+- Plain text only. No emoji, no decorative symbols, no markdown headings.
+  Analytical and objective in tone.
+"""
+
+
 class ChatRequest(BaseModel):
     message: str
 
 
 def retrieve(query: str, k: int = 5) -> list[dict]:
-    """Embed the query and pull the k nearest chunks by cosine distance."""
+    """Embed the query and pull the k nearest chunks by cosine distance.
+
+    Each hit carries its own `distance`; the nearest one drives the grounded /
+    general routing in chat().
+    """
     resp = client.models.embed_content(
         model=EMBED_MODEL,
         contents=query,
@@ -88,14 +139,20 @@ def retrieve(query: str, k: int = 5) -> list[dict]:
 
     with db.connect() as conn:
         rows = conn.execute(
-            "SELECT source, page, content FROM documents "
-            "ORDER BY embedding <=> %s::vector LIMIT %s",
+            "SELECT source, page, content, embedding <=> %s::vector AS distance "
+            "FROM documents ORDER BY distance LIMIT %s",
             (vector, k),
         ).fetchall()
 
     return [
-        {"n": n, "source": source, "page": page, "content": content}
-        for n, (source, page, content) in enumerate(rows, start=1)
+        {
+            "n": n,
+            "source": source,
+            "page": page,
+            "content": content,
+            "distance": float(distance),
+        }
+        for n, (source, page, content, distance) in enumerate(rows, start=1)
     ]
 
 
@@ -104,23 +161,31 @@ def _is_refusal(text: str) -> bool:
     return text.strip().replace("’", "'").startswith(NO_SOURCE_REPLY)
 
 
-def _sources_payload(hits: list[dict]) -> str:
-    """Serialise the citation tail of the streaming contract.
+def _meta_payload(
+    hits: list[dict], mode: str, top_distance: float | None
+) -> str:
+    """Serialise the metadata tail of the streaming contract.
 
     `snippet` carries the retrieved chunk verbatim so the frontend's source
     drawer can show the exact clause an answer was drawn from, rather than
-    only naming the document and page.
+    only naming the document and page. `top_distance` is the distance of the
+    nearest chunk retrieval saw — reported on every response, including the
+    ungrounded ones, so the routing decision is inspectable from the client.
     """
     return SOURCES_DELIM + json.dumps(
-        [
-            {
-                "n": h["n"],
-                "source": h["source"],
-                "page": h["page"],
-                "snippet": h["content"],
-            }
-            for h in hits
-        ]
+        {
+            "mode": mode,
+            "top_distance": top_distance,
+            "sources": [
+                {
+                    "n": h["n"],
+                    "source": h["source"],
+                    "page": h["page"],
+                    "snippet": h["content"],
+                }
+                for h in hits
+            ],
+        }
     )
 
 
@@ -137,21 +202,38 @@ def chat(req: ChatRequest):
         print(f"[chat] retrieval failed: {exc}")
         hits = []
 
+    top_distance = hits[0]["distance"] if hits else None
+
     # Nothing indexed, or the index is unreachable: refuse rather than let the
-    # model answer ungrounded.
+    # model answer ungrounded. This stays a refusal — an outage is not the same
+    # as a corpus that genuinely does not cover the question, and answering
+    # from general knowledge here would hide the outage.
     if not hits:
         def no_context():
             yield NO_SOURCE_REPLY
-            yield _sources_payload([])
+            yield _meta_payload([], "grounded", None)
 
         return StreamingResponse(
             no_context(), media_type="text/plain; charset=utf-8"
         )
 
-    context = "\n\n".join(
-        f"[{h['n']}] {h['source']}, p.{h['page']}\n{h['content']}" for h in hits
-    )
-    prompt = f"CONTEXT:\n{context}\n\nQUESTION: {req.message}"
+    # The corpus was searched and nothing came back close enough: answer from
+    # general knowledge, tagged as unverified and with no citations attached.
+    general = top_distance > RELEVANCE_MAX_DISTANCE
+    if general:
+        print(
+            f"[chat] general fallback, top distance {top_distance:.3f} "
+            f"> {RELEVANCE_MAX_DISTANCE}"
+        )
+        system_prompt = GENERAL_PROMPT
+        prompt = f"QUESTION: {req.message}"
+    else:
+        context = "\n\n".join(
+            f"[{h['n']}] {h['source']}, p.{h['page']}\n{h['content']}"
+            for h in hits
+        )
+        system_prompt = SYSTEM_PROMPT
+        prompt = f"CONTEXT:\n{context}\n\nQUESTION: {req.message}"
 
     def stream():
         answer = ""
@@ -159,7 +241,7 @@ def chat(req: ChatRequest):
             model=CHAT_MODEL,
             contents=prompt,
             config=types.GenerateContentConfig(
-                system_instruction=SYSTEM_PROMPT,
+                system_instruction=system_prompt,
                 temperature=0.3,
             ),
         ):
@@ -167,8 +249,13 @@ def chat(req: ChatRequest):
                 answer += chunk.text
                 yield chunk.text
 
-        # Don't hang citation chips off a refusal.
-        yield _sources_payload([] if _is_refusal(answer) else hits)
+        if general:
+            yield _meta_payload([], "general", top_distance)
+        else:
+            # Don't hang citation chips off a refusal.
+            yield _meta_payload(
+                [] if _is_refusal(answer) else hits, "grounded", top_distance
+            )
 
     return StreamingResponse(stream(), media_type="text/plain; charset=utf-8")
 

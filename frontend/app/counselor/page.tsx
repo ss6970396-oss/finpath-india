@@ -2,13 +2,34 @@
 
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Send, ShieldCheck, User, Lock, Sparkles } from "lucide-react";
+import {
+  Send,
+  ShieldCheck,
+  User,
+  Lock,
+  Sparkles,
+  TriangleAlert,
+} from "lucide-react";
 import CitationInspector, { type Src } from "../components/CitationInspector";
 import { Card, Figure, Label, Pill } from "../components/ui";
 import { API } from "../providers/FinPathProvider";
 import { metaFor } from "@/lib/corpus";
 
-type Msg = { role: "user" | "ai"; text: string; sources?: Src[] };
+type Mode = "grounded" | "general";
+
+/**
+ * Metadata tail of the /api/chat stream, after the SOURCES sentinel. The
+ * backend half is _meta_payload() in main.py; both ends change together.
+ */
+type Tail = { mode: Mode; top_distance: number | null; sources: Src[] };
+
+type Msg = {
+  role: "user" | "ai";
+  text: string;
+  sources?: Src[];
+  /** "general" answers come from the model's own knowledge, not the corpus. */
+  mode?: Mode;
+};
 
 const CHIPS = [
   "Credit Card Minimum Due Trap",
@@ -112,10 +133,22 @@ function CounselorWorkspace() {
           const [body, meta] = acc.split("␟SOURCES␟");
           const snapshot = body;
           let srcs: Src[] | undefined;
-          try {
-            srcs = meta ? (JSON.parse(meta) as Src[]) : undefined;
-          } catch {
-            srcs = undefined;
+          let mode: Mode | undefined;
+          if (meta) {
+            try {
+              const tail = JSON.parse(meta) as Tail | Src[];
+              // The tail used to be a bare source array; tolerate both shapes
+              // so a frontend ahead of its backend still renders citations.
+              if (Array.isArray(tail)) {
+                srcs = tail;
+                mode = "grounded";
+              } else {
+                srcs = tail.sources;
+                mode = tail.mode;
+              }
+            } catch {
+              // Tail half-arrived; the next chunk completes the JSON.
+            }
           }
           setMessages((m) => {
             const copy = [...m];
@@ -123,6 +156,7 @@ function CounselorWorkspace() {
               role: "ai",
               text: snapshot,
               sources: srcs,
+              mode,
             };
             return copy;
           });
@@ -153,8 +187,13 @@ function CounselorWorkspace() {
     }
   }, [params, send]);
 
+  // An ungrounded answer cites nothing, so the inspector empties rather than
+  // leaving the previous answer's passages standing next to it.
+  const lastAnswer = [...messages].reverse().find((m) => m.role === "ai");
   const lastSources =
-    [...messages].reverse().find((m) => m.sources?.length)?.sources ?? [];
+    lastAnswer?.mode === "general"
+      ? []
+      : ([...messages].reverse().find((m) => m.sources?.length)?.sources ?? []);
 
   return (
     <main className="mx-auto flex w-full max-w-[1400px] flex-1 flex-col px-5 py-8">
@@ -186,7 +225,7 @@ function CounselorWorkspace() {
             <Label>Conversation</Label>
             <Pill tone="sage">
               <Lock className="h-3 w-3" />
-              Answers restricted to official regulatory documents
+              Grounded in official regulatory documents, or labelled when not
             </Pill>
           </div>
 
@@ -200,9 +239,10 @@ function CounselorWorkspace() {
                   Ask a grounded question
                 </h2>
                 <p className="mt-2 max-w-md text-[13px] leading-relaxed text-meta">
-                  Answers are drawn only from the indexed RBI, SEBI and NCFE
-                  publications. Where the corpus offers no support, the
-                  counselor declines rather than estimating.
+                  Answers are drawn from the indexed RBI, SEBI and NCFE
+                  publications and cite the passages they use. Where the corpus
+                  holds nothing close to the question, the counselor answers
+                  from general knowledge and says so on the answer itself.
                 </p>
                 <div className="mt-6 flex flex-wrap justify-center gap-1.5">
                   {CHIPS.map((c) => (
@@ -242,6 +282,15 @@ function CounselorWorkspace() {
                           {m.role === "ai" ? "Counselor" : "You"}
                         </p>
 
+                        {m.mode === "general" && (
+                          <div className="mt-2">
+                            <Pill tone="ochre">
+                              <TriangleAlert className="h-3 w-3 shrink-0" />
+                              General knowledge — not from a verified source
+                            </Pill>
+                          </div>
+                        )}
+
                         <div
                           className={`mt-1.5 text-ink-2 ${
                             streaming ? "caret-stream" : ""
@@ -256,7 +305,7 @@ function CounselorWorkspace() {
                           )}
                         </div>
 
-                        {m.sources && m.sources.length > 0 && (
+                        {m.mode !== "general" && m.sources?.length ? (
                           <div className="mt-3 flex flex-wrap gap-1.5 border-t border-line pt-3">
                             {m.sources.map((s) => {
                               const meta = metaFor(s.source);
@@ -280,7 +329,7 @@ function CounselorWorkspace() {
                               );
                             })}
                           </div>
-                        )}
+                        ) : null}
                       </div>
                     </div>
                   );
@@ -327,8 +376,9 @@ function CounselorWorkspace() {
 
             <p className="mt-2 flex items-center gap-1.5 text-[11px] text-meta">
               <ShieldCheck className="h-3 w-3 shrink-0" />
-              Answers restricted exclusively to official regulatory documents.
-              Educational use only; not investment advice.
+              Cited answers come from official regulatory documents; anything
+              else is flagged as general knowledge. Educational use only; not
+              investment advice.
             </p>
           </div>
         </Card>
