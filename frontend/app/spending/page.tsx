@@ -10,17 +10,33 @@ import { useFinPath } from "../providers/FinPathProvider";
 import { Card, CardHead, Figure, Label, Pill, Button, Meter, Empty } from "../components/ui";
 import StatementUpload from "../components/StatementUpload";
 import { RULE, variance, guiltFree, lumpSumFutureValue, type Bucket } from "@/lib/finance";
-import { tagFor, isImpulse } from "@/lib/tags";
+import { knownTagFor, isImpulse } from "@/lib/tags";
+import { categoryStyle } from "@/lib/categories";
+import type { SpendCategory } from "@/lib/csv";
 import { inr, inrCompact, pct, shortDate } from "@/lib/format";
 
 const BUCKETS: Bucket[] = ["Needs", "Wants", "Savings"];
+
+/**
+ * Progress meters are neutral until a threshold says otherwise: at or above
+ * 80% of the component maximum reads as positive, 50-79% as caution, below
+ * that as critical.
+ */
+function scoreFill(fraction: number): string {
+  if (fraction >= 0.8) return "bg-positive";
+  if (fraction >= 0.5) return "bg-caution";
+  return "bg-critical";
+}
 const RULE_OF: Record<Bucket, number> = {
   Needs: RULE.needs,
   Wants: RULE.wants,
   Savings: RULE.savings,
 };
 
-type CatFilter = "All" | Bucket;
+// Uncategorised is a filterable bucket like any other: rows land there when no
+// rule claimed them, and they have to be findable in order to be fixed.
+type CatFilter = "All" | SpendCategory;
+const FILTERS: CatFilter[] = ["All", ...BUCKETS, "Uncategorised"];
 
 export default function SpendingEngine() {
   const {
@@ -58,8 +74,19 @@ export default function SpendingEngine() {
     );
   }, [transactions]);
 
+  // The "N of M" denominator counts spend rows only, so it reconciles with
+  // what the table can actually show.
+  const spendRowCount = useMemo(
+    () => transactions.filter((t) => t.category !== "Income").length,
+    [transactions],
+  );
+
   const rows = useMemo(() => {
     return transactions.filter((t) => {
+      // This is a SPENDING ledger. Credits are reported in the parser card as
+      // "Money in"; listing them here would put an opportunity-cost figure
+      // against the student's own allowance arriving.
+      if (t.category === "Income") return false;
       if (filter !== "All" && t.category !== filter) return false;
       if (leaksOnly && !leakMerchants.has(t.merchant)) return false;
       return true;
@@ -75,12 +102,16 @@ export default function SpendingEngine() {
     [rows, params],
   );
 
-  const spent = totals.Needs + totals.Wants + totals.Savings;
+  // Every rupee that left the account, Uncategorised included. The three
+  // ratio buckets deliberately exclude it; a total that did too would not
+  // reconcile against the ledger below.
+  const spent =
+    totals.Needs + totals.Wants + totals.Savings + (totals.Uncategorised ?? 0);
 
   if (loading) {
     return (
       <main className="mx-auto w-full max-w-[1400px] flex-1 px-5 py-16">
-        <p className="text-[13px] text-meta">Running diagnosis…</p>
+        <p className="text-[13px] text-ink-muted">Running diagnosis…</p>
       </main>
     );
   }
@@ -93,7 +124,7 @@ export default function SpendingEngine() {
           <h1 className="mt-1.5 font-display text-[clamp(2rem,4vw,2.75rem)] leading-tight tracking-tight text-ink">
             My Spending
           </h1>
-          <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-meta">
+          <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-ink-muted">
             Every ratio below is a share of your{" "}
             <Figure className="text-ink">{inr(profile.allowance)}</Figure>{" "}
             monthly allowance — the same denominator the rule engine uses when
@@ -107,12 +138,12 @@ export default function SpendingEngine() {
       </header>
 
       {error && (
-        <div className="mt-5 rounded-md border border-rust/30 bg-rust-tint px-4 py-3">
-          <p className="flex items-center gap-2 text-[13px] font-medium text-rust">
+        <div className="mt-5 rounded-md border border-danger/30 bg-danger-weak px-4 py-3">
+          <p className="flex items-center gap-2 text-[13px] font-medium text-danger">
             <TriangleAlert className="h-4 w-4" />
             {error}
           </p>
-          <p className="mt-1 text-[12px] leading-relaxed text-rust">
+          <p className="mt-1 text-[12px] leading-relaxed text-danger">
             Start it with <span className="figure">fastapi dev main.py</span> in{" "}
             <span className="figure">backend/</span>, or upload a CSV statement
             below to work entirely offline.
@@ -122,9 +153,9 @@ export default function SpendingEngine() {
 
       {/* SCORE + BUCKETS */}
       <section className="mt-7 grid gap-4 lg:grid-cols-[320px_minmax(0,1fr)]">
-        <Card className="p-5">
+        <Card variant="raised" className="p-5">
           <div className="flex items-center gap-2">
-            <Gauge className="h-4 w-4 text-forest-ink" />
+            <Gauge className="h-4 w-4 text-accent" />
             <Label>Financial health score</Label>
           </div>
 
@@ -133,11 +164,11 @@ export default function SpendingEngine() {
               {health.score}
             </Figure>
             <span className="pb-1.5">
-              <Figure className="text-lg text-meta">/100</Figure>
+              <Figure className="text-lg text-ink-muted">/100</Figure>
               <Pill
                 className="ml-2"
                 tone={
-                  health.score >= 60 ? "sage" : health.score >= 40 ? "ochre" : "rust"
+                  health.score >= 60 ? "positive" : health.score >= 40 ? "caution" : "critical"
                 }
               >
                 {health.band}
@@ -148,11 +179,11 @@ export default function SpendingEngine() {
           <div className="mt-4">
             <Meter
               value={health.score / 100}
-              tone={health.score >= 60 ? "sage" : health.score >= 40 ? "ochre" : "rust"}
+              fill={scoreFill(health.score / 100)}
             />
           </div>
 
-          <dl className="mt-5 space-y-2.5 border-t border-line pt-4">
+          <dl className="mt-5 space-y-2.5 border-t border-rule-subtle pt-4">
             {[
               ["Savings rate", health.parts.savings, 40],
               ["Wants control", health.parts.wants, 30],
@@ -160,9 +191,15 @@ export default function SpendingEngine() {
               ["Unspent buffer", health.parts.buffer, 15],
             ].map(([label, got, max]) => (
               <div key={String(label)} className="flex items-center gap-3">
-                <dt className="w-28 shrink-0 text-[12px] text-meta">{label}</dt>
+                <dt className="w-28 shrink-0 text-[12px] text-ink-muted">{label}</dt>
                 <dd className="flex-1">
-                  <Meter value={(got as number) / (max as number)} />
+                  {/* These are progress against a component maximum, not a
+                      verdict. "Savings rate 20/40" is half marks, so a flat
+                      green bar would read as praise for a middling result. */}
+                  <Meter
+                    value={(got as number) / (max as number)}
+                    fill={scoreFill((got as number) / (max as number))}
+                  />
                 </dd>
                 <dd className="figure w-12 shrink-0 text-right text-[12px] text-ink">
                   {got}/{max}
@@ -179,7 +216,7 @@ export default function SpendingEngine() {
             const dev = vari[b];
             const isFloor = b === "Savings";
             const bad = isFloor ? dev < -0.005 : dev > 0.005;
-            const tone = bad ? (isFloor ? "ochre" : "rust") : "sage";
+            const tone = bad ? (isFloor ? "caution" : "critical") : "positive";
 
             return (
               <Card key={b} className="flex flex-col p-5">
@@ -200,23 +237,25 @@ export default function SpendingEngine() {
                 </Figure>
 
                 <div className="mt-1 flex items-baseline gap-1.5">
-                  <Figure className="text-sm text-ink-2">{pct(share, 1)}</Figure>
-                  <span className="text-[12px] text-meta">
+                  <Figure className="text-sm text-ink">{pct(share, 1)}</Figure>
+                  <span className="text-[12px] text-ink-muted">
                     of allowance · target {pct(target)}
                   </span>
                 </div>
 
                 <div className="mt-4">
-                  <Meter value={share} target={target} tone={tone} />
+                  {/* Identity, not verdict: the Wants bar is amber in a good
+                      month and in a bad one. The Pill above says how it went. */}
+                  <Meter value={share} target={target} fill={categoryStyle(b).bg} />
                 </div>
 
-                <p className="mt-2.5 flex items-center gap-1.5 text-[12px] text-meta">
+                <p className="mt-2.5 flex items-center gap-1.5 text-[12px] text-ink-muted">
                   {dev >= 0 ? (
                     <ArrowRight className="h-3 w-3 rotate-[-45deg]" />
                   ) : (
                     <TrendingDown className="h-3 w-3" />
                   )}
-                  <Figure className={bad ? (isFloor ? "text-ochre-ink" : "text-rust") : "text-forest-ink"}>
+                  <Figure className={bad ? (isFloor ? "text-warn" : "text-danger") : "text-accent"}>
                     {dev >= 0 ? "+" : ""}
                     {pct(dev, 1)}
                   </Figure>
@@ -228,7 +267,7 @@ export default function SpendingEngine() {
         </div>
       </section>
 
-      <p className="mt-3 text-[11px] leading-relaxed text-meta">
+      <p className="mt-3 text-[11px] leading-relaxed text-ink-muted">
         Variance is measured against the 50/30/20 target, not against a previous
         month. The API generates a fresh single month on every request and keeps
         no history, so a month-on-month delta would be noise presented as a
@@ -241,17 +280,17 @@ export default function SpendingEngine() {
           <CardHead
             title="Guilt-free spending allowance"
             sub="What is genuinely free to burn once fixed costs and the savings target are covered."
-            right={<Wallet className="h-4 w-4 shrink-0 text-meta" />}
+            right={<Wallet className="h-4 w-4 shrink-0 text-ink-muted" />}
           />
           <div className="px-5 py-5">
-            <div className="grid grid-cols-2 gap-px overflow-hidden rounded-md border border-line bg-line">
+            <div className="grid grid-cols-2 gap-px overflow-hidden rounded-md bg-rule-subtle">
               {[
                 ["Allowance", inr(profile.allowance), "text-ink"],
-                ["Less fixed needs", "−" + inr(gf.fixed), "text-meta"],
-                ["Less savings target", "−" + inr(gf.investmentTarget), "text-meta"],
+                ["Less fixed needs", "−" + inr(gf.fixed), "text-ink-muted"],
+                ["Less savings target", "−" + inr(gf.investmentTarget), "text-ink-muted"],
                 ["Safe to spend", inr(gf.safeToSpend), "text-ink"],
               ].map(([k, v, cls]) => (
-                <div key={k} className="bg-surface px-3.5 py-3">
+                <div key={k} className="bg-surface-1 px-3.5 py-3">
                   <Label>{k}</Label>
                   <Figure className={`mt-0.5 block text-sm font-medium ${cls}`}>
                     {v}
@@ -260,17 +299,17 @@ export default function SpendingEngine() {
               ))}
             </div>
 
-            <div className="mt-4 rounded-md border border-line bg-surface-2 p-4">
+            <div className="mt-4 rounded-md border border-rule bg-surface p-4">
               <Label>Remaining this month</Label>
               <div className="mt-1 flex flex-wrap items-end gap-3">
                 <Figure
                   className={`text-3xl font-semibold tracking-tight ${
-                    gf.remaining > 0 ? "text-forest-ink" : "text-rust"
+                    gf.remaining > 0 ? "text-accent" : "text-danger"
                   }`}
                 >
                   {inr(gf.remaining)}
                 </Figure>
-                <span className="pb-1 text-[12px] text-meta">
+                <span className="pb-1 text-[12px] text-ink-muted">
                   ≈ <Figure className="text-ink">{inr(gf.perDay)}</Figure>/day
                   for 30 days
                 </span>
@@ -282,10 +321,10 @@ export default function SpendingEngine() {
                       ? gf.alreadySpentOnWants / gf.safeToSpend
                       : 1
                   }
-                  tone={gf.remaining > 0 ? "sage" : "rust"}
+                  fill={gf.remaining > 0 ? "bg-positive" : "bg-critical"}
                 />
               </div>
-              <p className="mt-2 text-[12px] leading-relaxed text-meta">
+              <p className="mt-2 text-[12px] leading-relaxed text-ink-muted">
                 <Figure className="text-ink">{inr(gf.alreadySpentOnWants)}</Figure>{" "}
                 of discretionary spend already recorded against a{" "}
                 <Figure className="text-ink">{inr(gf.safeToSpend)}</Figure>{" "}
@@ -303,18 +342,18 @@ export default function SpendingEngine() {
         <Card>
           <CardHead
             title="Transaction ledger"
-            sub={`${rows.length} of ${transactions.length} rows · future value at ${pct(params.annual_rate)} over ${params.years} years`}
+            sub={`${rows.length} of ${spendRowCount} rows · future value at ${pct(params.annual_rate)} over ${params.years} years`}
             right={
               <div className="flex flex-wrap items-center gap-1.5">
-                {(["All", ...BUCKETS] as CatFilter[]).map((f) => (
+                {FILTERS.map((f) => (
                   <button
                     key={f}
                     onClick={() => setFilter(f)}
                     aria-pressed={filter === f}
                     className={`rounded-md border px-2.5 py-1 text-[12px] transition ${
                       filter === f
-                        ? "border-sage-line bg-sage text-sage-ink"
-                        : "border-line bg-surface text-meta hover:text-ink"
+                        ? "border-rule bg-accent-weak text-accent"
+                        : "border-rule bg-surface text-ink-muted hover:text-ink"
                     }`}
                   >
                     {f}
@@ -325,8 +364,8 @@ export default function SpendingEngine() {
                   aria-pressed={leaksOnly}
                   className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-[12px] transition ${
                     leaksOnly
-                      ? "border-ochre/40 bg-ochre-tint text-ochre-ink"
-                      : "border-line bg-surface text-meta hover:text-ink"
+                      ? "border-warn/40 bg-warn-weak text-warn"
+                      : "border-rule bg-surface text-ink-muted hover:text-ink"
                   }`}
                 >
                   <Filter className="h-3 w-3" />
@@ -346,12 +385,12 @@ export default function SpendingEngine() {
             <div className="overflow-x-auto">
               <table className="w-full min-w-[840px] border-collapse text-left">
                 <thead>
-                  <tr className="border-b border-line bg-sage">
+                  <tr className="border-b border-rule bg-surface-1">
                     {["Date", "Merchant", "Category", "Amount", `${params.years}-yr future value`, "Classification"].map(
                       (h, i) => (
                         <th
                           key={h}
-                          className={`px-5 py-2.5 text-[11px] font-medium uppercase tracking-[0.08em] text-sage-ink ${
+                          className={`px-5 py-2.5 text-[11px] font-medium uppercase tracking-[0.08em] text-accent ${
                             i >= 3 && i <= 4 ? "text-right" : ""
                           }`}
                         >
@@ -373,9 +412,9 @@ export default function SpendingEngine() {
                     return (
                       <tr
                         key={`${t.id}-${t.merchant}`}
-                        className="border-b border-line last:border-0 hover:bg-surface-2"
+                        className="row-hover border-b border-rule-subtle last:border-0"
                       >
-                        <td className="figure px-5 py-3 text-[13px] text-meta">
+                        <td className="figure px-5 py-3 text-[13px] text-ink-muted">
                           {shortDate(t.date)}
                         </td>
                         <td className="px-5 py-3">
@@ -383,28 +422,39 @@ export default function SpendingEngine() {
                             {t.merchant}
                           </span>
                           <span className="mt-1 flex flex-wrap gap-1.5">
-                            <Pill>{tagFor(t.merchant)}</Pill>
+                            {/* knownTagFor, not tagFor: the latter falls back
+                                to "Shopping", which stamped that tag on every
+                                unrecognised merchant in the ledger. */}
+                            {knownTagFor(t.merchant) && (
+                              <Pill>{knownTagFor(t.merchant)}</Pill>
+                            )}
                             {impulse && (
-                              <Pill tone="ochre">
+                              <Pill tone="leak">
                                 <Zap className="h-2.5 w-2.5" />
                                 impulse
                               </Pill>
                             )}
-                            {leak && <Pill tone="ochre">recurring</Pill>}
+                            {leak && <Pill tone="leak">recurring</Pill>}
                           </span>
                         </td>
                         <td className="px-5 py-3">
-                          <Pill tone={t.category === "Savings" ? "sage" : "neutral"}>
-                            {t.category}
-                          </Pill>
+                          <span className="flex items-center gap-2">
+                            <span
+                              aria-hidden="true"
+                              className={`h-3.5 w-[3px] rounded-full ${categoryStyle(t.category).bg}`}
+                            />
+                            <span className="text-[13px] text-ink">
+                              {t.category}
+                            </span>
+                          </span>
                         </td>
                         <td className="figure px-5 py-3 text-right text-[13px] font-medium text-ink">
                           {inr(t.amount)}
                         </td>
-                        <td className="figure px-5 py-3 text-right text-[13px] text-forest-ink">
+                        <td className="figure px-5 py-3 text-right text-[13px] text-accent">
                           {inr(fv)}
                         </td>
-                        <td className="px-5 py-3 text-[12px] text-meta">
+                        <td className="px-5 py-3 text-[12px] text-ink-muted">
                           {t.category === "Savings"
                             ? "Capital formation"
                             : t.category === "Needs"
@@ -416,8 +466,8 @@ export default function SpendingEngine() {
                   })}
                 </tbody>
                 <tfoot>
-                  <tr className="border-t border-line bg-surface-2">
-                    <td colSpan={3} className="px-5 py-3 text-[12px] text-meta">
+                  <tr className="border-t border-rule bg-surface-1">
+                    <td colSpan={3} className="px-5 py-3 text-[12px] text-ink-muted">
                       {leaksOnly || filter !== "All"
                         ? "Filtered subtotal"
                         : "Ledger total"}
@@ -425,7 +475,7 @@ export default function SpendingEngine() {
                     <td className="figure px-5 py-3 text-right text-[13px] font-semibold text-ink">
                       {inr(rows.reduce((s, t) => s + t.amount, 0))}
                     </td>
-                    <td className="figure px-5 py-3 text-right text-[13px] font-semibold text-forest-ink">
+                    <td className="figure px-5 py-3 text-right text-[13px] font-semibold text-accent">
                       {inr(rowsFutureValue)}
                     </td>
                     <td />
@@ -436,7 +486,7 @@ export default function SpendingEngine() {
           )}
         </Card>
 
-        <p className="mt-3 text-[11px] leading-relaxed text-meta">
+        <p className="mt-3 text-[11px] leading-relaxed text-ink-muted">
           Future value treats each transaction as a one-off lump sum compounding
           at {pct(params.annual_rate)}. Tags, the impulse flag and the recurring
           flag are derived in the browser from the merchant string — they are
@@ -445,21 +495,21 @@ export default function SpendingEngine() {
         </p>
       </section>
 
-      <div className="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-lg border border-line bg-surface px-5 py-4">
+      <div className="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-lg border border-rule bg-surface px-5 py-4">
         <div>
           <p className="text-[13px] font-medium text-ink">
             {spent > 0
               ? `${inrCompact(totals.Wants)} of discretionary spend this month.`
               : "No spending recorded yet."}
           </p>
-          <p className="mt-0.5 text-[12px] text-meta">
+          <p className="mt-0.5 text-[12px] text-ink-muted">
             Take the diagnosis into the simulator to model what redirecting it
             does over time.
           </p>
         </div>
         <Link
           href="/simulator"
-          className="inline-flex items-center gap-2 rounded-md bg-forest px-4 py-2 text-sm font-medium text-on-forest transition hover:bg-forest-hover"
+          className="inline-flex items-center gap-2 rounded-md bg-accent px-4 py-2 text-sm font-medium text-paper transition hover:bg-accent"
         >
           Open the simulator <ArrowRight className="h-4 w-4" />
         </Link>

@@ -57,6 +57,19 @@ export function tagFor(merchant: string): Tag {
 }
 
 /**
+ * The same lookup WITHOUT the "Shopping" fallback.
+ *
+ * `tagFor` exists for display, where guessing a tag is harmless. Category
+ * assignment is not display: falling back there is what used to file every
+ * unrecognised merchant as Wants and push it into the 30% rule. Callers that
+ * decide a category must use this and treat null as "not known", not as a
+ * category of its own.
+ */
+export function knownTagFor(merchant: string): Tag | null {
+  return BY_MERCHANT[merchant] ?? null;
+}
+
+/**
  * Heuristic: a Wants-category purchase in a discretionary tag that isn't a
  * standing subscription. Intentionally conservative — it is a prompt to look,
  * never an accusation.

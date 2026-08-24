@@ -44,10 +44,10 @@ export default function ProfileSwitcher() {
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="menu"
         aria-expanded={open}
-        className="flex items-center gap-2 rounded-md border border-line bg-surface px-2.5 py-1.5 text-left transition hover:border-line-strong"
+        className="flex items-center gap-2 rounded-md border border-rule bg-surface px-2.5 py-1.5 text-left transition hover:border-rule"
       >
         <span className="hidden leading-tight sm:block">
-          <span className="block text-[11px] text-meta">Profile</span>
+          <span className="block text-[11px] text-ink-muted">Profile</span>
           <span className="block text-[13px] font-medium text-ink">
             {profile.label}
           </span>
@@ -55,13 +55,13 @@ export default function ProfileSwitcher() {
         <span className="text-[13px] font-medium text-ink sm:hidden">
           <Figure>{inr(profile.allowance)}</Figure>
         </span>
-        <ChevronDown className="h-3.5 w-3.5 text-meta" />
+        <ChevronDown className="h-3.5 w-3.5 text-ink-muted" />
       </button>
 
       {open && (
         <div
           role="menu"
-          className="scale-in absolute right-0 z-40 mt-1.5 w-72 overflow-hidden rounded-lg border border-line bg-surface shadow-lg"
+          className="scale-in absolute right-0 z-40 mt-1.5 w-72 overflow-hidden rounded-lg border border-rule bg-surface shadow-lg"
         >
           {(["student", "early"] as const).map((id) => {
             const p = PROFILES[id];
@@ -71,17 +71,17 @@ export default function ProfileSwitcher() {
                 key={id}
                 role="menuitem"
                 onClick={() => pick(id)}
-                className="flex w-full items-center justify-between gap-3 border-b border-line px-4 py-3 text-left transition hover:bg-surface-2"
+                className="flex w-full items-center justify-between gap-3 border-b border-rule px-4 py-3 text-left transition hover:bg-surface"
               >
                 <span>
                   <span className="block text-sm font-medium text-ink">
                     {p.label}
                   </span>
-                  <span className="block text-[12px] text-meta">
+                  <span className="block text-[12px] text-ink-muted">
                     <Figure>{p.sub}</Figure>
                   </span>
                 </span>
-                {isActive && <Check className="h-4 w-4 shrink-0 text-forest-ink" />}
+                {isActive && <Check className="h-4 w-4 shrink-0 text-accent" />}
               </button>
             );
           })}
@@ -90,7 +90,7 @@ export default function ProfileSwitcher() {
             <p className="flex items-center gap-1.5 text-sm font-medium text-ink">
               <Upload className="h-3.5 w-3.5" /> Custom / Statement upload
             </p>
-            <p className="mt-1 text-[12px] leading-relaxed text-meta">
+            <p className="mt-1 text-[12px] leading-relaxed text-ink-muted">
               Set your own monthly figure, then upload a statement on the
               Spending Engine.
             </p>
@@ -102,11 +102,11 @@ export default function ProfileSwitcher() {
                 value={custom}
                 onChange={(e) => setCustom(e.target.value)}
                 aria-label="Custom monthly allowance in rupees"
-                className="figure w-full rounded-md border border-line bg-surface-2 px-2.5 py-1.5 text-[13px] text-ink outline-none focus:border-forest"
+                className="figure w-full rounded-md border border-rule bg-surface px-2.5 py-1.5 text-[13px] text-ink outline-none focus:border-accent"
               />
               <button
                 onClick={() => pick("custom")}
-                className="shrink-0 rounded-md bg-forest px-3 py-1.5 text-[13px] font-medium text-on-forest transition hover:bg-forest-hover"
+                className="shrink-0 rounded-md bg-accent px-3 py-1.5 text-[13px] font-medium text-paper transition hover:bg-accent"
               >
                 Apply
               </button>

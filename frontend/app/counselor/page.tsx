@@ -73,7 +73,7 @@ function Structured({ text }: { text: string }) {
               <li key={j} className="flex gap-2.5 text-[13px] leading-relaxed">
                 <span
                   aria-hidden="true"
-                  className="mt-[0.55em] h-1 w-1 shrink-0 rounded-full bg-forest"
+                  className="mt-[0.55em] h-1 w-1 shrink-0 rounded-full bg-accent"
                 />
                 <span>{l}</span>
               </li>
@@ -202,7 +202,7 @@ function CounselorWorkspace() {
         <h1 className="mt-1.5 font-display text-[clamp(2rem,4vw,2.75rem)] leading-tight tracking-tight text-ink">
           Ask
         </h1>
-        <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-meta">
+        <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-ink-muted">
           Retrieval runs before generation. The model sees only the passages
           returned by the index, and every passage it was given is shown on the
           left for inspection.
@@ -221,9 +221,9 @@ function CounselorWorkspace() {
 
         {/* RIGHT — chat console */}
         <Card className="order-1 flex max-h-[720px] min-h-[520px] flex-col overflow-hidden lg:order-2">
-          <div className="flex items-center justify-between gap-3 border-b border-line px-5 py-3.5">
+          <div className="flex items-center justify-between gap-3 border-b border-rule px-5 py-3.5">
             <Label>Conversation</Label>
-            <Pill tone="sage">
+            <Pill tone="positive">
               <Lock className="h-3 w-3" />
               Grounded in official regulatory documents, or labelled when not
             </Pill>
@@ -232,13 +232,13 @@ function CounselorWorkspace() {
           <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5">
             {messages.length === 0 ? (
               <div className="flex h-full flex-col items-center justify-center py-8 text-center">
-                <span className="flex h-10 w-10 items-center justify-center rounded-md border border-sage-line bg-sage">
-                  <Sparkles className="h-4 w-4 text-sage-ink" />
+                <span className="flex h-10 w-10 items-center justify-center rounded-md border border-rule bg-accent-weak">
+                  <Sparkles className="h-4 w-4 text-accent" />
                 </span>
                 <h2 className="mt-4 font-display text-2xl leading-tight tracking-tight text-ink">
                   Ask a grounded question
                 </h2>
-                <p className="mt-2 max-w-md text-[13px] leading-relaxed text-meta">
+                <p className="mt-2 max-w-md text-[13px] leading-relaxed text-ink-muted">
                   Answers are drawn from the indexed RBI, SEBI and NCFE
                   publications and cite the passages they use. Where the corpus
                   holds nothing close to the question, the counselor answers
@@ -249,7 +249,7 @@ function CounselorWorkspace() {
                     <button
                       key={c}
                       onClick={() => send(c)}
-                      className="rounded-md border border-line bg-surface px-3 py-1.5 text-[12px] text-ink-2 transition hover:border-forest hover:bg-sage hover:text-sage-ink"
+                      className="rounded-md border border-rule bg-surface px-3 py-1.5 text-[12px] text-ink transition hover:border-accent hover:bg-accent-weak hover:text-accent"
                     >
                       {c}
                     </button>
@@ -266,25 +266,25 @@ function CounselorWorkspace() {
                       <span
                         className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded border ${
                           m.role === "ai"
-                            ? "border-forest bg-forest"
-                            : "border-line bg-surface-2"
+                            ? "border-accent bg-accent"
+                            : "border-rule bg-surface"
                         }`}
                       >
                         {m.role === "ai" ? (
-                          <ShieldCheck className="h-3.5 w-3.5 text-on-forest" />
+                          <ShieldCheck className="h-3.5 w-3.5 text-paper" />
                         ) : (
-                          <User className="h-3.5 w-3.5 text-meta" />
+                          <User className="h-3.5 w-3.5 text-ink-muted" />
                         )}
                       </span>
 
                       <div className="min-w-0 flex-1">
-                        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-meta">
+                        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-ink-muted">
                           {m.role === "ai" ? "Counselor" : "You"}
                         </p>
 
                         {m.mode === "general" && (
                           <div className="mt-2">
-                            <Pill tone="ochre">
+                            <Pill tone="caution">
                               <TriangleAlert className="h-3 w-3 shrink-0" />
                               General knowledge — not from a verified source
                             </Pill>
@@ -292,7 +292,7 @@ function CounselorWorkspace() {
                         )}
 
                         <div
-                          className={`mt-1.5 text-ink-2 ${
+                          className={`mt-1.5 text-ink ${
                             streaming ? "caret-stream" : ""
                           }`}
                         >
@@ -306,7 +306,7 @@ function CounselorWorkspace() {
                         </div>
 
                         {m.mode !== "general" && m.sources?.length ? (
-                          <div className="mt-3 flex flex-wrap gap-1.5 border-t border-line pt-3">
+                          <div className="mt-3 flex flex-wrap gap-1.5 border-t border-rule pt-3">
                             {m.sources.map((s) => {
                               const meta = metaFor(s.source);
                               return (
@@ -316,8 +316,8 @@ function CounselorWorkspace() {
                                   aria-pressed={activeN === s.n}
                                   className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-1 text-[11px] transition ${
                                     activeN === s.n
-                                      ? "border-sage-line bg-sage text-sage-ink"
-                                      : "border-line bg-surface text-meta hover:border-line-strong hover:text-ink"
+                                      ? "border-rule bg-accent-weak text-accent"
+                                      : "border-rule bg-surface text-ink-muted hover:border-rule hover:text-ink"
                                   }`}
                                 >
                                   <Figure className="font-medium">
@@ -339,7 +339,7 @@ function CounselorWorkspace() {
             <div ref={endRef} />
           </div>
 
-          <div className="border-t border-line px-5 py-4">
+          <div className="border-t border-rule px-5 py-4">
             {messages.length > 0 && (
               <div className="mb-2.5 flex flex-wrap gap-1.5">
                 {CHIPS.slice(0, 3).map((c) => (
@@ -347,7 +347,7 @@ function CounselorWorkspace() {
                     key={c}
                     onClick={() => send(c)}
                     disabled={loading}
-                    className="rounded-md border border-line bg-surface px-2.5 py-1 text-[11px] text-meta transition hover:border-forest hover:text-ink disabled:opacity-45"
+                    className="rounded-md border border-rule bg-surface px-2.5 py-1 text-[11px] text-ink-muted transition hover:border-accent hover:text-ink disabled:opacity-45"
                   >
                     {c}
                   </button>
@@ -355,26 +355,26 @@ function CounselorWorkspace() {
               </div>
             )}
 
-            <div className="flex items-center gap-2 rounded-md border border-line bg-surface-2 px-3 py-1.5 focus-within:border-forest">
+            <div className="flex items-center gap-2 rounded-md border border-rule bg-surface px-3 py-1.5 focus-within:border-accent">
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && send()}
                 placeholder="Ask about SIPs, credit cards, emergency funds, tax"
                 aria-label="Question for the counselor"
-                className="w-full bg-transparent py-1.5 text-[13px] text-ink outline-none placeholder:text-meta"
+                className="w-full bg-transparent py-1.5 text-[13px] text-ink outline-none placeholder:text-ink-muted"
               />
               <button
                 onClick={() => send()}
                 disabled={loading || !input.trim()}
-                className="inline-flex shrink-0 items-center gap-1.5 rounded bg-forest px-3 py-1.5 text-[12px] font-medium text-on-forest transition hover:bg-forest-hover disabled:cursor-not-allowed disabled:opacity-45"
+                className="inline-flex shrink-0 items-center gap-1.5 rounded bg-accent px-3 py-1.5 text-[12px] font-medium text-paper transition hover:bg-accent disabled:cursor-not-allowed disabled:opacity-45"
               >
                 {loading ? "Retrieving" : "Send"}
                 <Send className="h-3 w-3" />
               </button>
             </div>
 
-            <p className="mt-2 flex items-center gap-1.5 text-[11px] text-meta">
+            <p className="mt-2 flex items-center gap-1.5 text-[11px] text-ink-muted">
               <ShieldCheck className="h-3 w-3 shrink-0" />
               Cited answers come from official regulatory documents; anything
               else is flagged as general knowledge. Educational use only; not
@@ -392,7 +392,7 @@ export default function Counselor() {
     <Suspense
       fallback={
         <main className="mx-auto w-full max-w-[1400px] flex-1 px-5 py-8">
-          <p className="text-[13px] text-meta">Loading workspace…</p>
+          <p className="text-[13px] text-ink-muted">Loading workspace…</p>
         </main>
       }
     >

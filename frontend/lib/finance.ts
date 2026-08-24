@@ -81,7 +81,15 @@ export function healthScore(
   const wants = clamp01(2 - r.Wants / RULE.wants) * 30;
   const needs = clamp01(2 - r.Needs / RULE.needs) * 15;
 
-  const spent = (totals.Needs ?? 0) + (totals.Wants ?? 0) + (totals.Savings ?? 0);
+  // Uncategorised money is excluded from the three RATIOS above — it must not
+  // be scored as Wants before anyone has said it is. It is still money that
+  // left the account, so it counts here: leaving it out would report an
+  // unspent buffer the student does not actually have.
+  const spent =
+    (totals.Needs ?? 0) +
+    (totals.Wants ?? 0) +
+    (totals.Savings ?? 0) +
+    (totals.Uncategorised ?? 0);
   const leftover = (allowance - spent) / (allowance > 0 ? allowance : 1);
   const buffer = clamp01(leftover / 0.1) * 15;
 
@@ -129,7 +137,13 @@ export function guiltFree(
 ): GuiltFree {
   const fixed = totals.Needs ?? 0;
   const investmentTarget = allowance * RULE.savings;
-  const safeToSpend = Math.max(0, allowance - fixed - investmentTarget);
+  // Uncategorised spending has already left the account, so it reduces what is
+  // genuinely free to burn even though it is not yet counted as Wants.
+  const unplaced = totals.Uncategorised ?? 0;
+  const safeToSpend = Math.max(
+    0,
+    allowance - fixed - investmentTarget - unplaced,
+  );
   const alreadySpentOnWants = totals.Wants ?? 0;
   const remaining = Math.max(0, safeToSpend - alreadySpentOnWants);
   const days = Math.max(1, daysLeft);

@@ -40,13 +40,15 @@ export default function GlobalHeader() {
     return () => document.removeEventListener("keydown", onKey);
   }, [menuOpen]);
 
+  // The bar is opaque, not translucent: Section 3.6 rules out the blur that
+  // used to sit behind it, and a see-through bar without one reads broken.
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-surface/85 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-rule bg-paper">
       <div className="mx-auto flex max-w-[1400px] items-center gap-3 px-5 py-2.5">
         {/* Mark always; wordmark only where there is room for it (>=1280). */}
         <Link href="/" className="flex shrink-0 items-center gap-2.5">
-          <span className="flex h-7 w-7 items-center justify-center rounded bg-forest">
-            <TrendingUp className="h-4 w-4 text-on-forest" />
+          <span className="flex h-7 w-7 items-center justify-center rounded bg-accent">
+            <TrendingUp className="h-4 w-4 text-paper" />
           </span>
           <span className="hidden text-sm font-semibold tracking-tight text-ink xl:inline">
             FinPath India
@@ -69,14 +71,14 @@ export default function GlobalHeader() {
                 className={`relative whitespace-nowrap rounded-md px-3 py-1.5 text-[13px] transition ${
                   active
                     ? "font-medium text-ink"
-                    : "text-meta hover:bg-surface-2 hover:text-ink"
+                    : "text-ink-muted hover:bg-surface hover:text-ink"
                 }`}
               >
                 {item.label}
                 {active && (
                   <span
                     aria-hidden="true"
-                    className="absolute inset-x-3 -bottom-2.5 h-px bg-forest"
+                    className="absolute inset-x-3 -bottom-2.5 h-px bg-accent"
                   />
                 )}
               </Link>
@@ -97,7 +99,7 @@ export default function GlobalHeader() {
             aria-expanded={menuOpen}
             aria-controls="mobile-menu"
             aria-label={menuOpen ? "Close menu" : "Open menu"}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-line bg-surface text-meta transition hover:border-line-strong hover:text-ink lg:hidden"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-rule bg-surface text-ink-muted transition hover:border-rule hover:text-ink lg:hidden"
           >
             {menuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
@@ -108,7 +110,7 @@ export default function GlobalHeader() {
       {menuOpen && (
         <div
           id="mobile-menu"
-          className="fade-up border-t border-line bg-surface px-5 py-3 lg:hidden"
+          className="fade-up border-t border-rule bg-surface px-5 py-3 lg:hidden"
         >
           <nav aria-label="Main" className="grid gap-0.5">
             {NAV.map((item) => {
@@ -121,8 +123,8 @@ export default function GlobalHeader() {
                   aria-current={active ? "page" : undefined}
                   className={`rounded-md px-3 py-2 text-[14px] transition ${
                     active
-                      ? "bg-sage font-medium text-sage-ink"
-                      : "text-ink-2 hover:bg-surface-2 hover:text-ink"
+                      ? "bg-accent-weak font-medium text-accent"
+                      : "text-ink hover:bg-surface hover:text-ink"
                   }`}
                 >
                   {item.label}
@@ -131,13 +133,13 @@ export default function GlobalHeader() {
             })}
           </nav>
 
-          <div className="mt-3 flex items-center justify-between gap-3 border-t border-line pt-3">
+          <div className="mt-3 flex items-center justify-between gap-3 border-t border-rule pt-3">
             <button
               onClick={() => {
                 setMenuOpen(false);
                 openCommandPalette();
               }}
-              className="inline-flex items-center gap-2 rounded-md border border-line bg-surface px-3 py-2 text-[13px] text-meta transition hover:border-line-strong hover:text-ink"
+              className="inline-flex items-center gap-2 rounded-md border border-rule bg-surface px-3 py-2 text-[13px] text-ink-muted transition hover:border-rule hover:text-ink"
             >
               <Search className="h-4 w-4" />
               Search

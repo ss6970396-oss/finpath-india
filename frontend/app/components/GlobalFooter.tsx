@@ -25,23 +25,23 @@ const BLOCKS = [
 
 export default function GlobalFooter() {
   return (
-    <footer className="mt-auto border-t border-line bg-canvas-alt">
+    <footer className="mt-auto border-t border-rule bg-surface">
       <div className="mx-auto max-w-[1400px] px-5 py-10">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {BLOCKS.map((b) => (
             <div key={b.title}>
               <p className="flex items-center gap-2 text-[13px] font-medium text-ink">
-                <b.icon className="h-3.5 w-3.5 shrink-0 text-meta" />
+                <b.icon className="h-3.5 w-3.5 shrink-0 text-ink-muted" />
                 {b.title}
               </p>
-              <p className="mt-2 text-[12px] leading-relaxed text-meta">
+              <p className="mt-2 text-[12px] leading-relaxed text-ink-muted">
                 {b.body}
               </p>
             </div>
           ))}
         </div>
 
-        <div className="mt-8 flex flex-col gap-2 border-t border-line pt-5 text-[12px] text-meta sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-8 flex flex-col gap-2 border-t border-rule pt-5 text-[12px] text-ink-muted sm:flex-row sm:items-center sm:justify-between">
           <p>
             FinPath India · Suraj Pratap Singh · MVSR Engineering College,
             Dept. of CSIT

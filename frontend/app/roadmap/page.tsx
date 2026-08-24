@@ -165,7 +165,7 @@ export default function Roadmap() {
           <h1 className="mt-1.5 font-display text-[clamp(2rem,4vw,2.75rem)] leading-tight tracking-tight text-ink">
             My Plan
           </h1>
-          <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-meta">
+          <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-ink-muted">
             Four stages, in order. Each one is scored from the same diagnosis
             the Spending Engine runs, so the ladder moves when your ratios do.
           </p>
@@ -176,8 +176,8 @@ export default function Roadmap() {
             <Figure className="text-2xl font-semibold tracking-tight text-ink">
               {completed}
             </Figure>
-            <Figure className="text-[13px] text-meta">/ {tasks.length}</Figure>
-            <Pill tone={openTasks.length === 0 ? "sage" : "ochre"} className="ml-1">
+            <Figure className="text-[13px] text-ink-muted">/ {tasks.length}</Figure>
+            <Pill tone={openTasks.length === 0 ? "positive" : "caution"} className="ml-1">
               {openTasks.length === 0
                 ? "No open gaps"
                 : `${openTasks.length} flagged`}
@@ -197,23 +197,23 @@ export default function Roadmap() {
                   <span
                     className={`flex h-7 w-7 items-center justify-center rounded border ${
                       complete
-                        ? "border-forest bg-forest"
-                        : "border-line bg-surface-2"
+                        ? "border-accent bg-accent"
+                        : "border-rule bg-surface"
                     }`}
                   >
                     <s.icon
-                      className={`h-3.5 w-3.5 ${complete ? "text-on-forest" : "text-meta"}`}
+                      className={`h-3.5 w-3.5 ${complete ? "text-paper" : "text-ink-muted"}`}
                     />
                   </span>
                   <Label>Stage {s.n}</Label>
                 </span>
-                {complete && <Pill tone="sage">Complete</Pill>}
+                {complete && <Pill tone="positive">Complete</Pill>}
               </div>
 
               <h2 className="mt-3.5 font-display text-lg leading-snug tracking-tight text-ink">
                 {s.title}
               </h2>
-              <p className="mt-1.5 flex-1 text-[12px] leading-relaxed text-meta">
+              <p className="mt-1.5 flex-1 text-[12px] leading-relaxed text-ink-muted">
                 {s.goal}
               </p>
 
@@ -226,9 +226,9 @@ export default function Roadmap() {
                 </div>
                 <Meter
                   value={s.progress}
-                  tone={complete ? "sage" : s.progress > 0 ? "ochre" : "rust"}
+                  fill={complete ? "bg-positive" : s.progress > 0 ? "bg-caution" : "bg-critical"}
                 />
-                <p className="mt-2 text-[11px] leading-relaxed text-meta">
+                <p className="mt-2 text-[11px] leading-relaxed text-ink-muted">
                   {s.metric}
                 </p>
               </div>
@@ -244,13 +244,13 @@ export default function Roadmap() {
             title="Action checklist"
             sub="Generated from the gaps in your current diagnosis. Flagged items are the ones the numbers say are open."
           />
-          <ul className="divide-y divide-line">
+          <ul className="divide-y divide-rule">
             {stages.map((stage) => {
               const stageTasks = tasks.filter((t) => t.stage === stage.id);
               return (
                 <li key={stage.id}>
-                  <p className="flex items-center gap-2 bg-surface-2 px-5 py-2">
-                    <Figure className="text-[11px] text-meta">
+                  <p className="flex items-center gap-2 bg-surface px-5 py-2">
+                    <Figure className="text-[11px] text-ink-muted">
                       0{stage.n}
                     </Figure>
                     <span className="text-[12px] font-medium text-ink">
@@ -261,7 +261,7 @@ export default function Roadmap() {
                     {stageTasks.map((t) => {
                       const checked = !!done[t.id];
                       return (
-                        <li key={t.id} className="border-t border-line">
+                        <li key={t.id} className="border-t border-rule">
                           <div className="flex gap-3 px-5 py-3.5">
                             <button
                               onClick={() => toggleTask(t.id)}
@@ -271,9 +271,9 @@ export default function Roadmap() {
                               className="mt-0.5 shrink-0"
                             >
                               {checked ? (
-                                <CircleCheck className="h-4 w-4 text-forest-ink" />
+                                <CircleCheck className="h-4 w-4 text-accent" />
                               ) : (
-                                <Circle className="h-4 w-4 text-line-strong" />
+                                <Circle className="h-4 w-4 text-rule" />
                               )}
                             </button>
                             <div className="min-w-0 flex-1">
@@ -281,17 +281,17 @@ export default function Roadmap() {
                                 <span
                                   className={`text-[13px] font-medium ${
                                     checked
-                                      ? "text-meta line-through"
+                                      ? "text-ink-muted line-through"
                                       : "text-ink"
                                   }`}
                                 >
                                   {t.label}
                                 </span>
                                 {t.flagged && !checked && (
-                                  <Pill tone="ochre">Gap</Pill>
+                                  <Pill tone="caution">Gap</Pill>
                                 )}
                               </div>
-                              <p className="mt-1 text-[12px] leading-relaxed text-meta">
+                              <p className="mt-1 text-[12px] leading-relaxed text-ink-muted">
                                 {t.how}
                               </p>
                             </div>
@@ -304,7 +304,7 @@ export default function Roadmap() {
               );
             })}
           </ul>
-          <p className="flex items-start gap-1.5 border-t border-line px-5 py-3.5 text-[11px] leading-relaxed text-meta">
+          <p className="flex items-start gap-1.5 border-t border-rule px-5 py-3.5 text-[11px] leading-relaxed text-ink-muted">
             <Info className="mt-0.5 h-3 w-3 shrink-0" />
             Completion is stored in this browser only. Stage 1 is self-attested
             because the transaction feed carries no liability data — nothing in
@@ -319,27 +319,27 @@ export default function Roadmap() {
               <Figure className="text-4xl font-semibold tracking-tight text-ink">
                 {health.score}
               </Figure>
-              <Figure className="text-[13px] text-meta">/100</Figure>
+              <Figure className="text-[13px] text-ink-muted">/100</Figure>
               <Pill
-                tone={health.score >= 60 ? "sage" : health.score >= 40 ? "ochre" : "rust"}
+                tone={health.score >= 60 ? "positive" : health.score >= 40 ? "caution" : "critical"}
                 className="ml-1"
               >
                 {health.band}
               </Pill>
             </div>
-            <dl className="mt-4 space-y-2 border-t border-line pt-3.5">
+            <dl className="mt-4 space-y-2 border-t border-rule pt-3.5">
               {[
                 ["Needs", ratio.Needs, RULE.needs],
                 ["Wants", ratio.Wants, params.wants_threshold],
                 ["Savings", ratio.Savings, RULE.savings],
               ].map(([k, v, t]) => (
                 <div key={String(k)} className="flex items-center justify-between gap-3">
-                  <dt className="text-[12px] text-meta">{k}</dt>
+                  <dt className="text-[12px] text-ink-muted">{k}</dt>
                   <dd className="flex items-baseline gap-1.5">
                     <Figure className="text-[13px] text-ink">
                       {pct(v as number, 1)}
                     </Figure>
-                    <Figure className="text-[11px] text-meta">
+                    <Figure className="text-[11px] text-ink-muted">
                       / {pct(t as number)}
                     </Figure>
                   </dd>
@@ -348,7 +348,7 @@ export default function Roadmap() {
             </dl>
             <Link
               href="/spending"
-              className="mt-4 inline-flex items-center gap-1.5 border-t border-line pt-3.5 text-[12px] font-medium text-ink hover:gap-2.5"
+              className="mt-4 inline-flex items-center gap-1.5 border-t border-rule pt-3.5 text-[12px] font-medium text-ink hover:gap-2.5"
             >
               Re-run the diagnosis <ArrowRight className="h-3.5 w-3.5" />
             </Link>
@@ -356,10 +356,10 @@ export default function Roadmap() {
 
           <Card className="p-5">
             <Label>Free to allocate</Label>
-            <Figure className="mt-2 block text-2xl font-semibold tracking-tight text-forest-ink">
+            <Figure className="mt-2 block text-2xl font-semibold tracking-tight text-accent">
               {inr(gf.remaining)}
             </Figure>
-            <p className="mt-1.5 text-[12px] leading-relaxed text-meta">
+            <p className="mt-1.5 text-[12px] leading-relaxed text-ink-muted">
               Left in the discretionary envelope this month after fixed costs
               and the{" "}
               <Figure className="text-ink">{inr(gf.investmentTarget)}</Figure>{" "}

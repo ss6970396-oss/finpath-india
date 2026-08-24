@@ -32,7 +32,17 @@ npx eslint app               # `next lint` was REMOVED in Next 16
 npx tsc --noEmit
 ```
 
-There is **no test suite** — no pytest, no vitest/jest, no test files. Verify backend changes against `/api/health` and the two endpoints; verify frontend changes with `npx tsc --noEmit` and `npx next build`.
+The **backend has no test suite** — no pytest, no test files. Verify backend changes against `/api/health` and the two endpoints.
+
+The frontend has Vitest, covering `lib/` only:
+
+```bash
+cd frontend
+npm test                     # vitest run
+npm run test:watch
+```
+
+`vitest.config.mts` must keep the `.mts` extension — as `.ts` it loads as CommonJS and Vite warns on every run. The suite is `environment: "node"` and `include: ["lib/**/*.test.ts"]` on purpose: everything under test is a pure function, and a jsdom environment would only invite tests that assert on rendering instead of on logic. Verify frontend changes with `npm test`, `npx tsc --noEmit` and `npx next build`.
 
 `backend/.env` holds `GOOGLE_API_KEY` and `DATABASE_URL`, loaded via `python-dotenv`. `db.ensure_schema()` runs automatically on API startup and before every ingest, so no manual DDL is needed.
 
@@ -83,13 +93,49 @@ If you edit either implementation, keep `sip_future_value` and `sipFutureValue` 
 
 ### Frontend routes
 
-- `/` — dark landing page, uses `app/components/HeroAnimation.tsx` (pure SVG + CSS keyframes, no JS)
+- `/` — landing page
 - `/counselor` — streaming chat against `/api/chat`
-- `/dashboard` — nudge engine UI: category cards, amber alert, recharts `AreaChart`, What-If slider
+- `/spending`, `/simulator`, `/vault`, `/roadmap` — the pre-spec six-page build
+- `/style-guide` — every design token, type role and primitive on one page
 
-The backend URL `http://localhost:8000` is hardcoded in both `counselor/page.tsx` and `dashboard/page.tsx` — there is no env var, so changing hosts means editing both. CORS on the backend is `allow_origins=["*"]`.
+The backend URL `http://localhost:8000` is hardcoded in `counselor/page.tsx` and `spending/page.tsx` — there is no env var, so changing hosts means editing both. CORS on the backend is `allow_origins=["*"]`.
 
-`app/layout.tsx` sets a dark body (`bg-slate-950 text-slate-100`), but `/counselor` and `/dashboard` are still the pre-redesign light theme (`bg-slate-50`, white cards). Elements without an explicit text colour inherit light text and render white-on-white. Set colours explicitly when editing those two pages.
+### Design system
+
+`frontend/app/globals.css` is the whole system, and it is closed: **eleven colour variables, and no twelfth may be added.** Six roles (`paper`, `surface`, `rule`, `ink`, `ink-muted`, `accent` + `accent-weak`) and two semantics (`warn`, `danger`, each with a `-weak` tint). `warn` renders only when a rule has actually fired — never as emphasis. No gradients, no blur backdrops, no accent stripes, nothing rounded past `--radius-lg` (10px), and exactly two shadows.
+
+Dark mode re-points those same eleven variables under a single `.dark` class. There is no second palette and no `prefers-color-scheme` block: `lib/theme.ts` resolves System → light/dark in a blocking script in `app/layout.tsx`, so the stylesheet never duplicates the values. `ThemeToggle` reads the setting through `useSyncExternalStore` — do not copy it into state inside an effect, the lint rule rejects it.
+
+Type roles are utilities, not ad-hoc sizes: `display-xl/lg/md`, `body-lg`, `body-base`, `label-ui`, `caption`, `overline-ui`, `amount-xl`, `amount`. Three of those are renamed from the design spec because Tailwind already owns the plain name — `overline` is a text-decoration utility, so the role is `overline-ui`; likewise `label-ui` and `body-base`. Fonts are Newsreader (display), IBM Plex Sans + Devanagari (UI), IBM Plex Mono (every numeral, always tabular).
+
+`components/ui/` is generated shadcn code that reads its own semantic names (`--color-primary`, `--color-muted`, …). Those are bridged onto the eleven tokens in the `@theme inline` block, so a regenerated primitive cannot smuggle in a colour. Note the one trap: shadcn's `accent` means "subtle hover ground" while ours means the brand green, so the primitives use `muted` for hover instead — check any newly added primitive for `bg-accent`.
+
+**`/style-guide` is the review surface.** It reads each token's resolved value out of the DOM, so it proves what the utilities actually compile to rather than restating the source. Check a visual change there in both themes before checking it on a feature page.
+
+### The statement parser (`frontend/lib/csv.ts`)
+
+Runs entirely in the browser; an uploaded statement never reaches the API. It is the most-tested code in the repo (`lib/csv.test.ts`) — change it with the suite, not by eye.
+
+**Three amount shapes**, resolved from the header row: a single signed column; a Debit/Credit pair (`amount = credit − debit`, and a row is valid if *either* cell parses, so a credit-only row with a blank debit is fine); or an amount column plus a Dr/Cr type column. When both an amount column and a type column are present the typed shape wins — otherwise the type column would be silently ignored and every debit would read as income.
+
+Two header-matching traps, both fixed and both regression-tested:
+
+- Aliases shorter than `MIN_FUZZY_ALIAS` (4) are matched **exactly, never as a substring**. `"cr"` is a legitimate alias for the Credit column and also sits inside `"Des-cr-iption"`, which bound Description as the Credit column on essentially every signed-amount file.
+- A `Dr/Cr` header is excluded from Debit/Credit matching, or it gets bound as the Debit column.
+
+**A single unsigned column is ambiguous** — either a signed ledger with no credits this month, or a spend-only export of magnitudes. The convention is decided by the file: a signed column is only read as signed if it carries a negative *somewhere*, otherwise `magnitudesOnly` is set and every row is money out. Without this, a spend-only export (our own template included) parses as all income and no spend.
+
+**Income is not spend.** Credits are excluded from every bucket and therefore from the denominator the 30% Wants rule measures against. They surface as the "Money in" row and, when a recurring credit clears `ALLOWANCE_SHARE` of monthly income, as an allowance *suggestion* — `detectAllowance` never writes the profile, the student has to accept it.
+
+**`Uncategorised` is a real bucket, not a failure.** The residual of `classify()` is Uncategorised, never Wants: defaulting it to Wants meant the 30% rule was policing the parser's ignorance as much as the student's spending. Only `rule`- and `user`-assigned rows count toward it. Uncategorised money is still excluded from the three ratios but **included** in `healthScore`'s spent total and deducted in `guiltFree` — it left the account, so treating it as unspent buffer would flatter the score. `tagFor` keeps its "Shopping" fallback for display; category decisions must use `knownTagFor`, which returns null.
+
+### Frontend components
+
+`components/finpath/` is the application component set; import from the `@/components/finpath` barrel, never from the individual files. The primitive everything money-related composes from is `LedgerRule` — label, tabular amount, and a 1px hairline the amount rests on. That hairline is the product's signature and carries meaning ("this is a real number"), so **never draw a rule as decoration** — not under a heading, not as a divider flourish.
+
+`lib/money.ts` is the only place rupees are formatted (`en-IN` grouping, never a rounded-off `1.2L` outside a chart axis) and it carries `inrToWords` for the accessible label every amount needs. `lib/format.ts` is a thin shorthand over it — do not add a second implementation there.
+
+Compliance copy lives in `DisclaimerNote` and is never retyped at a call site. It is required on every counsellor answer, the simulator, every goal card, every nudge, and the dashboard hero.
 
 ## Conventions
 

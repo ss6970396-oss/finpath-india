@@ -29,7 +29,7 @@ export default function CitationInspector({
   if (!active) {
     return (
       <div className="flex h-full flex-col">
-        <div className="border-b border-line px-5 py-3.5">
+        <div className="border-b border-rule px-5 py-3.5">
           <Label>Citation inspector</Label>
         </div>
         <Empty
@@ -45,15 +45,15 @@ export default function CitationInspector({
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex items-center justify-between gap-2 border-b border-line px-5 py-3.5">
+      <div className="flex items-center justify-between gap-2 border-b border-rule px-5 py-3.5">
         <Label>Citation inspector</Label>
         <button
           onClick={() => setPreview((v) => !v)}
           aria-pressed={preview}
           className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-[12px] transition ${
             preview
-              ? "border-sage-line bg-sage text-sage-ink"
-              : "border-line bg-surface text-meta hover:text-ink"
+              ? "border-rule bg-accent-weak text-accent"
+              : "border-rule bg-surface text-ink-muted hover:text-ink"
           }`}
         >
           <FileText className="h-3 w-3" />
@@ -63,7 +63,7 @@ export default function CitationInspector({
 
       {/* source switcher */}
       {sources.length > 1 && (
-        <div className="flex flex-wrap gap-1.5 border-b border-line px-5 py-2.5">
+        <div className="flex flex-wrap gap-1.5 border-b border-rule px-5 py-2.5">
           {sources.map((s) => (
             <button
               key={s.n}
@@ -71,8 +71,8 @@ export default function CitationInspector({
               aria-pressed={s.n === active.n}
               className={`figure rounded border px-2 py-0.5 text-[11px] transition ${
                 s.n === active.n
-                  ? "border-forest bg-forest text-on-forest"
-                  : "border-line bg-surface text-meta hover:text-ink"
+                  ? "border-accent bg-accent text-paper"
+                  : "border-rule bg-surface text-ink-muted hover:text-ink"
               }`}
             >
               [{s.n}]
@@ -84,7 +84,7 @@ export default function CitationInspector({
       <div className="min-h-0 flex-1 overflow-y-auto">
         <div className="px-5 py-4">
           <div className="flex flex-wrap items-center gap-1.5">
-            <Pill tone="sage">{meta.issuer}</Pill>
+            <Pill tone="positive">{meta.issuer}</Pill>
             <Pill>{meta.category}</Pill>
             <Pill>
               <Figure>
@@ -96,35 +96,35 @@ export default function CitationInspector({
           <h3 className="mt-3 font-display text-lg leading-snug tracking-tight text-ink">
             {meta.title}
           </h3>
-          <p className="figure mt-1 break-all text-[11px] text-meta">
+          <p className="figure mt-1 break-all text-[11px] text-ink-muted">
             {active.source}
           </p>
 
           {meta.note && (
-            <p className="mt-2.5 text-[12px] leading-relaxed text-meta">
+            <p className="mt-2.5 text-[12px] leading-relaxed text-ink-muted">
               {meta.note}
             </p>
           )}
 
-          <p className="mt-2 text-[11px] text-meta">
+          <p className="mt-2 text-[11px] text-ink-muted">
             Issuer {meta.attribution}.
           </p>
         </div>
 
         {/* verbatim excerpt */}
-        <div className="border-t border-line px-5 py-4">
+        <div className="border-t border-rule px-5 py-4">
           <Label>Retrieved passage</Label>
           {active.snippet ? (
-            <blockquote className="mt-2 whitespace-pre-wrap rounded-md border border-line bg-surface-2 p-3.5 text-[13px] leading-relaxed text-ink-2">
+            <blockquote className="mt-2 whitespace-pre-wrap rounded-md border border-rule bg-surface p-3.5 text-[13px] leading-relaxed text-ink">
               {active.snippet}
             </blockquote>
           ) : (
-            <p className="mt-2 rounded-md border border-line bg-surface-2 p-3.5 text-[13px] text-meta">
+            <p className="mt-2 rounded-md border border-rule bg-surface p-3.5 text-[13px] text-ink-muted">
               Passage text was not included with this response. Ask again to
               retrieve it.
             </p>
           )}
-          <p className="mt-2 flex items-start gap-1.5 text-[11px] leading-relaxed text-meta">
+          <p className="mt-2 flex items-start gap-1.5 text-[11px] leading-relaxed text-ink-muted">
             <ScrollText className="mt-0.5 h-3 w-3 shrink-0" />
             This is the exact chunk the retriever matched. The counselor is
             instructed to answer from this text and nothing else.
@@ -133,9 +133,9 @@ export default function CitationInspector({
 
         {/* page preview */}
         {preview && (
-          <div className="border-t border-line px-5 py-4">
+          <div className="border-t border-rule px-5 py-4">
             <Label>Document page</Label>
-            <div className="mt-2 overflow-hidden rounded-md border border-line bg-surface-2">
+            <div className="mt-2 overflow-hidden rounded-md border border-rule bg-surface">
               <iframe
                 key={`${active.source}-${active.page}`}
                 src={`${API}/api/source/${encodeURIComponent(active.source)}#page=${active.page}`}
@@ -152,7 +152,7 @@ export default function CitationInspector({
               <ExternalLink className="h-3 w-3" />
               Open the full document
             </a>
-            <p className="mt-1.5 text-[11px] leading-relaxed text-meta">
+            <p className="mt-1.5 text-[11px] leading-relaxed text-ink-muted">
               Served from the local corpus. If the frame is blank, the document
               is indexed but its file is no longer in the ingest directory.
             </p>
@@ -160,7 +160,7 @@ export default function CitationInspector({
         )}
 
         {/* what the index does not hold */}
-        <div className="border-t border-line px-5 py-4">
+        <div className="border-t border-rule px-5 py-4">
           <Label>Not recorded in the index</Label>
           <ul className="mt-2 space-y-1">
             {UNRECORDED_FIELDS.map((f) => (
@@ -168,12 +168,12 @@ export default function CitationInspector({
                 key={f}
                 className="flex items-center justify-between gap-3 text-[12px]"
               >
-                <span className="text-meta">{f}</span>
-                <span className="shrink-0 text-[11px] text-meta">—</span>
+                <span className="text-ink-muted">{f}</span>
+                <span className="shrink-0 text-[11px] text-ink-muted">—</span>
               </li>
             ))}
           </ul>
-          <p className="mt-2.5 flex items-start gap-1.5 text-[11px] leading-relaxed text-meta">
+          <p className="mt-2.5 flex items-start gap-1.5 text-[11px] leading-relaxed text-ink-muted">
             <Info className="mt-0.5 h-3 w-3 shrink-0" />
             The index stores source, page and text only. These fields are shown
             as unrecorded rather than filled in, because inferring a circular

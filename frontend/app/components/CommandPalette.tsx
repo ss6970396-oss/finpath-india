@@ -148,7 +148,7 @@ export default function CommandPalette({
         title="Search (Ctrl+K)"
         aria-label="Search pages and tools"
         aria-keyshortcuts="Control+K Meta+K"
-        className={`h-8 w-8 items-center justify-center rounded-md border border-line bg-surface text-meta transition hover:border-line-strong hover:text-ink ${triggerClassName || "inline-flex"}`}
+        className={`h-8 w-8 items-center justify-center rounded-md border border-rule bg-surface text-ink-muted transition hover:border-rule hover:text-ink ${triggerClassName || "inline-flex"}`}
       >
         <Search className="h-4 w-4" />
       </button>
@@ -164,10 +164,10 @@ export default function CommandPalette({
             role="dialog"
             aria-modal="true"
             aria-label="Command palette"
-            className="scale-in relative w-full max-w-lg overflow-hidden rounded-lg border border-line bg-surface shadow-xl"
+            className="scale-in relative w-full max-w-lg overflow-hidden rounded-lg border border-rule bg-surface shadow-xl"
           >
-            <div className="flex items-center gap-2.5 border-b border-line px-4">
-              <Search className="h-4 w-4 shrink-0 text-meta" />
+            <div className="flex items-center gap-2.5 border-b border-rule px-4">
+              <Search className="h-4 w-4 shrink-0 text-ink-muted" />
               <input
                 autoFocus
                 value={query}
@@ -178,16 +178,16 @@ export default function CommandPalette({
                 onKeyDown={onInputKey}
                 placeholder="Search citations, calculators and tools"
                 aria-label="Search citations, calculators and tools"
-                className="w-full bg-transparent py-3.5 text-sm text-ink outline-none placeholder:text-meta"
+                className="w-full bg-transparent py-3.5 text-sm text-ink outline-none placeholder:text-ink-muted"
               />
-              <kbd className="figure hidden shrink-0 rounded border border-line bg-surface-2 px-1.5 py-0.5 text-[10px] text-meta sm:inline">
+              <kbd className="figure hidden shrink-0 rounded border border-rule bg-surface px-1.5 py-0.5 text-[10px] text-ink-muted sm:inline">
                 ⌘K
               </kbd>
             </div>
 
             <ul className="max-h-80 overflow-y-auto py-1.5">
               {results.length === 0 && (
-                <li className="px-4 py-6 text-center text-[13px] text-meta">
+                <li className="px-4 py-6 text-center text-[13px] text-ink-muted">
                   No matches for “{query}”.
                 </li>
               )}
@@ -195,7 +195,7 @@ export default function CommandPalette({
                 return (
                   <li key={e.id}>
                     {firstOfGroup && (
-                      <p className="px-4 pb-1 pt-2.5 text-[10px] font-medium uppercase tracking-[0.08em] text-meta">
+                      <p className="px-4 pb-1 pt-2.5 text-[10px] font-medium uppercase tracking-[0.08em] text-ink-muted">
                         {e.group}
                       </p>
                     )}
@@ -203,13 +203,13 @@ export default function CommandPalette({
                       onMouseEnter={() => setActive(i)}
                       onClick={() => go(e)}
                       className={`flex w-full items-center gap-3 px-4 py-2 text-left text-sm ${
-                        i === active ? "bg-sage text-sage-ink" : "text-ink"
+                        i === active ? "bg-accent-weak text-accent" : "text-ink"
                       }`}
                     >
                       <e.icon className="h-4 w-4 shrink-0 opacity-70" />
                       <span className="min-w-0 flex-1 truncate">{e.label}</span>
                       {e.hint && (
-                        <span className="hidden shrink-0 text-[11px] text-meta sm:block">
+                        <span className="hidden shrink-0 text-[11px] text-ink-muted sm:block">
                           {e.hint}
                         </span>
                       )}

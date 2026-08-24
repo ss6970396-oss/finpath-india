@@ -5,7 +5,7 @@ import {
   useSyncExternalStore,
 } from "react";
 import type { ProjectionParams, ProjectionPoint } from "@/lib/sip";
-import type { ParsedTxn } from "@/lib/csv";
+import type { ParsedTxn, SpendCategory } from "@/lib/csv";
 import { healthScore, ratios, type Health, type BucketRatios } from "@/lib/finance";
 import { createPersistedStore } from "@/lib/persist";
 
@@ -80,9 +80,19 @@ type Ctx = {
   /** CSV-uploaded ledger. When present it overrides the simulated feed. */
   uploaded: ParsedTxn[] | null;
   setUploaded: (t: ParsedTxn[] | null) => void;
+  /** Move one uploaded row into a bucket. Marks it user-assigned. */
+  assignCategory: (id: number, category: SpendCategory) => void;
 
-  /** Totals/transactions in force — uploaded if present, else simulated. */
+  /**
+   * Spend totals in force — uploaded if present, else simulated. Carries
+   * Needs/Wants/Savings/Uncategorised only: money coming IN is not spend and
+   * is reported separately as `income`.
+   */
   totals: Record<string, number>;
+  /** Credits in the uploaded ledger. Always 0 for the simulated feed. */
+  income: number;
+  /** Rows still sitting in the Uncategorised bucket, newest first. */
+  uncategorised: ParsedTxn[];
   transactions: Txn[];
   ratio: BucketRatios;
   health: Health;
@@ -171,19 +181,49 @@ export function FinPathProvider({ children }: { children: React.ReactNode }) {
 
   const reload = useCallback(() => setNonce((n) => n + 1), []);
 
+  const assignCategory = useCallback(
+    (id: number, category: SpendCategory) => {
+      setUploaded((current) =>
+        current
+          ? current.map((t) =>
+              t.id === id ? { ...t, category, categorySource: "user" } : t,
+            )
+          : current,
+      );
+    },
+    [],
+  );
+
   // Uploaded ledger takes precedence over the simulated feed everywhere.
-  const { totals, transactions } = useMemo(() => {
+  const { totals, transactions, income, uncategorised } = useMemo(() => {
     if (uploaded && uploaded.length) {
-      const t = { Needs: 0, Wants: 0, Savings: 0 };
-      for (const x of uploaded) t[x.category] += x.amount;
+      // Credits are not spend. They are excluded from every bucket, and so
+      // from the denominator the 30% Wants rule is measured against —
+      // counting a ₹12,500 allowance credit as "spending" would halve the
+      // ratio and stop the rule firing at all.
+      const t = { Needs: 0, Wants: 0, Savings: 0, Uncategorised: 0 };
+      let credited = 0;
+      for (const x of uploaded) {
+        if (x.direction === "in") {
+          credited += x.amount;
+          continue;
+        }
+        t[x.category as SpendCategory] += x.amount;
+      }
       return {
         totals: t as Record<string, number>,
         transactions: uploaded as Txn[],
+        income: credited,
+        uncategorised: uploaded.filter(
+          (x) => x.direction === "out" && x.category === "Uncategorised",
+        ),
       };
     }
     return {
       totals: data?.totals ?? { Needs: 0, Wants: 0, Savings: 0 },
       transactions: data?.transactions ?? [],
+      income: 0,
+      uncategorised: [] as ParsedTxn[],
     };
   }, [uploaded, data]);
 
@@ -199,12 +239,14 @@ export function FinPathProvider({ children }: { children: React.ReactNode }) {
   const value = useMemo<Ctx>(
     () => ({
       profile, setProfile, data, loading, error, reload,
-      uploaded, setUploaded, totals, transactions, ratio, health,
+      uploaded, setUploaded, assignCategory,
+      totals, income, uncategorised, transactions, ratio, health,
       done, toggleTask,
     }),
     [
       profile, setProfile, data, loading, error, reload,
-      uploaded, totals, transactions, ratio, health, done, toggleTask,
+      uploaded, assignCategory, totals, income, uncategorised,
+      transactions, ratio, health, done, toggleTask,
     ],
   );
 
