@@ -659,6 +659,9 @@ export function skippedToCsv(rows: SkippedRow[]): string {
 }
 
 /** Downloadable template so the expected shape is never a guess. */
+// design-lint-allow: mock-data — a blank template the student downloads and
+// fills in. It is never rendered as their data, and §30 requires it: without
+// a worked example the accepted column shapes are a guessing game.
 export const SAMPLE_CSV = `Date,Description,Debit,Credit
 2026-08-01,Monthly Allowance from Parents,,12500
 2026-08-02,Hostel Mess Fee,3000,

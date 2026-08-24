@@ -1,103 +1,99 @@
-import * as React from "react"
+import * as React from "react";
+import { cn } from "@/lib/utils";
 
-import { cn } from "@/lib/utils"
+/**
+ * Card (§17).
+ *
+ * Used sparingly and on purpose. The default separator in FinPath is a rule
+ * and vertical space — a card is for something that genuinely IS an object:
+ * a source document, a simulator panel, one scenario. Wrapping every section
+ * in a bordered box is what makes an interface read as a generic dashboard,
+ * and §49 asks specifically whether there are unnecessary cards.
+ *
+ * Three grounds, no shadow, no radius:
+ *   outlined  border only, transparent — recedes into the page
+ *   filled    surface ground — groups without shouting
+ *   sunken    for a well or a read-only block inside another surface
+ */
 
-function Card({
+type CardVariant = "outlined" | "filled" | "sunken";
+
+const VARIANTS: Record<CardVariant, string> = {
+  outlined: "border border-line bg-transparent",
+  filled: "border border-line bg-surface",
+  sunken: "bg-surface-sunken",
+};
+
+export function Card({
+  variant = "outlined",
   className,
-  size = "default",
+  children,
   ...props
-}: React.ComponentProps<"div"> & { size?: "default" | "sm" }) {
+}: React.ComponentProps<"div"> & { variant?: CardVariant }) {
+  return (
+    <div className={cn(VARIANTS[variant], className)} {...props}>
+      {children}
+    </div>
+  );
+}
+
+/**
+ * The card's own heading band. The rule under it is structural (it bounds
+ * the header region), which is the one case where a rule is not carrying an
+ * amount — hence `border-line`, the decorative weight.
+ */
+export function CardHeader({
+  title,
+  description,
+  action,
+  className,
+}: {
+  title: React.ReactNode;
+  description?: React.ReactNode;
+  action?: React.ReactNode;
+  className?: string;
+}) {
   return (
     <div
-      data-slot="card"
-      data-size={size}
       className={cn(
-        "group/card flex flex-col gap-(--card-spacing) overflow-hidden rounded-xl bg-card py-(--card-spacing) text-sm text-card-foreground ring-1 ring-foreground/10 [--card-spacing:--spacing(4)] has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3)] data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
-        className
+        "flex flex-wrap items-start justify-between gap-2 border-b border-line px-4 py-4",
+        className,
       )}
-      {...props}
-    />
-  )
+    >
+      <div className="min-w-0">
+        <h3 className="type-subhead text-ink">{title}</h3>
+        {description ? (
+          <p className="type-label mt-1 text-ink-muted">{description}</p>
+        ) : null}
+      </div>
+      {action ? <div className="shrink-0">{action}</div> : null}
+    </div>
+  );
 }
 
-function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
+export function CardBody({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<"div">) {
+  return (
+    <div className={cn("px-4 py-4", className)} {...props}>
+      {children}
+    </div>
+  );
+}
+
+export function CardFooter({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<"div">) {
   return (
     <div
-      data-slot="card-header"
-      className={cn(
-        "group/card-header @container/card-header grid auto-rows-min items-start gap-1 rounded-t-xl px-(--card-spacing) has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto] [.border-b]:pb-(--card-spacing)",
-        className
-      )}
+      className={cn("border-t border-line px-4 py-2", className)}
       {...props}
-    />
-  )
-}
-
-function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      data-slot="card-title"
-      className={cn(
-        "font-heading text-base leading-snug font-medium group-data-[size=sm]/card:text-sm",
-        className
-      )}
-      {...props}
-    />
-  )
-}
-
-function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      data-slot="card-description"
-      className={cn("text-sm text-muted-foreground", className)}
-      {...props}
-    />
-  )
-}
-
-function CardAction({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      data-slot="card-action"
-      className={cn(
-        "col-start-2 row-span-2 row-start-1 self-start justify-self-end",
-        className
-      )}
-      {...props}
-    />
-  )
-}
-
-function CardContent({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      data-slot="card-content"
-      className={cn("px-(--card-spacing)", className)}
-      {...props}
-    />
-  )
-}
-
-function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      data-slot="card-footer"
-      className={cn(
-        "flex items-center rounded-b-xl border-t bg-muted/50 p-(--card-spacing)",
-        className
-      )}
-      {...props}
-    />
-  )
-}
-
-export {
-  Card,
-  CardHeader,
-  CardFooter,
-  CardTitle,
-  CardAction,
-  CardDescription,
-  CardContent,
+    >
+      {children}
+    </div>
+  );
 }

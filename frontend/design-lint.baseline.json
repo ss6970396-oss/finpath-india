@@ -1,0 +1,80 @@
+{
+  "note": "Legacy design-system debt in the not-yet-rebuilt pages. This file may only ever shrink, and must be empty before the rebuild is complete (§53). Regenerate with `npm run design-lint -- --update` only after deleting violations.",
+  "counts": {
+    "app/components/CitationInspector.tsx": {
+      "arbitrary-font-size": 13,
+      "rounded": 3
+    },
+    "app/components/CommandPalette.tsx": {
+      "arbitrary-font-size": 4,
+      "rounded": 3,
+      "shadow": 1
+    },
+    "app/components/GlobalFooter.tsx": {
+      "arbitrary-font-size": 3
+    },
+    "app/components/GlobalHeader.tsx": {
+      "arbitrary-font-size": 3,
+      "rounded": 3
+    },
+    "app/components/ImpulseDiagnostic.tsx": {
+      "arbitrary-font-size": 10,
+      "inline-tofixed": 5,
+      "manual-currency": 1,
+      "rounded": 3
+    },
+    "app/components/ProfileSwitcher.tsx": {
+      "arbitrary-font-size": 7,
+      "rounded": 4,
+      "shadow": 1
+    },
+    "app/components/StatementUpload.tsx": {
+      "arbitrary-font-size": 15,
+      "rounded": 7
+    },
+    "app/components/ui.tsx": {
+      "arbitrary-font-size": 3,
+      "rounded": 4
+    },
+    "app/counselor/page.tsx": {
+      "arbitrary-font-size": 16,
+      "rounded": 6
+    },
+    "app/page.tsx": {
+      "arbitrary-font-size": 17,
+      "rounded": 6
+    },
+    "app/providers/FinPathProvider.tsx": {
+      "manual-currency": 2
+    },
+    "app/roadmap/page.tsx": {
+      "arbitrary-font-size": 18
+    },
+    "app/simulator/page.tsx": {
+      "arbitrary-font-size": 28,
+      "rounded": 5
+    },
+    "app/spending/page.tsx": {
+      "arbitrary-font-size": 27,
+      "rounded": 6
+    },
+    "app/vault/page.tsx": {
+      "arbitrary-font-size": 20,
+      "inline-tofixed": 1,
+      "rounded": 5
+    },
+    "components/finpath/AppShell.tsx": {
+      "arbitrary-font-size": 1,
+      "rounded": 4
+    },
+    "components/finpath/Money.tsx": {
+      "arbitrary-font-size": 1
+    },
+    "components/finpath/states.tsx": {
+      "rounded": 5
+    },
+    "lib/csv.ts": {
+      "manual-currency": 2
+    }
+  }
+}

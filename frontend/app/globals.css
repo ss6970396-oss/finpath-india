@@ -1,221 +1,133 @@
 @import "tailwindcss";
-@import "tw-animate-css";
-
-/* Dark is driven by a `.dark` class on <html>, set by the blocking script in
-   app/layout.tsx. That script resolves System -> prefers-color-scheme, so the
-   Settings triad (System / Light / Dark) needs only this one selector and the
-   token block below is never duplicated. */
-@custom-variant dark (&:where(.dark, .dark *));
 
 /* ============================================================
-   THE COLOUR SYSTEM — the only colours in this application.
+   FINPATH DESIGN SYSTEM
 
-   Four groups, and the split between them is the whole point:
+   Thirteen colour tokens. No fourteenth.
+   Radius zero. No shadows. No gradients. No dark mode.
 
-     brand      you can click it, or it is us
-     status     how something is GOING (positive/caution/critical/info)
-     data-*     what something IS (nominal; never changes with status)
-     surface/rule/ink   the ground everything sits on
+   Every value in this file is enforced by two scripts:
+     npm run check-contrast   asserts the WCAG ratios below
+     npm run design-lint      asserts nothing outside this file
+                              introduces a colour, a radius, a
+                              shadow, or an arbitrary size
 
-   One token must never do two of those jobs. The previous system had a
-   single emerald standing in for brand, interaction, "on target" AND a
-   chart series, so a green thing could mean clickable, good news, or
-   Savings, and the reader had no way to tell which.
-
-   No component may introduce a colour. Every value lives here.
+   Section references are to the FinPath master specification.
    ============================================================ */
 
 @theme {
-  /* ---- SURFACES (light) ----
-     A four-step ramp. Depth is carried by the border and, in dark mode, by a
-     1px inset top highlight — luminance alone is too subtle to separate
-     planes on a near-black ground. */
-  --color-paper: #ffffff; /* page background */
-  --color-surface-1: #f7f8f7; /* flat panels, wells, inputs */
-  --color-surface-2: #eff1f0; /* raised cards */
-  --color-surface-3: #e6e9e7; /* popovers, tooltips, overlays */
-  --color-surface-hover: #f2f4f3; /* table and list row hover */
+  /* ---- GROUNDS (§11) ----
+     Three steps. Depth comes from these and from --line. Never from a
+     shadow, a blur, or a gradient. Note there is no pure white: #FCFCFB
+     is warm off-white, which is what stops the page reading as a browser
+     default. */
+  --color-canvas: #fcfcfb; /* the page */
+  --color-surface: #f6f6f4; /* panels that sit on the page */
+  --color-surface-sunken: #efefec; /* wells, inputs, the user's own turn */
+
+  /* ---- INK ----
+     Four weights. No pure black: #2A2A2E is warm charcoal, and it is also
+     --line-strong, because the boundary of a control and the text inside
+     it are the same commitment. */
+  --color-ink: #2a2a2e; /* headings, amounts, primary text */
+  --color-ink-secondary: #5a5a62; /* supporting text */
+  --color-ink-muted: #64646c; /* labels, captions, marginalia */
+  --color-ink-disabled: #a8a8ae; /* disabled only — see the note below */
 
   /* ---- RULES ----
-     Three weights, because a decorative card edge and the boundary of a
-     control have different jobs. WCAG 1.4.11 wants 3:1 on the second kind,
-     which the old single hairline missed at 1.34:1. */
-  --color-rule-subtle: #ecefed; /* dividers inside a card */
-  --color-rule: #dde1de; /* decorative card borders */
-  --color-rule-strong: #7c8581; /* control borders — 3.35:1 on surface-2 */
+     Two weights, and the split is load-bearing.
 
-  /* ---- INK ---- */
-  --color-ink: #12171a; /* headings, primary text, amounts */
-  --color-ink-muted: #52606b; /* labels, captions, secondary text */
-  --color-ink-faint: #5e6972; /* eyebrows, axis labels — tertiary only */
+     --line is 1.24:1 against canvas. That is BELOW the 3:1 that WCAG 2.2
+     SC 1.4.11 requires of a UI component boundary, and it is fine, because
+     1.4.11 exempts purely decorative boundaries. So --line draws dividers,
+     table rules and card edges — and NEVER the border of an input, a
+     select, a checkbox or a button.
 
-  /* ---- BRAND: identity and interaction, nothing else ----
-     Split out from `positive` and from the data ramp so a green thing means
-     exactly one thing: you can click it, or it is us. */
-  --color-brand: #0b6b53;
-  --color-brand-hover: #085a46;
-  --color-brand-press: #064334;
-  --color-brand-weak: #e6f2ee;
-  --color-brand-border: #a8d3c5;
-  --color-on-brand: #ffffff;
+     Controls take --line-strong (13.92:1). check-contrast asserts both. */
+  --color-line: #e4e4e0; /* dividers, table rules, card edges */
+  --color-line-strong: #2a2a2e; /* every interactive boundary */
 
-  /* ---- STATUS: how something is going, never what it is ---- */
-  --color-positive: #0b6b53;
-  --color-positive-weak: #e6f2ee;
-  --color-positive-border: #a8d3c5;
-  --color-caution: #8a5205;
-  --color-caution-weak: #fbf1e0;
-  --color-caution-border: #e2c08a;
-  --color-critical: #a2221a;
-  --color-critical-weak: #fbeceb;
-  --color-critical-border: #eab5b0;
-  --color-info: #1a5fb4; /* informational, not actionable */
-  --color-info-weak: #e8f0fb;
-  --color-info-border: #a9c6ec;
+  /* ---- STATUS ----
+     The only colour in the product. It appears when a rule has actually
+     fired, never as emphasis and never as decoration. A month with nothing
+     wrong in it is entirely ink on canvas.
 
-  /* ---- CATEGORICAL DATA: what something IS ----
-     Nominal, so these never change with status. A category that recolours
-     when the month goes badly is a status light wearing a category costume. */
-  --color-data-1: #0b6b53; /* emerald — Savings */
-  --color-data-2: #2f4fb8; /* indigo  — Needs */
-  --color-data-3: #8a5205; /* amber   — Wants */
-  --color-data-4: #a8305a; /* rose    — Micro-leakage */
-  --color-data-5: #6a3fb0; /* violet  — spare series */
-  --color-data-6: #0f6d85; /* cyan    — spare series */
+     --critical and --positive sit 1.21:1 apart, so they are near-identical
+     in luminance. That is deliberate and it forces the right thing: they
+     are never used as two ends of a scale, never adjacent, and never the
+     sole carrier of meaning. Each always travels with a word. */
+  --color-critical: #a34a45;
+  --color-critical-wash: #f7efee;
+  --color-positive: #4c5d50;
+  --color-positive-wash: #f0f2ef;
 
-  /* ---- ALIASES ----
-     The pre-overhaul names, re-pointed rather than deleted so nothing breaks
-     mid-refactor. These come out in a final pass once nothing references
-     them; do not write new code against them. */
-  --color-surface: var(--color-surface-1);
-  --color-accent: var(--color-brand);
-  --color-accent-weak: var(--color-brand-weak);
-  --color-warn: var(--color-caution);
-  --color-warn-weak: var(--color-caution-weak);
-  --color-danger: var(--color-critical);
-  --color-danger-weak: var(--color-critical-weak);
+  /* ---- TYPE (§13) ----
+     Two families. Instrument Serif for titles and editorial statements;
+     Inter for everything else, including every numeral. Loaded through
+     next/font in app/layout.tsx, so there is no external request. */
+  --font-display: var(--font-instrument-serif), ui-serif, Georgia, serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
-  /* ---- TYPE ----
-     Families come from next/font/google in app/layout.tsx; the fallback
-     stacks below are the ones named in Section 3.2. */
-  --font-display: var(--font-newsreader), ui-serif, Georgia, serif;
-  --font-sans: var(--font-plex-sans), var(--font-plex-deva), ui-sans-serif,
-    system-ui;
-  --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, monospace;
+  /* ---- GEOMETRY (§15) ----
+     Radius is zero everywhere. These are pinned rather than merely
+     unused, so that a `rounded-md` that slips past design-lint is inert
+     instead of visible. The one circle in the product is the user avatar,
+     which uses the `avatar` utility below and does not go through these. */
+  --radius-xs: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+  --radius-4xl: 0px;
+  --radius-full: 0px;
 
-  /* ---- RADIUS ---- */
-  --radius-sm: 4px; /* chips, tags */
-  --radius-md: 8px; /* buttons, inputs */
-  --radius-lg: 12px; /* cards — softer than the sharper controls */
-  --radius-xl: 16px; /* hero panels */
-  --radius-full: 9999px; /* avatars and pills only */
+  /* Same treatment for shadow: neutralised, not just avoided. */
+  --shadow-2xs: 0 0 #0000;
+  --shadow-xs: 0 0 #0000;
+  --shadow-sm: 0 0 #0000;
+  --shadow-md: 0 0 #0000;
+  --shadow-lg: 0 0 #0000;
+  --shadow-xl: 0 0 #0000;
+  --shadow-2xl: 0 0 #0000;
 
-  /* ---- ELEVATION ----
-     Real shadow belongs to light mode and to overlays. On the dark ground it
-     is nearly invisible, so raised surfaces there lean on the inset top
-     highlight instead. */
-  --shadow-elev-1: 0 1px 2px rgb(16 24 32 / 0.06);
-  --shadow-elev-2: 0 4px 16px rgb(16 24 32 / 0.08);
-  --shadow-elev-3: 0 12px 40px rgb(16 24 32 / 0.12);
+  /* ---- LAYOUT ----
+     1200px is the widest the content ever goes (§15). 68ch is the widest a
+     paragraph ever goes — a financial explanation set at 1200px is
+     unreadable however much whitespace surrounds it. */
+  --container-page: 1200px;
+  --container-prose: 68ch;
+  --container-form: 420px;
 
-  /* ---- MOTION ---- */
+  /* The marginalia gutter (§16). One number, used by the layout utility
+     and by the styleguide's own documentation of it. */
+  --width-gutter: 160px;
+
+  /* ---- MOTION ----
+     Short and few. Everything here is disabled under
+     prefers-reduced-motion at the bottom of this file. */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-  --dur-fast: 120ms; /* hover, focus */
-  --dur-base: 200ms; /* accordion, tab, chip, nav underline */
-  --dur-slow: 420ms; /* bar fills, count-up, chart draw */
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
 }
 
-/* Not a --color-*, so it lives outside the palette block. Composed into the
-   raised card utility below rather than applied on its own. */
-:root {
-  --elev-inset-top: none;
-}
+/* ============================================================
+   SPACING — the 8px scale (§15)
 
-/* The same roles, re-pointed. Every pair here is contrast-verified by
-   scripts/check-contrast.mjs; run it after touching any value. */
-.dark {
-  --color-paper: #0d1013;
-  --color-surface-1: #14181c;
-  --color-surface-2: #1a1f24;
-  --color-surface-3: #22282e;
-  --color-surface-hover: #1e242a;
+   Tailwind's base step is 4px, so FinPath's 8px scale is the EVEN steps:
+   2=8, 4=16, 6=24, 8=32, 12=48, 16=64.
 
-  --color-rule-subtle: #1c2126;
-  --color-rule: #2a3137;
-  --color-rule-strong: #6b747d;
+   Odd steps (p-1, gap-3, mt-5) are off-scale and design-lint rejects them
+   in new code. The half-step 0.5 (2px) and step 1 (4px) are permitted
+   inside components/ui/ only, for optical adjustment within a control —
+   a 13px-tall glyph centred in a 32px button needs a 4px nudge and there
+   is no honest way around it.
 
-  --color-ink: #eef1f3;
-  --color-ink-muted: #a3aeb7;
-  --color-ink-faint: #879098;
-
-  --color-brand: #34c79a;
-  --color-brand-hover: #4ad4aa;
-  --color-brand-press: #22b088;
-  --color-brand-weak: #132a24;
-  --color-brand-border: #1f5a49;
-  --color-on-brand: #06231c;
-
-  --color-positive: #34c79a;
-  --color-positive-weak: #132a24;
-  --color-positive-border: #1f5a49;
-  --color-caution: #e8b05a;
-  --color-caution-weak: #2a2011;
-  --color-caution-border: #5c4620;
-  --color-critical: #f08a7e;
-  --color-critical-weak: #2b1614;
-  --color-critical-border: #66302b;
-  --color-info: #6fa8ff;
-  --color-info-weak: #101b2b;
-  --color-info-border: #294466;
-
-  --color-data-1: #34c79a;
-  --color-data-2: #7c9cff;
-  --color-data-3: #e8b05a;
-  --color-data-4: #f0839f;
-  --color-data-5: #b78bf5;
-  --color-data-6: #55c8e0;
-
-  /* Shadow barely reads on a near-black ground; the highlight does the work. */
-  --elev-inset-top: inset 0 1px 0 rgb(255 255 255 / 0.04);
-  --shadow-elev-1: 0 1px 2px rgb(0 0 0 / 0.4);
-  --shadow-elev-2: 0 4px 16px rgb(0 0 0 / 0.45);
-  --shadow-elev-3: 0 12px 40px rgb(0 0 0 / 0.55);
-}
-
-/* ------------------------------------------------------------
-   shadcn/ui primitives in components/ui are generated code and
-   read their own semantic variable names. Bridge them onto the
-   six tokens so `npx shadcn add` keeps working without any of
-   those components ever introducing a colour of its own.
-   `accent` is deliberately NOT bridged to a surface: shadcn means
-   "subtle hover ground" by it and we mean the brand green, so the
-   primitives use `muted` for that instead. Verified: no generated
-   primitive in components/ui references accent today.
-   ------------------------------------------------------------ */
-@theme inline {
-  --color-background: var(--color-paper);
-  --color-foreground: var(--color-ink);
-  --color-card: var(--color-surface-2);
-  --color-card-foreground: var(--color-ink);
-  --color-popover: var(--color-surface-3);
-  --color-popover-foreground: var(--color-ink);
-  --color-primary: var(--color-brand);
-  --color-primary-foreground: var(--color-on-brand);
-  --color-secondary: var(--color-surface-2);
-  --color-secondary-foreground: var(--color-ink);
-  --color-muted: var(--color-surface-1);
-  --color-muted-foreground: var(--color-ink-muted);
-  --color-accent-foreground: var(--color-on-brand);
-  --color-destructive: var(--color-critical);
-  --color-destructive-foreground: var(--color-on-brand);
-  --color-border: var(--color-rule);
-  /* Controls, so this takes the 3:1 weight rather than the decorative one. */
-  --color-input: var(--color-rule-strong);
-  --color-ring: var(--color-brand);
-  --radius: 8px;
-  --radius-2xl: 16px;
-}
+   The base step is deliberately NOT redefined to 8px: doing so would
+   silently double every spacing value in the not-yet-rebuilt pages and
+   push them into horizontal overflow at 375px.
+   ============================================================ */
 
 /* ============================================================
    BASE
@@ -228,116 +140,346 @@
   }
 
   body {
-    background-color: var(--color-paper);
+    background-color: var(--color-canvas);
     color: var(--color-ink);
     -webkit-font-smoothing: antialiased;
   }
 
-  /* Newsreader carries an optical-size axis; let it track the size. */
+  /* Instrument Serif ships one weight. Say so, so no call site asks for a
+     bold that would be synthesised into a smear. */
   h1,
   h2,
   h3,
   h4 {
-    font-optical-sizing: auto;
+    font-weight: 400;
   }
 
-  /* Section 10: a visible focus ring on every interactive element.
-     :where keeps specificity at zero so a component can restyle it. */
+  /* §39: a visible focus ring on everything interactive. :where() keeps
+     specificity at zero so a primitive can restyle it, and the offset is
+     what makes it legible against a square-cornered control. */
   :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
-    outline: 2px solid var(--color-brand);
+    outline: 2px solid var(--color-line-strong);
     outline-offset: 2px;
-    border-radius: var(--radius-sm);
   }
 
-  /* Devanagari renders +1px to optically match Latin (Section 3.3). */
-  :lang(hi) {
-    font-size: calc(1em + 1px);
-  }
-
-  /* One icon family, one stroke. CSS beats the presentation attribute
-     lucide-react renders, so this needs no per-icon prop. */
+  /* One icon family, one stroke weight. CSS beats the presentation
+     attribute lucide-react renders, so no per-icon prop is needed. */
   svg.lucide {
     stroke-width: 1.5;
   }
 
-  /* Recharts injects its own grid colour; pin it to the hairline token. */
+  /* Recharts injects its own grid colour; pin it to the hairline. */
   .recharts-cartesian-grid line {
-    stroke: var(--color-rule-subtle);
+    stroke: var(--color-line);
   }
 }
 
 /* ============================================================
-   CARD SYSTEM
-   Three levels, so a stat card, a content panel and a sub-block
-   inside a card stop being the same visual weight.
+   TYPE ROLES (§13)
+
+   Six roles, and a component may use nothing else. An arbitrary size
+   (text-[13px]) is a design-lint failure — the pre-rebuild tree carries
+   about 190 of them, which is why the rule exists.
+
+   Serif is reserved for page titles, section headings and editorial
+   statements. It never appears in a control, a label, a table cell, or a
+   number.
    ============================================================ */
 
-/** Content panels. Border only — it recedes. */
-@utility card-flat {
-  background-color: transparent;
-  border: 1px solid var(--color-rule);
-  border-radius: var(--radius-lg);
+/** Page title. One per page. Continuous between 390px and 1440px. */
+@utility type-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.25rem, 1.8786rem + 1.5238vw, 3.25rem); /* 36 -> 52 */
+  line-height: 1.1;
+  letter-spacing: -0.015em;
 }
 
-/** Key stats. The only thing on the page that advances. */
-@utility card-raised {
-  background-color: var(--color-surface-2);
-  border: 1px solid var(--color-rule);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-elev-1), var(--elev-inset-top);
+/** Section heading. */
+@utility type-heading {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.5rem; /* 24/30 */
+  line-height: 1.25;
+  letter-spacing: -0.01em;
 }
 
-/** Sub-blocks within a card. No border; the fill does the grouping. */
-@utility card-inset {
-  background-color: var(--color-surface-1);
-  border-radius: var(--radius-md);
+/** Sub-section, table group, card title. The first sans role. */
+@utility type-subhead {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 1rem; /* 16/22 */
+  line-height: 1.4;
 }
 
-/** Overlays: popovers, tooltips, command palette, sheets. */
-@utility card-overlay {
-  background-color: var(--color-surface-3);
-  border: 1px solid var(--color-rule);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-elev-2), var(--elev-inset-top);
+/** Prose and descriptions. */
+@utility type-body {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 0.9375rem; /* 15/24 */
+  line-height: 1.6;
+}
+
+/** Field labels, chips, navigation, marginalia. */
+@utility type-label {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 0.8125rem; /* 13/18 */
+  line-height: 1.4;
+  letter-spacing: 0.01em;
 }
 
 /**
- * Row hover for tables and lists. A 25-row ledger with no hover costs the
- * reader their horizontal place on every glance.
+ * EVERY numeral in the product: currency, percentages, dates, counts.
+ *
+ * Not decoration. A column of rupee figures in proportional numerals does
+ * not align, and a ledger that does not align is not a ledger. The size is
+ * inherited so this role can sit inside any of the five above.
  */
+@utility type-data {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  letter-spacing: -0.01em;
+}
+
+/* ============================================================
+   LAYOUT UTILITIES
+   ============================================================ */
+
+/** The 1200px content column (§15). */
+@utility page-shell {
+  width: 100%;
+  max-width: var(--container-page);
+  margin-inline: auto;
+  padding-inline: 1rem;
+  @media (width >= 48rem) {
+    padding-inline: 2rem;
+  }
+}
+
+/** The reading measure. Prose never exceeds it. */
+@utility prose-measure {
+  max-width: var(--container-prose);
+}
+
+/**
+ * THE SIGNATURE ELEMENT (§16) — the marginalia system.
+ *
+ * A fixed gutter in which annotations sit BESIDE what they annotate, the
+ * way a clause reference sits beside a statutory paragraph. Below 1024px
+ * the gutter collapses and its notes move inline, above the element.
+ *
+ * What belongs in it: a regulatory citation, the rule behind a computed
+ * figure, a material qualification, an as-of date. Nothing else — and an
+ * empty margin is correct. The device earns its meaning by being uncommon.
+ */
+@utility margin-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+
+  @media (width >= 64rem) {
+    grid-template-columns: var(--width-gutter) minmax(0, 1fr);
+    gap: 0 2rem;
+    align-items: start;
+  }
+}
+
+/** The gutter cell. Right-aligned against the rule, so it reads as margin. */
+@utility margin-note {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  color: var(--color-ink-muted);
+  padding-left: 0.75rem;
+  border-left: 1px solid var(--color-line);
+
+  @media (width >= 64rem) {
+    text-align: right;
+    padding-left: 0;
+    padding-right: 0.75rem;
+    border-left: 0;
+    border-right: 1px solid var(--color-line);
+  }
+}
+
+/**
+ * The ledger hairline: the 1px rule an amount rests on.
+ *
+ * This is the product's signature at the row level and it CARRIES MEANING
+ * — "a real number sits here, and it came from somewhere". Never draw it
+ * as decoration: not under a heading, not as a divider flourish.
+ */
+@utility ledger-rule {
+  border-bottom: 1px solid var(--color-line);
+}
+
+/** Row hover for tables and lists. */
 @utility row-hover {
   transition: background-color var(--dur-fast) var(--ease-out);
   &:hover {
-    background-color: var(--color-surface-hover);
+    background-color: var(--color-surface);
+  }
+}
+
+/**
+ * The one rounded element in the entire product (§12).
+ *
+ * It exists as a utility rather than as `rounded-full` so that the
+ * exception is a single named thing that design-lint can point at, and so
+ * that pinning every --radius-* to 0 above cannot accidentally square off
+ * the avatar.
+ */
+@utility avatar {
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+/** Visually hidden, still announced. For chart data tables and skip links. */
+@utility sr-only-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ============================================================
+   MOTION
+   §42: loading is a static neutral block, never a shimmer. There is
+   therefore no pulse or skeleton animation defined anywhere.
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
   }
 }
 
 /* ============================================================
-   TYPE ROLES — Section 3.3
-   The two responsive roles use clamp() rather than breakpoints so
-   the step is continuous between 390px and 1440px.
+   LEGACY COMPATIBILITY — DELETE IN PHASE 3
+
+   The pre-rebuild pages (/, /spending, /simulator, /counselor, /vault,
+   /roadmap) still reference the previous 40-token system. Every one of
+   those names is re-pointed here onto the thirteen tokens above so those
+   pages keep rendering coherently until they are rebuilt.
+
+   This block introduces NO new colour. It is an alias table, and it is
+   the reason design-lint reports a legacy debt count instead of zero.
+   When the last page is rebuilt, delete from here to the end of the file
+   and the debt goes to zero on its own.
    ============================================================ */
 
+@theme {
+  /* grounds */
+  --color-paper: var(--color-canvas);
+  --color-surface-1: var(--color-surface);
+  --color-surface-2: var(--color-surface);
+  --color-surface-3: var(--color-surface-sunken);
+  --color-surface-hover: var(--color-surface);
+
+  /* rules */
+  --color-rule: var(--color-line);
+  --color-rule-subtle: var(--color-line);
+  --color-rule-strong: var(--color-line-strong);
+
+  /* ink */
+  --color-ink-faint: var(--color-ink-muted);
+
+  /* brand — the old system had a green identity colour. There is no brand
+     colour in the new palette: identity is carried by type and structure,
+     so these resolve to ink. */
+  --color-brand: var(--color-ink);
+  --color-brand-hover: var(--color-ink);
+  --color-brand-press: var(--color-ink);
+  --color-brand-weak: var(--color-surface);
+  --color-brand-border: var(--color-line-strong);
+  --color-on-brand: var(--color-canvas);
+  --color-accent: var(--color-ink);
+  --color-accent-weak: var(--color-surface);
+
+  /* status */
+  --color-positive-weak: var(--color-positive-wash);
+  --color-positive-border: var(--color-positive);
+  --color-caution: var(--color-critical);
+  --color-caution-weak: var(--color-critical-wash);
+  --color-caution-border: var(--color-critical);
+  --color-critical-weak: var(--color-critical-wash);
+  --color-critical-border: var(--color-critical);
+  --color-warn: var(--color-critical);
+  --color-warn-weak: var(--color-critical-wash);
+  --color-danger: var(--color-critical);
+  --color-danger-weak: var(--color-critical-wash);
+  --color-info: var(--color-ink-secondary);
+  --color-info-weak: var(--color-surface);
+  --color-info-border: var(--color-line);
+
+  /* categorical data — the old six-colour ramp. The new palette has no
+     categorical hues on purpose (--positive and --critical are 1.21:1
+     apart, so hue cannot carry series identity accessibly). These resolve
+     to an ink ramp; the rebuilt charts separate series by direct labelling
+     and position instead. */
+  --color-data-1: var(--color-ink);
+  --color-data-2: var(--color-ink-secondary);
+  --color-data-3: var(--color-ink-muted);
+  --color-data-4: var(--color-critical);
+  --color-data-5: var(--color-ink-secondary);
+  --color-data-6: var(--color-ink-muted);
+}
+
+/* Legacy card utilities. Flattened: no shadow, no radius, border only. */
+@utility card-flat {
+  background-color: transparent;
+  border: 1px solid var(--color-line);
+}
+
+@utility card-raised {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-line);
+}
+
+@utility card-inset {
+  background-color: var(--color-surface-sunken);
+}
+
+@utility card-overlay {
+  background-color: var(--color-canvas);
+  border: 1px solid var(--color-line-strong);
+}
+
+/* Legacy type roles, re-pointed onto the six new ones. */
 @utility display-xl {
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(2.75rem, 2.379rem + 1.524vw, 3.75rem); /* 44 -> 60 */
-  line-height: 1.08;
-  letter-spacing: -0.02em;
+  font-size: clamp(2.25rem, 1.8786rem + 1.5238vw, 3.25rem);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
 }
 
 @utility display-lg {
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(2rem, 1.814rem + 0.762vw, 2.5rem); /* 32 -> 40 */
+  font-size: 2rem;
   line-height: 1.17;
   letter-spacing: -0.015em;
 }
 
 @utility display-md {
   font-family: var(--font-display);
-  font-weight: 500;
-  font-size: 1.5rem; /* 24/30 */
+  font-weight: 400;
+  font-size: 1.5rem;
   line-height: 1.25;
   letter-spacing: -0.01em;
 }
@@ -345,126 +487,82 @@
 @utility body-lg {
   font-family: var(--font-sans);
   font-weight: 400;
-  font-size: 1.0625rem; /* 17/26 */
-  line-height: 1.53;
+  font-size: 1.0625rem;
+  line-height: 1.6;
 }
 
 @utility body-base {
   font-family: var(--font-sans);
   font-weight: 400;
-  font-size: 0.9375rem; /* 15/22 */
-  line-height: 1.467;
+  font-size: 0.9375rem;
+  line-height: 1.6;
 }
 
 @utility label-ui {
   font-family: var(--font-sans);
   font-weight: 500;
-  font-size: 0.8125rem; /* 13/18 */
-  line-height: 1.385;
+  font-size: 0.8125rem;
+  line-height: 1.4;
   letter-spacing: 0.01em;
 }
 
 @utility caption {
   font-family: var(--font-sans);
   font-weight: 400;
-  font-size: 0.75rem; /* 12/16 */
-  line-height: 1.333;
-  letter-spacing: 0.02em;
+  font-size: 0.75rem;
+  line-height: 1.35;
 }
 
-/**
- * The eyebrow: DIAGNOSE · SPENDING ENGINE, ALLOWANCE, ROWS PARSED.
- * One class, so the pattern stops being re-specified inline at every call
- * site with slightly different tracking each time.
- */
 @utility eyebrow {
   font-family: var(--font-sans);
   font-weight: 600;
-  font-size: 0.6875rem; /* 11px */
-  line-height: 1.273;
+  font-size: 0.6875rem;
+  line-height: 1.3;
   letter-spacing: 0.09em;
   text-transform: uppercase;
-  color: var(--color-ink-faint);
+  color: var(--color-ink-muted);
 }
 
-/* Section 3.3 calls this role "overline". The class cannot be `.overline`:
-   Tailwind already ships that name for text-decoration-line, and shadowing it
-   would silently break the decoration utility. Same reason `label` is
-   `label-ui` and `body` is `body-base`. */
 @utility overline-ui {
   font-family: var(--font-sans);
   font-weight: 600;
-  font-size: 0.6875rem; /* 11/14 */
-  line-height: 1.273;
+  font-size: 0.6875rem;
+  line-height: 1.3;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
 @utility amount-xl {
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-weight: 500;
-  font-size: 2.125rem; /* 34/38 */
-  line-height: 1.118;
-  letter-spacing: -0.01em;
+  font-size: 2.125rem;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum";
 }
 
 @utility amount {
-  font-family: var(--font-mono);
-  font-weight: 400;
-  font-size: 0.9375rem; /* 15/22 */
-  line-height: 1.467;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 0.9375rem;
+  line-height: 1.6;
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum";
 }
 
-/* Every element that renders a numeral carries this. `.figure` is the
-   pre-existing alias and stays so older markup keeps its tabular figures. */
 @utility tnum {
-  font-family: var(--font-mono), ui-monospace, monospace;
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum";
 }
 
 @utility figure {
-  font-family: var(--font-mono), ui-monospace, monospace;
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum";
 }
 
-/* Reading column for lesson prose (Section 3.3). */
 @utility prose-column {
-  max-width: 68ch;
-}
-
-/* ============================================================
-   MOTION — Section 3.5
-   ============================================================ */
-
-@keyframes fp-enter {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@utility enter-list {
-  animation: fp-enter var(--dur-base) var(--ease-out) both;
-}
-
-@keyframes fp-caret {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
-  }
+  max-width: var(--container-prose);
 }
 
 @utility caret-stream {
@@ -475,32 +573,6 @@
     height: 1em;
     margin-left: 2px;
     vertical-align: -0.15em;
-    background-color: var(--color-brand);
-    animation: fp-caret 1s steps(2, start) infinite;
-  }
-}
-
-/* The retrieval pulse on the counsellor: three hairline dots. */
-@keyframes fp-pulse {
-  0%,
-  100% {
-    opacity: 0.25;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-@utility pulse-dot {
-  animation: fp-pulse 1.2s var(--ease-out) infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
+    background-color: var(--color-ink);
   }
 }

@@ -10,7 +10,6 @@ export { AppShell } from "./AppShell";
 export { DisclaimerNote, type DisclaimerVariant } from "./DisclaimerNote";
 export { LedgerRule, LedgerList, type LedgerTone } from "./LedgerRule";
 export { Money } from "./Money";
-export { ThemeToggle } from "./ThemeToggle";
 export {
   EmptyState,
   ErrorState,

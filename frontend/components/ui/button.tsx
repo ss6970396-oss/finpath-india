@@ -1,58 +1,122 @@
-import { Button as ButtonPrimitive } from "@base-ui/react/button"
-import { cva, type VariantProps } from "class-variance-authority"
+"use client";
 
-import { cn } from "@/lib/utils"
+import * as React from "react";
+import { cn } from "@/lib/utils";
 
-const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-  {
-    variants: {
-      variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/80",
-        outline:
-          "border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
-        secondary:
-          "bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
-        ghost:
-          "hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50",
-        destructive:
-          "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
-        link: "text-primary underline-offset-4 hover:underline",
-      },
-      size: {
-        default:
-          "h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        xs: "h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
-        sm: "h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
-        lg: "h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        icon: "size-8",
-        "icon-xs":
-          "size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3",
-        "icon-sm":
-          "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg",
-        "icon-lg": "size-9",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
-    },
-  }
-)
+/**
+ * Button (§17).
+ *
+ * Square, bordered, no shadow. The variants are a hierarchy of *commitment*,
+ * not of decoration:
+ *
+ *   primary    the one action the page exists for. Ink fill, canvas text.
+ *   secondary  a real alternative. Bordered, transparent.
+ *   quiet      navigation and reversible actions. No border until hover.
+ *   critical   destructive and irreversible. The only coloured button, and
+ *              it must always be confirmed elsewhere.
+ *
+ * A page has at most one primary button. If two things look equally
+ * important, neither is.
+ *
+ * The border weight is deliberate: every interactive boundary takes
+ * --line-strong (13.92:1), never --line (1.24:1), which would fail
+ * WCAG 2.2 SC 1.4.11.
+ */
 
-function Button({
+type Variant = "primary" | "secondary" | "quiet" | "critical";
+type Size = "sm" | "md";
+
+const VARIANTS: Record<Variant, string> = {
+  primary:
+    "border border-line-strong bg-ink text-canvas hover:bg-ink-secondary active:bg-ink",
+  secondary:
+    "border border-line-strong bg-transparent text-ink hover:bg-surface active:bg-surface-sunken",
+  quiet:
+    "border border-transparent bg-transparent text-ink-secondary hover:border-line hover:bg-surface hover:text-ink active:bg-surface-sunken",
+  critical:
+    "border border-critical bg-critical text-canvas hover:bg-critical/90 active:bg-critical",
+};
+
+const SIZES: Record<Size, string> = {
+  sm: "h-8 px-2 gap-1",
+  md: "h-10 px-4 gap-2",
+};
+
+export type ButtonProps = React.ComponentProps<"button"> & {
+  variant?: Variant;
+  size?: Size;
+  /**
+   * Swaps the label for a status line and disables the control. The label
+   * stays in the DOM as the accessible name so focus is not orphaned, and
+   * the width does not collapse mid-action.
+   */
+  loading?: boolean;
+  loadingLabel?: string;
+};
+
+export function Button({
+  variant = "secondary",
+  size = "md",
+  loading = false,
+  loadingLabel = "Working…",
+  disabled,
   className,
-  variant = "default",
-  size = "default",
+  children,
   ...props
-}: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
+}: ButtonProps) {
+  const isDisabled = disabled || loading;
   return (
-    <ButtonPrimitive
-      data-slot="button"
-      className={cn(buttonVariants({ variant, size, className }))}
+    <button
+      type="button"
+      // aria-disabled rather than only `disabled`, so the reason stays
+      // announceable while loading; `disabled` still blocks activation.
+      disabled={isDisabled}
+      aria-disabled={isDisabled || undefined}
+      aria-busy={loading || undefined}
+      className={cn(
+        "type-label inline-flex select-none items-center justify-center whitespace-nowrap",
+        "transition-colors duration-(--dur-fast) ease-(--ease-out)",
+        "disabled:cursor-not-allowed disabled:border-line disabled:bg-transparent disabled:text-ink-disabled",
+        VARIANTS[variant],
+        SIZES[size],
+        className,
+      )}
       {...props}
-    />
-  )
+    >
+      {loading ? (
+        <>
+          <span aria-hidden="true">{loadingLabel}</span>
+          <span className="sr-only-text">{children}</span>
+        </>
+      ) : (
+        children
+      )}
+    </button>
+  );
 }
 
-export { Button, buttonVariants }
+/**
+ * A row of buttons. Right-aligned by default, because that is where the
+ * commitment lives in a form; `align="start"` for toolbars.
+ */
+export function ButtonRow({
+  align = "end",
+  className,
+  children,
+}: {
+  align?: "start" | "end";
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      className={cn(
+        "flex flex-wrap items-center gap-2",
+        align === "end" ? "justify-end" : "justify-start",
+        className,
+      )}
+    >
+      {children}
+    </div>
+  );
+}

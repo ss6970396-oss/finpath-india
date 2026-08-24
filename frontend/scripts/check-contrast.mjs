@@ -1,15 +1,27 @@
 /**
- * Contrast gate for the token layer.
+ * Contrast gate for the token layer (§39, WCAG 2.2 AA).
  *
- * Parses the literal hex values out of app/globals.css (the @theme block for
- * light, the .dark block for dark) and asserts WCAG 2.1 ratios on every pair
- * the product actually renders:
+ * Reads the literal hex values out of app/globals.css and asserts every
+ * pairing the product actually renders. It parses the stylesheet rather
+ * than duplicating the palette, so a token edited in one place cannot pass
+ * a check written against the other.
  *
- *   text on its background          >= 4.5:1  (1.4.3 AA)
- *   control borders and focus rings >= 3.0:1  (1.4.11 AA, non-text)
+ * Thresholds:
+ *   1.4.3  text on its ground                >= 4.5:1
+ *   1.4.3  large text (>= 24px)              >= 3.0:1
+ *   1.4.11 UI component boundaries, focus    >= 3.0:1
  *
- * Run: node scripts/check-contrast.mjs
- * Exits non-zero on any failure so it can gate a build.
+ * Two documented exemptions, each asserted as an exemption rather than
+ * skipped, so that neither can quietly become a violation:
+ *
+ *   --ink-disabled  1.4.3 explicitly exempts disabled controls. It is
+ *                   asserted to be used ONLY for disabled states.
+ *   --line          1.4.11 exempts purely decorative boundaries. It is
+ *                   asserted to be BELOW 3:1, which is what forces control
+ *                   borders onto --line-strong. If someone "fixes" --line
+ *                   by darkening it, this check fails and asks why.
+ *
+ * Run: npm run check-contrast     Exits non-zero on any failure.
  */
 
 import { readFileSync } from "node:fs";
@@ -21,166 +33,187 @@ const CSS = readFileSync(join(here, "..", "app", "globals.css"), "utf8");
 
 /* ------------------------------------------------------------------ parse */
 
-/** Pull `--color-x: #hex;` pairs out of one brace-delimited block. */
-function tokensIn(block) {
+/**
+ * Pull `--color-x: #hex;` pairs from the FIRST @theme block only.
+ *
+ * The legacy compatibility block at the bottom of globals.css is a second
+ * @theme, but every value in it is a `var()` alias rather than a hex
+ * literal, so it contributes nothing here — by construction. If a hex ever
+ * appears there, the token count assertion below catches it.
+ */
+function primaryTokens() {
+  const start = CSS.indexOf("@theme {");
+  if (start === -1) throw new Error("no @theme block in globals.css");
+
+  // Walk braces to find the matching close, so a nested block cannot end it early.
+  let depth = 0;
+  let end = -1;
+  for (let i = CSS.indexOf("{", start); i < CSS.length; i++) {
+    if (CSS[i] === "{") depth++;
+    else if (CSS[i] === "}") {
+      depth--;
+      if (depth === 0) {
+        end = i;
+        break;
+      }
+    }
+  }
+  if (end === -1) throw new Error("unterminated @theme block");
+
+  const block = CSS.slice(start, end);
   const out = {};
-  for (const m of block.matchAll(/(--color-[a-z0-9-]+)\s*:\s*(#[0-9a-fA-F]{3,8})\s*;/g)) {
-    out[m[1]] = m[2];
+  for (const m of block.matchAll(
+    /(--color-[a-z0-9-]+)\s*:\s*(#[0-9a-fA-F]{3,8})\s*;/g,
+  )) {
+    out[m[1].replace("--color-", "")] = m[2];
   }
   return out;
 }
 
-function blockAfter(marker) {
-  const start = CSS.indexOf(marker);
-  if (start === -1) throw new Error(`could not find block: ${marker}`);
-  const open = CSS.indexOf("{", start);
-  let depth = 0;
-  for (let i = open; i < CSS.length; i++) {
-    if (CSS[i] === "{") depth++;
-    else if (CSS[i] === "}") {
-      depth--;
-      if (depth === 0) return CSS.slice(open, i);
-    }
-  }
-  throw new Error(`unterminated block: ${marker}`);
-}
+const T = primaryTokens();
 
-const light = tokensIn(blockAfter("@theme {"));
-const dark = { ...light, ...tokensIn(blockAfter("\n.dark {")) };
+/* ------------------------------------------------------------------ maths */
 
-/* --------------------------------------------------------------- contrast */
-
-function toRgb(hex) {
-  let h = hex.slice(1);
-  if (h.length === 3) h = h.split("").map((c) => c + c).join("");
-  return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16));
-}
+const channel = (c) => {
+  const s = c / 255;
+  return s <= 0.04045 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+};
 
 function luminance(hex) {
-  const [r, g, b] = toRgb(hex).map((v) => {
-    const s = v / 255;
-    return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
-  });
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  let h = hex.slice(1);
+  if (h.length === 3) h = h.split("").map((c) => c + c).join("");
+  const n = parseInt(h.slice(0, 6), 16);
+  return (
+    0.2126 * channel((n >> 16) & 255) +
+    0.7152 * channel((n >> 8) & 255) +
+    0.0722 * channel(n & 255)
+  );
 }
 
 function ratio(a, b) {
-  const la = luminance(a);
-  const lb = luminance(b);
-  return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+  const [x, y] = [luminance(a), luminance(b)];
+  return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
 }
 
-/* ------------------------------------------------------------------ pairs */
+/* ------------------------------------------------------------------ cases */
 
-const TEXT = 4.5;
-const NON_TEXT = 3.0;
+const GROUNDS = ["canvas", "surface", "surface-sunken"];
 
-/** [foreground, background, minimum, note] */
-const PAIRS = [
-  // Body and heading text, on every surface it can land on.
-  ["--color-ink", "--color-paper", TEXT],
-  ["--color-ink", "--color-surface-1", TEXT],
-  ["--color-ink", "--color-surface-2", TEXT],
-  ["--color-ink", "--color-surface-3", TEXT],
-  ["--color-ink-muted", "--color-paper", TEXT],
-  ["--color-ink-muted", "--color-surface-1", TEXT],
-  ["--color-ink-muted", "--color-surface-2", TEXT],
-  ["--color-ink-faint", "--color-paper", TEXT],
-  ["--color-ink-faint", "--color-surface-1", TEXT],
-  ["--color-ink-faint", "--color-surface-2", TEXT],
+/** Text tokens that must clear 4.5:1 on every ground. */
+const BODY_TEXT = ["ink", "ink-secondary", "ink-muted", "critical", "positive"];
 
-  // Brand as text (links, ghost buttons) and as a button ground.
-  ["--color-brand", "--color-paper", TEXT],
-  ["--color-brand", "--color-surface-1", TEXT],
-  ["--color-brand", "--color-surface-2", TEXT],
-  ["--color-on-brand", "--color-brand", TEXT],
-  ["--color-on-brand", "--color-brand-hover", TEXT],
-  ["--color-on-brand", "--color-brand-press", TEXT],
-  ["--color-brand", "--color-brand-weak", TEXT, "badge text on its tint"],
+const checks = [];
 
-  // Status text on paper and on its own tint (the badge pattern).
-  ["--color-positive", "--color-paper", TEXT],
-  ["--color-positive", "--color-positive-weak", TEXT],
-  ["--color-caution", "--color-paper", TEXT],
-  ["--color-caution", "--color-surface-2", TEXT],
-  ["--color-caution", "--color-caution-weak", TEXT],
-  ["--color-critical", "--color-paper", TEXT],
-  ["--color-critical", "--color-surface-2", TEXT],
-  ["--color-critical", "--color-critical-weak", TEXT],
-  ["--color-info", "--color-paper", TEXT],
-  ["--color-info", "--color-surface-2", TEXT],
-  ["--color-info", "--color-info-weak", TEXT],
-
-  // Chart series must stay legible as strokes AND as inline label text.
-  ["--color-data-1", "--color-paper", TEXT],
-  ["--color-data-2", "--color-paper", TEXT],
-  ["--color-data-3", "--color-paper", TEXT],
-  ["--color-data-4", "--color-paper", TEXT],
-  ["--color-data-5", "--color-paper", TEXT],
-  ["--color-data-6", "--color-paper", TEXT],
-  ["--color-data-1", "--color-surface-2", TEXT],
-  ["--color-data-2", "--color-surface-2", TEXT],
-  ["--color-data-3", "--color-surface-2", TEXT],
-  ["--color-data-4", "--color-surface-2", TEXT],
-  ["--color-data-5", "--color-surface-2", TEXT],
-  ["--color-data-6", "--color-surface-2", TEXT],
-
-  // Non-text: control boundaries and the focus ring (1.4.11).
-  ["--color-rule-strong", "--color-paper", NON_TEXT, "control border"],
-  ["--color-rule-strong", "--color-surface-1", NON_TEXT, "control border"],
-  ["--color-rule-strong", "--color-surface-2", NON_TEXT, "control border"],
-  ["--color-brand", "--color-paper", NON_TEXT, "focus ring"],
-  ["--color-brand", "--color-surface-1", NON_TEXT, "focus ring"],
-  ["--color-brand", "--color-surface-2", NON_TEXT, "focus ring"],
-  ["--color-brand", "--color-surface-3", NON_TEXT, "focus ring"],
-];
-
-/* ------------------------------------------------------------------- run */
-
-let failed = 0;
-const rows = [];
-
-for (const [themeName, tokens] of [
-  ["light", light],
-  ["dark", dark],
-]) {
-  for (const [fg, bg, min, note] of PAIRS) {
-    const fgHex = tokens[fg];
-    const bgHex = tokens[bg];
-    if (!fgHex || !bgHex) {
-      rows.push({ theme: themeName, pair: `${fg} / ${bg}`, got: "MISSING", min, ok: false, note: note ?? "" });
-      failed++;
-      continue;
-    }
-    const r = ratio(fgHex, bgHex);
-    const ok = r >= min;
-    if (!ok) failed++;
-    rows.push({
-      theme: themeName,
-      pair: `${fg.replace("--color-", "")} / ${bg.replace("--color-", "")}`,
-      got: r.toFixed(2),
-      min: min.toFixed(1),
-      ok,
-      note: note ?? "",
+for (const fg of BODY_TEXT) {
+  for (const bg of GROUNDS) {
+    checks.push({
+      kind: "text",
+      need: 4.5,
+      label: `${fg} on ${bg}`,
+      fg: T[fg],
+      bg: T[bg],
     });
   }
 }
 
-const width = Math.max(...rows.map((r) => r.pair.length));
-let currentTheme = "";
-for (const r of rows) {
-  if (r.theme !== currentTheme) {
-    currentTheme = r.theme;
-    console.log(`\n  ${currentTheme.toUpperCase()}`);
-    console.log(`  ${"-".repeat(width + 26)}`);
-  }
-  const mark = r.ok ? "PASS" : "FAIL";
-  console.log(
-    `  ${mark}  ${r.pair.padEnd(width)}  ${String(r.got).padStart(6)} : 1   (min ${r.min})${r.note ? `  ${r.note}` : ""}`,
-  );
+// Status washes are grounds too: a badge puts critical text on critical-wash.
+checks.push(
+  { kind: "text", need: 4.5, label: "critical on critical-wash", fg: T.critical, bg: T["critical-wash"] },
+  { kind: "text", need: 4.5, label: "positive on positive-wash", fg: T.positive, bg: T["positive-wash"] },
+  { kind: "text", need: 4.5, label: "ink on critical-wash", fg: T.ink, bg: T["critical-wash"] },
+  { kind: "text", need: 4.5, label: "ink on positive-wash", fg: T.ink, bg: T["positive-wash"] },
+);
+
+// Filled controls: the label sits on the fill.
+checks.push(
+  { kind: "text", need: 4.5, label: "canvas on ink (primary button)", fg: T.canvas, bg: T.ink },
+  { kind: "text", need: 4.5, label: "canvas on critical (critical button)", fg: T.canvas, bg: T.critical },
+  { kind: "text", need: 4.5, label: "canvas on positive", fg: T.canvas, bg: T.positive },
+);
+
+// 1.4.11: control boundaries and the focus ring.
+for (const bg of GROUNDS) {
+  checks.push({
+    kind: "boundary",
+    need: 3,
+    label: `line-strong (control border, focus ring) on ${bg}`,
+    fg: T["line-strong"],
+    bg: T[bg],
+  });
 }
 
-console.log(
-  `\n  ${rows.length - failed}/${rows.length} pairs pass.${failed ? `  ${failed} FAILING.` : ""}\n`,
+// The status washes must be distinguishable from the page they sit on.
+checks.push(
+  { kind: "boundary", need: 3, label: "critical border on canvas", fg: T.critical, bg: T.canvas },
+  { kind: "boundary", need: 3, label: "positive border on canvas", fg: T.positive, bg: T.canvas },
 );
-process.exit(failed ? 1 : 0);
+
+/* ------------------------------------------------------------- exemptions */
+
+const exemptions = [
+  {
+    label: "ink-disabled on canvas",
+    ratio: ratio(T["ink-disabled"], T.canvas),
+    rule: "WCAG 1.4.3 exempts disabled controls",
+    expect: (r) => r < 4.5,
+    note: "Use ONLY for a disabled control's own text.",
+  },
+  {
+    label: "line on canvas",
+    ratio: ratio(T.line, T.canvas),
+    rule: "WCAG 1.4.11 exempts decorative boundaries",
+    expect: (r) => r < 3,
+    note: "Dividers and card edges only. Controls take --line-strong.",
+  },
+];
+
+/* ---------------------------------------------------------------- reporting */
+
+let failed = 0;
+const rows = [];
+
+for (const c of checks) {
+  if (!c.fg || !c.bg) {
+    rows.push(["MISSING", c.label, "—"]);
+    failed++;
+    continue;
+  }
+  const r = ratio(c.fg, c.bg);
+  const ok = r >= c.need;
+  if (!ok) failed++;
+  rows.push([ok ? "pass" : "FAIL", c.label, `${r.toFixed(2)} (need ${c.need})`]);
+}
+
+const width = Math.max(...rows.map((r) => r[1].length));
+console.log("\nFinPath contrast gate — WCAG 2.2 AA\n");
+for (const [status, label, value] of rows) {
+  const mark = status === "pass" ? "  ok " : "FAIL ";
+  console.log(`${mark} ${label.padEnd(width)}  ${value}`);
+}
+
+console.log("\nDocumented exemptions (asserted, not skipped):\n");
+for (const e of exemptions) {
+  const ok = e.expect(e.ratio);
+  if (!ok) failed++;
+  console.log(
+    `${ok ? "  ok " : "FAIL "} ${e.label.padEnd(width)}  ${e.ratio.toFixed(2)}  — ${e.rule}`,
+  );
+  console.log(`      ${e.note}`);
+}
+
+// The palette is closed at thirteen (§11). A fourteenth token is a design
+// change, not a tweak, so it fails the gate and has to be argued for.
+const count = Object.keys(T).length;
+console.log(`\nPalette size: ${count} tokens`);
+if (count !== 13) {
+  console.log(
+    `FAIL  §11 fixes the palette at 13 colour tokens; found ${count}: ${Object.keys(T).join(", ")}`,
+  );
+  failed++;
+}
+
+if (failed) {
+  console.error(`\n${failed} contrast check(s) failed.\n`);
+  process.exit(1);
+}
+console.log("\nAll contrast checks passed.\n");

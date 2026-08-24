@@ -1,52 +1,95 @@
-import { mergeProps } from "@base-ui/react/merge-props"
-import { useRender } from "@base-ui/react/use-render"
-import { cva, type VariantProps } from "class-variance-authority"
+import * as React from "react";
+import { Check, Minus, TriangleAlert } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-import { cn } from "@/lib/utils"
+/**
+ * Badge (§17) — a status marker.
+ *
+ * TWO RULES, both from §39 and §36.
+ *
+ * 1. Status is never colour alone. Every toned badge carries a glyph as
+ *    well as its wash, so it survives greyscale, colour-blindness, and a
+ *    printed page. This matters more here than usual: --positive and
+ *    --critical sit 1.21:1 apart in luminance, so the two washes are close
+ *    to indistinguishable without the glyph.
+ *
+ * 2. The label describes a CONDITION, never a person. "Above target", not
+ *    "overspender". The component cannot enforce that, but it is the
+ *    reason `critical` is named for the state and not for a judgement.
+ */
 
-const badgeVariants = cva(
-  "group/badge inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-all focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3!",
-  {
-    variants: {
-      variant: {
-        default: "bg-primary text-primary-foreground [a]:hover:bg-primary/80",
-        secondary:
-          "bg-secondary text-secondary-foreground [a]:hover:bg-secondary/80",
-        destructive:
-          "bg-destructive/10 text-destructive focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:focus-visible:ring-destructive/40 [a]:hover:bg-destructive/20",
-        outline:
-          "border-border text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground",
-        ghost:
-          "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50",
-        link: "text-primary underline-offset-4 hover:underline",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-    },
-  }
-)
+type Tone = "neutral" | "positive" | "critical";
 
-function Badge({
+const TONES: Record<Tone, { box: string; Icon: React.ElementType | null }> = {
+  neutral: {
+    box: "border-line bg-surface text-ink-secondary",
+    Icon: null,
+  },
+  positive: {
+    box: "border-positive bg-positive-wash text-positive",
+    Icon: Check,
+  },
+  critical: {
+    box: "border-critical bg-critical-wash text-critical",
+    Icon: TriangleAlert,
+  },
+};
+
+export function Badge({
+  tone = "neutral",
+  icon = true,
   className,
-  variant = "default",
-  render,
+  children,
   ...props
-}: useRender.ComponentProps<"span"> & VariantProps<typeof badgeVariants>) {
-  return useRender({
-    defaultTagName: "span",
-    props: mergeProps<"span">(
-      {
-        className: cn(badgeVariants({ variant }), className),
-      },
-      props
-    ),
-    render,
-    state: {
-      slot: "badge",
-      variant,
-    },
-  })
+}: React.ComponentProps<"span"> & {
+  tone?: Tone;
+  /** Set false only where an adjacent glyph already carries the state. */
+  icon?: boolean;
+}) {
+  const { box, Icon } = TONES[tone];
+  return (
+    <span
+      className={cn(
+        "type-label inline-flex items-center gap-1 border px-2 py-0.5",
+        box,
+        className,
+      )}
+      {...props}
+    >
+      {icon && Icon ? (
+        <Icon className="lucide size-3.5 shrink-0" aria-hidden="true" />
+      ) : null}
+      {children}
+    </span>
+  );
 }
 
-export { Badge, badgeVariants }
+/**
+ * The dot form, for a table cell where a full badge would crowd the row.
+ * The label is still rendered — the dot is redundant reinforcement, never
+ * the only carrier of the state.
+ */
+export function StatusDot({
+  tone = "neutral",
+  label,
+  className,
+}: {
+  tone?: Tone;
+  label: string;
+  className?: string;
+}) {
+  const { Icon } = TONES[tone];
+  const Glyph = Icon ?? Minus;
+  const colour =
+    tone === "positive"
+      ? "text-positive"
+      : tone === "critical"
+        ? "text-critical"
+        : "text-ink-muted";
+  return (
+    <span className={cn("inline-flex items-center gap-1", colour, className)}>
+      <Glyph className="lucide size-3.5 shrink-0" aria-hidden="true" />
+      <span className="type-label">{label}</span>
+    </span>
+  );
+}

@@ -8,7 +8,11 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "design-lint": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/design-lint.ts",
+    "check-contrast": "node scripts/check-contrast.mjs",
+    "typecheck": "tsc --noEmit",
+    "verify": "npm run typecheck && npm run design-lint && npm run check-contrast && npm test && npm run build"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
