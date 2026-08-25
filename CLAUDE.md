@@ -93,12 +93,18 @@ If you edit either implementation, keep `sip_future_value` and `sipFutureValue` 
 
 ### Frontend routes
 
+Verified against `frontend/app/` — every directory holding a `page.tsx`:
+
 - `/` — landing page
 - `/counselor` — streaming chat against `/api/chat`
-- `/spending`, `/simulator`, `/vault`, `/roadmap` — the pre-spec six-page build
-- `/style-guide` — every design token, type role and primitive on one page
+- `/spending` — the spending engine; this is the page the old "dashboard" became
+- `/simulator`, `/vault`, `/roadmap` — the rest of the pre-spec build
+- `/styleguide` — every design token, type role and primitive on one page. One word, no hyphen.
+- `/dashboard` — **not a page.** It is a `redirect()` to `/spending` kept so old links resolve.
 
-The backend URL `http://localhost:8000` is hardcoded in `counselor/page.tsx` and `spending/page.tsx` — there is no env var, so changing hosts means editing both. CORS on the backend is `allow_origins=["*"]`.
+`app/components/` and `app/providers/` hold no `page.tsx` and are not routes.
+
+The API base lives in exactly one place — `API` in `app/providers/FinPathProvider.tsx`, which reads `NEXT_PUBLIC_API_URL` and falls back to `http://127.0.0.1:8000`. Do not re-derive a base URL at a call site. CORS on the backend is an explicit allowlist (`ALLOWED_ORIGINS` in `main.py`: localhost and 127.0.0.1 on :3000), not `["*"]` — a new frontend origin has to be added there.
 
 ### Design system
 
@@ -110,7 +116,7 @@ Type roles are utilities, not ad-hoc sizes: `display-xl/lg/md`, `body-lg`, `body
 
 `components/ui/` is generated shadcn code that reads its own semantic names (`--color-primary`, `--color-muted`, …). Those are bridged onto the eleven tokens in the `@theme inline` block, so a regenerated primitive cannot smuggle in a colour. Note the one trap: shadcn's `accent` means "subtle hover ground" while ours means the brand green, so the primitives use `muted` for hover instead — check any newly added primitive for `bg-accent`.
 
-**`/style-guide` is the review surface.** It reads each token's resolved value out of the DOM, so it proves what the utilities actually compile to rather than restating the source. Check a visual change there in both themes before checking it on a feature page.
+**`/styleguide` is the review surface.** It reads each token's resolved value out of the DOM, so it proves what the utilities actually compile to rather than restating the source. Check a visual change there in both themes before checking it on a feature page.
 
 ### The statement parser (`frontend/lib/csv.ts`)
 

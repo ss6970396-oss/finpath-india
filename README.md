@@ -2,9 +2,10 @@
 
 An AI financial-literacy counselor for Indian college students that answers only from regulator-published documents, and says so when it can't.
 
-Roughly 73% of Indian youth lack basic financial literacy, and the apps that reach them first are distribution channels — they surface a fund, a policy, or a credit card, because that is how they earn. FinPath sells nothing: it teaches from RBI, SEBI and NCFE material, cites the page it used, and refuses to answer when the corpus doesn't cover the question.
+Most Indian students receive no formal financial education before they start earning, and the apps that reach them first are distribution channels — they surface a fund, a policy, or a credit card, because that is how they earn. FinPath sells nothing: it teaches from RBI, SEBI and NCFE material, cites the page it used, and refuses to answer when the corpus doesn't cover the question.
 
-<!-- SCREENSHOT: landing page, light theme -->
+![FinPath India landing page](docs/landing.png)
+*The landing page runs the diagnostic inline: a ₹3,500 purchase shown as the ₹10,870 it displaces over ten years.*
 
 ## What it does
 
@@ -12,8 +13,12 @@ Roughly 73% of Indian youth lack basic financial literacy, and the apps that rea
 - **Behavioural nudge engine.** Classifies a month of UPI transactions into Needs / Wants / Savings, and when Wants clears 30% of allowance, projects the excess as a ten-year SIP at 12% p.a. — so the output is "this is ₹X in ten years", not "you overspent".
 - **Interactive what-if simulator.** Recomputes the projection per slider drag in the browser, against the server's own rate and horizon constants rather than a hardcoded copy.
 
-<!-- SCREENSHOT: counselor answer showing citation chips -->
-<!-- SCREENSHOT: spending dashboard with the nudge fired -->
+![The counselor answering with inline citations](docs/counselor.png)
+*Every claim carries an inline `[n]`; the Citation Inspector on the left resolves each one to its source document, page and the exact retrieved passage.*
+
+![The spending engine's statement upload](docs/dashboard.png)
+*The spending engine accepts a real bank statement — the CSV is parsed in the browser and never reaches the API.*
+
 <!-- SCREENSHOT: what-if simulator -->
 
 ## Architecture
@@ -97,7 +102,7 @@ DATABASE_URL=postgresql+psycopg://finpath:finpath@localhost:5432/finpath
 
 The schema is applied automatically on API startup and before every ingest — no manual DDL.
 
-Routes: `/` landing · `/counselor` chat · `/spending` · `/dashboard` · `/simulator` · `/vault` corpus browser · `/roadmap` · `/styleguide` design tokens.
+Routes: `/` landing · `/counselor` chat · `/spending` engine · `/simulator` · `/vault` corpus browser · `/roadmap` · `/styleguide` design tokens.
 
 ## Disclaimer
 
