@@ -1,6 +1,11 @@
 import { redirect } from "next/navigation";
 
-/** The dashboard was renamed to the Spending Engine. Keep old links working. */
-export default function DashboardRedirect() {
-  redirect("/spending");
+/**
+ * Legacy route. The rebuild renamed this page to /home (Home);
+ * old bookmarks, links in earlier README screenshots and anything a student
+ * saved must keep resolving, so the path stays as a permanent redirect
+ * rather than a 404.
+ */
+export default function LegacyRoute() {
+  redirect("/home");
 }

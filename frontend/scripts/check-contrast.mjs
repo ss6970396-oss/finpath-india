@@ -131,6 +131,26 @@ checks.push(
   { kind: "text", need: 4.5, label: "canvas on positive", fg: T.canvas, bg: T.positive },
 );
 
+// The accent is asserted as TEXT on every ground, not merely as a fill.
+// That is the constraint that keeps it a usable link colour instead of a
+// decorative band: an accent that only passes as a background is one that
+// will end up used as decoration.
+for (const bg of GROUNDS) {
+  checks.push({
+    kind: "text",
+    need: 4.5,
+    label: `accent on ${bg}`,
+    fg: T.accent,
+    bg: T[bg],
+  });
+}
+checks.push(
+  { kind: "text", need: 4.5, label: "accent on accent-wash", fg: T.accent, bg: T["accent-wash"] },
+  { kind: "text", need: 4.5, label: "ink on accent-wash", fg: T.ink, bg: T["accent-wash"] },
+  { kind: "text", need: 4.5, label: "canvas on accent (selected control)", fg: T.canvas, bg: T.accent },
+  { kind: "boundary", need: 3, label: "accent border on canvas", fg: T.accent, bg: T.canvas },
+);
+
 // 1.4.11: control boundaries and the focus ring.
 for (const bg of GROUNDS) {
   checks.push({
@@ -201,13 +221,21 @@ for (const e of exemptions) {
   console.log(`      ${e.note}`);
 }
 
-// The palette is closed at thirteen (§11). A fourteenth token is a design
-// change, not a tweak, so it fails the gate and has to be argued for.
+// The palette is closed at fifteen. A sixteenth token is a design change,
+// not a tweak, so it fails the gate and has to be argued for.
+//
+// It was thirteen until the product gained a public landing page, an
+// authentication flow and an onboarding wizard. Those three surfaces need
+// one mark of identity that ink-on-canvas cannot supply, so --accent and
+// --accent-wash were added — and are asserted above as TEXT on every
+// ground, which is what stops the accent degenerating into decoration.
+// Nothing else moved: status still belongs to positive/critical, and the
+// accent is barred from carrying meaning.
 const count = Object.keys(T).length;
 console.log(`\nPalette size: ${count} tokens`);
-if (count !== 13) {
+if (count !== 15) {
   console.log(
-    `FAIL  §11 fixes the palette at 13 colour tokens; found ${count}: ${Object.keys(T).join(", ")}`,
+    `FAIL  the palette is fixed at 15 colour tokens; found ${count}: ${Object.keys(T).join(", ")}`,
   );
   failed++;
 }

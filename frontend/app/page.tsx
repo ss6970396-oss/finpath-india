@@ -1,238 +1,313 @@
-"use client";
-
 import Link from "next/link";
+import { ArrowRight, FileText, LineChart, ListChecks, Wallet } from "lucide-react";
 import {
-  ArrowRight, BookMarked, FileText, Gauge, LineChart, ShieldCheck,
-} from "lucide-react";
-import ImpulseDiagnostic from "./components/ImpulseDiagnostic";
-import { Card, Figure, Label, Pill } from "./components/ui";
+  ButtonLink,
+  DisclaimerNote,
+  Money,
+  ScoreDial,
+  SiteFooter,
+} from "@/components/ui";
+import { rupees } from "@/lib/money";
+import { PublicHeader } from "./components/PublicHeader";
 
-const TRUST = [
+/**
+ * The landing page (§3).
+ *
+ * IT MUST NOT LOOK LIKE A DASHBOARD. The previous front page opened with
+ * live tiles, which meant a first-time visitor met a wall of numbers about
+ * nobody, framed as if it were about them. This one opens with a sentence
+ * and a single CTA.
+ *
+ * THE PREVIEW IS LABELLED AS AN ILLUSTRATION, in text, inside the frame.
+ * §28 forbids hard-coding dashboard values to make a screenshot look good,
+ * and the only defensible way to show the product before someone has any
+ * data is to show a specimen and say that is what it is.
+ *
+ * Six sections and a final CTA. No feature grid: a wall of twelve cards is
+ * how a product with one clear argument ends up making none.
+ */
+
+const STEPS = [
   {
-    body: "RBI",
-    label: "Master Directions & investor education",
-    href: "https://www.rbi.org.in/Scripts/BS_ViewMasDirections.aspx",
+    n: "01",
+    title: "Tell us your figures",
+    body: "Eight short questions — what comes in, what has to go out, what you set aside, what you owe. Estimates are fine; you can change any of it later.",
   },
   {
-    body: "SEBI",
-    label: "Investor awareness & education",
-    href: "https://investor.sebi.gov.in/",
+    n: "02",
+    title: "See where you actually stand",
+    body: "One health score, the three ratios behind it, and the single largest thing worth changing this month.",
   },
   {
-    body: "NCFE",
-    label: "National financial education standards",
-    href: "https://www.ncfe.org.in/",
+    n: "03",
+    title: "Work the plan",
+    body: "Four stages in the order a planner would take them, each with actions measured against your own numbers.",
   },
 ];
 
-const PILLARS = [
+const CAPABILITIES = [
   {
-    icon: ShieldCheck,
-    kicker: "Grounding",
-    title: "Zero-hallucination regulatory grounding",
-    body: "Retrieval runs before generation. The counselor sees only the passages the index returned, cites the document and page behind every claim, and declines outright when the corpus has no support.",
-    foot: "Citation viewer with verbatim clause text",
-    href: "/counselor",
+    Icon: Wallet,
+    title: "Spending you can argue with",
+    body: "Needs, wants and savings measured against the 50/30/20 guideline, with every rupee traceable to the row it came from. Upload a bank statement and it is parsed in your browser — the file is never sent anywhere.",
+    href: "/signup",
+    action: "Start with your figures",
   },
   {
-    icon: Gauge,
-    kicker: "Behaviour",
-    title: "Behavioural nudges over restrictions",
-    body: "Nothing is blocked and nothing is scolded. A ratio that breaches the 50/30/20 line is restated as the future value it displaces, so the trade-off becomes legible rather than moralised.",
-    foot: "Health score, variance flags, guilt-free allowance",
-    href: "/spending",
+    Icon: LineChart,
+    title: "Scenarios, not promises",
+    body: "Change the monthly amount, the annual step-up, the horizon or the assumed return, and watch the curve move. Every projection states its rate and is labelled illustrative, because that is what it is.",
+    href: "/signup",
+    action: "Explore scenarios",
   },
   {
-    icon: LineChart,
-    kicker: "Simulation",
-    title: "Tactile wealth simulations",
-    body: "Step-up contributions, the cost of a late start, lifestyle creep against financial-independence age, and a liquidity runway measured in days — each recomputed as you move a control.",
-    foot: "Recharts models, no jargon",
-    href: "/simulator",
+    Icon: ListChecks,
+    title: "A plan in the right order",
+    body: "Clear expensive debt, build three months of breathing room, automate investing, then let it compound. One stage is live at a time; the rest wait their turn.",
+    href: "/signup",
+    action: "See the stages",
+  },
+  {
+    Icon: FileText,
+    title: "Answers that cite a document",
+    body: "Ask a question and the coach answers from RBI, SEBI and NCFE publications, quoting the page it read. When nothing in the corpus covers your question, it says so instead of guessing.",
+    href: "/sources",
+    action: "See the sources",
   },
 ];
 
-export default function Landing() {
+export default function LandingPage() {
   return (
-    <main>
-      {/* HERO */}
-      <section className="border-b border-rule bg-paper">
-        <div className="mx-auto grid max-w-[1400px] gap-10 px-5 py-14 lg:grid-cols-[1.1fr_minmax(0,460px)] lg:gap-14 lg:py-20">
-          <div>
-            <Pill tone="positive">
-              <ShieldCheck className="h-3 w-3" />
-              Retrieval-grounded · citation-enforced
-            </Pill>
+    <div className="flex min-h-dvh flex-col">
+      <PublicHeader />
 
-            <h1 className="mt-5 font-display text-[clamp(2.75rem,6vw,4.25rem)] leading-[1.02] tracking-tight text-ink">
-              Every rupee has a future.
+      <main id="main" className="flex-1">
+        {/* ---------------------------------------------------------- hero */}
+        <section className="page-shell grid gap-12 py-16 lg:grid-cols-2 lg:items-center lg:py-24">
+          <div className="flex flex-col gap-8">
+            <p className="type-eyebrow text-ink-muted">
+              Financial health for students in India
+            </p>
+
+            <h1 className="type-hero text-ink">
+              See where your money is going, and what to do about it.
             </h1>
 
-            <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-ink">
-              FinPath India pairs a retrieval-augmented counselor — constrained
-              to official RBI, SEBI and NCFE publications, and required to cite
-              a page for every claim — with a behavioural nudge engine that
-              converts today&apos;s spending ratios into the compounded value
-              they displace. Diagnose, simulate, consult, then act.
+            <p className="type-body prose-measure text-lg text-ink-secondary">
+              FinPath turns your own monthly figures into one health score, one
+              clear opportunity, and a plan with four stages. Every number
+              shows the rule behind it, and every answer cites the regulator
+              it came from.
             </p>
 
-            <div className="mt-7 flex flex-wrap gap-2.5">
+            <div className="flex flex-wrap items-center gap-4">
+              <ButtonLink href="/signup" variant="primary">
+                Build my financial plan
+              </ButtonLink>
               <Link
-                href="/spending"
-                className="inline-flex items-center gap-2 rounded-md bg-accent px-5 py-2.5 text-sm font-medium text-paper transition hover:bg-accent"
+                href="#how-it-works"
+                className="type-label inline-flex items-center gap-1 text-ink underline underline-offset-4"
               >
-                Run the diagnosis <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link
-                href="/counselor"
-                className="inline-flex items-center gap-2 rounded-md border border-rule bg-surface px-5 py-2.5 text-sm font-medium text-ink transition hover:border-rule hover:bg-surface"
-              >
-                Open the counselor
+                See how it works
+                <ArrowRight className="lucide size-4" aria-hidden="true" />
               </Link>
             </div>
 
-            <div className="mt-9">
-              <Label>Source authorities</Label>
-              <div className="mt-2.5 flex flex-wrap gap-2">
-                {TRUST.map((t) => (
-                  <a
-                    key={t.body}
-                    href={t.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group inline-flex items-center gap-2.5 rounded-md border border-rule bg-surface px-3 py-2 transition hover:border-rule hover:bg-surface"
-                  >
-                    <span className="flex h-6 w-6 items-center justify-center rounded border border-rule bg-accent-weak text-[10px] font-semibold text-accent">
-                      {t.body === "RBI" ? "RB" : t.body === "SEBI" ? "SE" : "NC"}
-                    </span>
-                    <span className="leading-tight">
-                      <span className="block text-[12px] font-medium text-ink">
-                        {t.body}
-                      </span>
-                      <span className="block text-[11px] text-ink-muted">
-                        {t.label}
-                      </span>
-                    </span>
-                    <ArrowRight className="h-3 w-3 text-ink-muted transition group-hover:translate-x-0.5" />
-                  </a>
-                ))}
-              </div>
-              <p className="mt-2.5 text-[11px] leading-relaxed text-ink-muted">
-                Links open the issuing authority&apos;s own portal. The
-                counselor cites only the documents held in the indexed corpus —
-                see the{" "}
-                <Link href="/vault" className="underline underline-offset-2">
-                  Regulatory Vault
-                </Link>{" "}
-                for exactly what is searchable.
-              </p>
-            </div>
+            <p className="type-label text-ink-muted">
+              Free. No bank connection. Nothing is sold to you.
+            </p>
           </div>
 
-          <ImpulseDiagnostic />
-        </div>
-      </section>
+          <PreviewPanel />
+        </section>
 
-      {/* PILLARS */}
-      <section className="mx-auto max-w-[1400px] px-5 py-16">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h2 className="font-display text-[clamp(1.75rem,3.5vw,2.5rem)] leading-tight tracking-tight text-ink">
-              Three pillars
+        {/* --------------------------------------------------- how it works */}
+        <section
+          id="how-it-works"
+          className="border-t border-line bg-surface py-16"
+        >
+          <div className="page-shell flex flex-col gap-12">
+            <div className="flex flex-col gap-2">
+              <p className="type-eyebrow text-ink-muted">How FinPath works</p>
+              <h2 className="type-display prose-measure text-ink">
+                Three steps, and the third one is the long part.
+              </h2>
+            </div>
+
+            <ol className="grid gap-8 md:grid-cols-3">
+              {STEPS.map((step) => (
+                <li key={step.n} className="flex flex-col gap-2 border-t-2 border-line-strong pt-4">
+                  <span className="type-data text-sm text-ink-muted">
+                    {step.n}
+                  </span>
+                  <h3 className="type-heading text-ink">{step.title}</h3>
+                  <p className="type-body text-ink-secondary">{step.body}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+
+        {/* ------------------------------------------------- the score */}
+        <section className="page-shell grid gap-12 py-16 lg:grid-cols-[1fr_minmax(0,28rem)] lg:items-center">
+          <div className="flex flex-col gap-4">
+            <p className="type-eyebrow text-ink-muted">Financial health score</p>
+            <h2 className="type-display prose-measure text-ink">
+              One number, and you can see exactly how it was built.
             </h2>
-            <p className="mt-2 max-w-md text-[14px] leading-relaxed text-ink-muted">
-              Built for students who have never had access to an adviser, and
-              held to the standard of one.
+            <p className="type-body prose-measure text-ink-secondary">
+              Forty points for what you save, thirty for keeping discretionary
+              spending under target, fifteen for essentials that fit, and
+              fifteen for what is left unspent at the end of the month. No
+              hidden weighting, no proprietary index — the arithmetic is
+              printed next to the score, and you can disagree with it.
+            </p>
+            <p className="type-body prose-measure text-ink-secondary">
+              It moves when your month moves. It is not a credit score, it is
+              not shared with anyone, and it does not affect anything outside
+              this product.
             </p>
           </div>
-          <Link
-            href="/roadmap"
-            className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink underline-offset-4 hover:underline"
-          >
-            See the milestone ladder <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
-        </div>
 
-        <div className="mt-9 grid gap-4 lg:grid-cols-3">
-          {PILLARS.map((p, i) => (
-            <Card
-              key={p.title}
-              as="article"
-              className="flex flex-col transition hover:border-rule"
-            >
-              <div className="flex items-center justify-between border-b border-rule px-5 py-3.5">
-                <span className="flex items-center gap-2">
-                  <p.icon className="h-4 w-4 text-accent" />
-                  <Label>{p.kicker}</Label>
-                </span>
-                <Figure className="text-[11px] text-ink-muted">
-                  {String(i + 1).padStart(2, "0")}
-                </Figure>
-              </div>
-
-              <div className="flex flex-1 flex-col px-5 py-5">
-                <h3 className="font-display text-xl leading-snug tracking-tight text-ink">
-                  {p.title}
-                </h3>
-                <p className="mt-2.5 flex-1 text-[13px] leading-relaxed text-ink-muted">
-                  {p.body}
-                </p>
-                <Link
-                  href={p.href}
-                  className="mt-5 inline-flex items-center gap-1.5 border-t border-rule pt-3.5 text-[12px] font-medium text-ink transition hover:gap-2.5"
-                >
-                  <FileText className="h-3.5 w-3.5 text-ink-muted" />
-                  {p.foot}
-                  <ArrowRight className="ml-auto h-3.5 w-3.5" />
-                </Link>
-              </div>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      {/* FLOW */}
-      <section className="border-y border-rule bg-paper">
-        <div className="mx-auto max-w-[1400px] px-5 py-12">
-          <Label>The flow</Label>
-          <div className="mt-4 grid gap-px overflow-hidden rounded-lg border border-rule bg-rule sm:grid-cols-4">
+          <ul className="flex flex-col">
             {[
-              ["Diagnose", "Spending Engine", "/spending", "Score the month against 50/30/20."],
-              ["Simulate", "Nudge Simulator", "/simulator", "Model step-ups, delay and shocks."],
-              ["Consult", "AI Counselor", "/counselor", "Ask, and get a cited answer."],
-              ["Act", "Roadmap", "/roadmap", "Work the milestone ladder."],
-            ].map(([step, name, href, body], i) => (
-              <Link
-                key={step}
-                href={href}
-                className="group bg-surface px-5 py-5 transition hover:bg-surface"
+              ["Savings rate", "40 points", "How much of your income you keep."],
+              ["Discretionary spending", "30 points", "Measured against the 30% guideline."],
+              ["Essentials", "15 points", "Whether the fixed costs fit inside half."],
+              ["Unspent buffer", "15 points", "What survives to the end of the month."],
+            ].map(([label, weight, note]) => (
+              <li
+                key={label}
+                className="ledger-rule flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-4"
               >
-                <Figure className="text-[11px] text-ink-muted">
-                  0{i + 1}
-                </Figure>
-                <p className="mt-1.5 font-display text-lg tracking-tight text-ink">
-                  {step}
-                </p>
-                <p className="mt-0.5 text-[12px] font-medium text-accent">
-                  {name}
-                </p>
-                <p className="mt-1.5 text-[12px] leading-relaxed text-ink-muted">
-                  {body}
-                </p>
-              </Link>
+                <span className="type-subhead text-ink">{label}</span>
+                <span className="type-data text-ink">{weight}</span>
+                <span className="type-label w-full text-ink-muted">{note}</span>
+              </li>
             ))}
+          </ul>
+        </section>
+
+        {/* ------------------------------------------------- capabilities */}
+        <section className="border-t border-line bg-surface py-16">
+          <div className="page-shell flex flex-col gap-12">
+            <h2 className="type-display prose-measure text-ink">
+              What you get once your figures are in.
+            </h2>
+
+            <div className="grid gap-8 md:grid-cols-2">
+              {CAPABILITIES.map(({ Icon, title, body, href, action }) => (
+                <section
+                  key={title}
+                  className="flex flex-col gap-2 border-t-2 border-line-strong pt-4"
+                >
+                  <Icon
+                    className="lucide size-5 text-ink-secondary"
+                    aria-hidden="true"
+                  />
+                  <h3 className="type-heading text-ink">{title}</h3>
+                  <p className="type-body text-ink-secondary">{body}</p>
+                  <Link
+                    href={href}
+                    className="type-label mt-2 inline-flex items-center gap-1 text-accent underline underline-offset-4"
+                  >
+                    {action}
+                    <ArrowRight className="lucide size-4" aria-hidden="true" />
+                  </Link>
+                </section>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ------------------------------------------------ trusted sources */}
+        <section className="page-shell flex flex-col gap-8 py-16">
+          <div className="flex flex-col gap-2">
+            <p className="type-eyebrow text-ink-muted">Trusted sources</p>
+            <h2 className="type-display prose-measure text-ink">
+              Where the answers come from.
+            </h2>
           </div>
 
-          <p className="mt-5 flex items-center gap-2 text-[12px] text-ink-muted">
-            <BookMarked className="h-3.5 w-3.5" />
-            Press{" "}
-            <kbd className="figure rounded border border-rule bg-surface px-1.5 py-0.5 text-[10px]">
-              ⌘K
-            </kbd>{" "}
-            anywhere to search citations, calculators and tools.
+          <p className="type-body prose-measure text-ink-secondary">
+            The coach does not answer from memory. Every question is matched
+            against a corpus of Reserve Bank of India, SEBI and National
+            Centre for Financial Education publications, and the answer quotes
+            the passages it used with the document and page number attached.
+            When nothing in the corpus is close enough, the answer is marked
+            as coming from general knowledge instead — and when the corpus is
+            unreachable, it refuses rather than improvising.
           </p>
-        </div>
-      </section>
-    </main>
+
+          <div className="flex flex-wrap gap-4">
+            <ButtonLink href="/sources">Read the methodology</ButtonLink>
+            <ButtonLink href="/signup" variant="primary">
+              Ask your first question
+            </ButtonLink>
+          </div>
+        </section>
+
+        {/* --------------------------------------------------- final CTA */}
+        <section className="border-t border-line bg-surface py-16">
+          <div className="page-shell flex flex-col items-start gap-8">
+            <h2 className="type-display prose-measure text-ink">
+              Ten minutes now, and you will know what your money is doing.
+            </h2>
+            <ButtonLink href="/signup" variant="primary">
+              Build my financial plan
+            </ButtonLink>
+            <DisclaimerNote />
+          </div>
+        </section>
+      </main>
+
+      <SiteFooter />
+    </div>
+  );
+}
+
+/**
+ * The product preview.
+ *
+ * A specimen, not a screenshot and not live data. The figures below are a
+ * worked example at a plausible student scale, and the frame says so in
+ * words directly above them — an unlabelled preview is indistinguishable
+ * from a claim about the reader.
+ */
+function PreviewPanel() {
+  return (
+    <figure className="flex flex-col gap-4 border border-line bg-surface px-4 py-8">
+      <figcaption className="type-eyebrow text-ink-muted">
+        Illustration — a worked example, not real data
+      </figcaption>
+
+      <ScoreDial
+        score={62}
+        band="Steady, with one thing to fix"
+        caption="Savings are on target. Discretionary spending is over the 30% line."
+      />
+
+      <dl className="flex flex-col">
+        {[
+          ["Money in", rupees(24000), "Stipend and allowance"],
+          ["Essentials", rupees(11400), "48% — inside the guideline"],
+          ["Discretionary", rupees(8600), "36% — above the 30% target"],
+          ["Set aside", rupees(4000), "17% — just under target"],
+        ].map(([label, amount, note]) => (
+          <div
+            key={label as string}
+            className="ledger-rule flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-2"
+          >
+            <dt className="type-label text-ink">{label as string}</dt>
+            <dd>
+              <Money amount={amount as ReturnType<typeof rupees>} size="md" />
+            </dd>
+            <dd className="type-label w-full text-ink-muted">
+              {note as string}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </figure>
   );
 }

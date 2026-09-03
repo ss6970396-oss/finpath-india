@@ -1,16 +1,50 @@
 "use client";
 
 import {
-  createContext, useCallback, useContext, useEffect, useMemo, useState,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
   useSyncExternalStore,
 } from "react";
 import type { ProjectionParams, ProjectionPoint } from "@/lib/sip";
 import type { ParsedTxn, SpendCategory } from "@/lib/csv";
-import { healthScore, ratios, type Health, type BucketRatios } from "@/lib/finance";
+import {
+  guiltFree,
+  healthScore,
+  ratios,
+  type BucketRatios,
+  type GuiltFree,
+  type Health,
+} from "@/lib/finance";
+import {
+  deriveBudget,
+  EMPTY_PROFILE,
+  isComplete,
+  type DerivedBudget,
+  type FinancialProfile,
+} from "@/lib/onboarding";
 import { createPersistedStore } from "@/lib/persist";
 import { apiJson, describeApiFailure } from "@/lib/api";
 
 export const API = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
+
+/**
+ * The API's fallback assumptions, used only until /api/spending answers.
+ * They are never written down as product constants: nudge.py owns them and
+ * ships them to the client as `projection_params`, so changing the rate on
+ * the server changes it here without a frontend edit.
+ */
+const FALLBACK_PARAMS: ProjectionParams = {
+  annual_rate: 0.12,
+  years: 10,
+  wants_threshold: 0.3,
+};
+
+/** The backend refuses a nonsensical allowance; keep the query in range. */
+const MIN_QUERY_ALLOWANCE = 1000;
 
 export type Txn = {
   id: number;
@@ -33,73 +67,88 @@ export type Spending = {
   transactions: Txn[];
 };
 
-export type ProfileId = "student" | "early" | "custom";
+/**
+ * WHERE THE NUMBERS ON SCREEN CAME FROM.
+ *
+ * Every page that renders a figure also renders this, because a projection
+ * built from an example month and one built from a real statement look
+ * identical and mean completely different things.
+ *
+ *   statement  a file the student parsed in their own browser. Actuals.
+ *   declared   what they typed during onboarding. Their own estimate.
+ *   example    the API's generated month. Illustration only, opt-in.
+ */
+export type DataSource = "statement" | "declared" | "example";
 
-export type Profile = {
-  id: ProfileId;
-  label: string;
-  sub: string;
-  allowance: number;
-  age: number;
+export const SOURCE_LABEL: Record<DataSource, string> = {
+  statement: "Your uploaded statement",
+  declared: "The figures you entered",
+  example: "An example month",
 };
 
-export const PROFILES: Record<Exclude<ProfileId, "custom">, Profile> = {
-  student: {
-    id: "student",
-    label: "Student / Intern",
-    sub: "₹15,000 / month",
-    allowance: 15000,
-    age: 21,
-  },
-  early: {
-    id: "early",
-    label: "Early Career",
-    sub: "₹60,000 / month",
-    allowance: 60000,
-    age: 25,
-  },
-};
-
-const profileStore = createPersistedStore<Profile>(
-  "finpath-profile",
-  PROFILES.student,
+const profileStore = createPersistedStore<FinancialProfile>(
+  "finpath.profile",
+  EMPTY_PROFILE,
 );
 const tasksStore = createPersistedStore<Record<string, boolean>>(
-  "finpath-roadmap",
+  "finpath.plan",
   {},
 );
 
-type Ctx = {
-  profile: Profile;
-  setProfile: (id: ProfileId, allowance?: number) => void;
+/**
+ * The health score as it stood the last time the student opened /home.
+ *
+ * This is the only history the product has, and it is written by /home
+ * itself rather than assumed: with no server-side store, the honest
+ * alternative to "since your last review" is not a fabricated trend, it is
+ * no trend at all until there genuinely is one.
+ */
+export type Review = { score: number; savingsRate: number; wantsRate: number; at: string };
 
+const reviewStore = createPersistedStore<Review | null>("finpath.review", null);
+
+type Ctx = {
+  /* ---- the declared profile ---- */
+  profile: FinancialProfile;
+  saveProfile: (next: FinancialProfile) => void;
+  onboarded: boolean;
+  budget: DerivedBudget;
+
+  /* ---- what is actually in force ---- */
+  source: DataSource;
+  allowance: number;
+  totals: Record<string, number>;
+  ratio: BucketRatios;
+  health: Health;
+  envelope: GuiltFree;
+
+  /* ---- the ledger, when there is one ---- */
+  transactions: Txn[];
+  /** Credits in an uploaded statement. Zero for every other source. */
+  income: number;
+  uncategorised: ParsedTxn[];
+  uploaded: ParsedTxn[] | null;
+  setUploaded: (t: ParsedTxn[] | null) => void;
+  assignCategory: (id: number, category: SpendCategory) => void;
+
+  /** Opt in to the generated month. Off by default; never silently on. */
+  useExample: boolean;
+  setUseExample: (on: boolean) => void;
+
+  /* ---- the API ---- */
+  params: ProjectionParams;
   data: Spending | null;
   loading: boolean;
   error: string | null;
   reload: () => void;
 
-  /** CSV-uploaded ledger. When present it overrides the simulated feed. */
-  uploaded: ParsedTxn[] | null;
-  setUploaded: (t: ParsedTxn[] | null) => void;
-  /** Move one uploaded row into a bucket. Marks it user-assigned. */
-  assignCategory: (id: number, category: SpendCategory) => void;
-
-  /**
-   * Spend totals in force — uploaded if present, else simulated. Carries
-   * Needs/Wants/Savings/Uncategorised only: money coming IN is not spend and
-   * is reported separately as `income`.
-   */
-  totals: Record<string, number>;
-  /** Credits in the uploaded ledger. Always 0 for the simulated feed. */
-  income: number;
-  /** Rows still sitting in the Uncategorised bucket, newest first. */
-  uncategorised: ParsedTxn[];
-  transactions: Txn[];
-  ratio: BucketRatios;
-  health: Health;
-
+  /* ---- the plan checklist ---- */
   done: Record<string, boolean>;
   toggleTask: (id: string) => void;
+
+  /* ---- the one piece of history ---- */
+  lastReview: Review | null;
+  recordReview: (review: Review) => void;
 };
 
 const FinPathContext = createContext<Ctx | null>(null);
@@ -117,13 +166,29 @@ export function FinPathProvider({ children }: { children: React.ReactNode }) {
     tasksStore.get,
     tasksStore.getServer,
   );
+  const lastReview = useSyncExternalStore(
+    reviewStore.subscribe,
+    reviewStore.get,
+    reviewStore.getServer,
+  );
 
   const [uploaded, setUploaded] = useState<ParsedTxn[] | null>(null);
+  const [useExample, setUseExample] = useState(false);
   const [nonce, setNonce] = useState(0);
+
+  const onboarded = isComplete(profile);
+  const budget = useMemo(() => deriveBudget(profile), [profile]);
+
+  // The API is asked about the student's own income so the example month it
+  // generates is at their scale rather than a stranger's.
+  const queryAllowance = Math.max(
+    MIN_QUERY_ALLOWANCE,
+    Math.round(budget.allowance || MIN_QUERY_ALLOWANCE),
+  );
 
   // The response carries the key of the request that produced it, so
   // `loading` is derived rather than assigned inside the effect body.
-  const reqKey = `${profile.allowance}:${nonce}`;
+  const reqKey = `${queryAllowance}:${nonce}`;
   const [res, setRes] = useState<{
     key: string;
     data: Spending | null;
@@ -133,8 +198,7 @@ export function FinPathProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let cancelled = false;
     const key = reqKey;
-
-    const url = `${API}/api/spending?allowance=${profile.allowance}`;
+    const url = `${API}/api/spending?allowance=${queryAllowance}`;
 
     apiJson<Spending>(url)
       .then((d) => {
@@ -150,24 +214,15 @@ export function FinPathProvider({ children }: { children: React.ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [reqKey, profile.allowance]);
+  }, [reqKey, queryAllowance]);
 
   const loading = res.key !== reqKey;
   const data = res.key === reqKey ? res.data : null;
   const error = res.key === reqKey ? res.error : null;
+  const params = data?.projection_params ?? FALLBACK_PARAMS;
 
-  const setProfile = useCallback((id: ProfileId, allowance?: number) => {
-    profileStore.set(
-      id === "custom"
-        ? {
-            id: "custom",
-            label: "Custom",
-            sub: "Statement upload",
-            allowance: Math.max(1000, Math.round(allowance ?? 15000)),
-            age: 22,
-          }
-        : PROFILES[id],
-    );
+  const saveProfile = useCallback((next: FinancialProfile) => {
+    profileStore.set(next);
   }, []);
 
   const toggleTask = useCallback((id: string) => {
@@ -175,74 +230,113 @@ export function FinPathProvider({ children }: { children: React.ReactNode }) {
     tasksStore.set({ ...current, [id]: !current[id] });
   }, []);
 
+  const recordReview = useCallback((review: Review) => {
+    reviewStore.set(review);
+  }, []);
+
   const reload = useCallback(() => setNonce((n) => n + 1), []);
 
-  const assignCategory = useCallback(
-    (id: number, category: SpendCategory) => {
-      setUploaded((current) =>
-        current
-          ? current.map((t) =>
-              t.id === id ? { ...t, category, categorySource: "user" } : t,
-            )
-          : current,
-      );
-    },
-    [],
-  );
+  const assignCategory = useCallback((id: number, category: SpendCategory) => {
+    setUploaded((current) =>
+      current
+        ? current.map((t) =>
+            t.id === id ? { ...t, category, categorySource: "user" } : t,
+          )
+        : current,
+    );
+  }, []);
 
-  // Uploaded ledger takes precedence over the simulated feed everywhere.
-  const { totals, transactions, income, uncategorised } = useMemo(() => {
+  /**
+   * PRECEDENCE. Actuals beat estimates; estimates beat illustrations.
+   *
+   *   1. an uploaded statement, because it is what happened
+   *   2. the declared profile, because the student stands behind it
+   *   3. the generated example, and only when explicitly asked for
+   *
+   * Whichever wins, `source` says so and every page prints it.
+   */
+  const resolved = useMemo(() => {
     if (uploaded && uploaded.length) {
       // Credits are not spend. They are excluded from every bucket, and so
       // from the denominator the 30% Wants rule is measured against —
-      // counting a ₹12,500 allowance credit as "spending" would halve the
-      // ratio and stop the rule firing at all.
-      const t = { Needs: 0, Wants: 0, Savings: 0, Uncategorised: 0 };
+      // counting an allowance credit as "spending" would halve the ratio
+      // and stop the rule firing at all.
+      const totals = { Needs: 0, Wants: 0, Savings: 0, Uncategorised: 0 };
       let credited = 0;
-      for (const x of uploaded) {
-        if (x.direction === "in") {
-          credited += x.amount;
+      for (const t of uploaded) {
+        if (t.direction === "in") {
+          credited += t.amount;
           continue;
         }
-        t[x.category as SpendCategory] += x.amount;
+        totals[t.category as SpendCategory] += t.amount;
       }
       return {
-        totals: t as Record<string, number>,
+        source: "statement" as DataSource,
+        // A statement says what left the account, not what arrives each
+        // month. The declared income stays the denominator unless there is
+        // none, in which case the credits in the file are the best estimate.
+        allowance: budget.allowance > 0 ? budget.allowance : credited,
+        totals: totals as Record<string, number>,
         transactions: uploaded as Txn[],
         income: credited,
         uncategorised: uploaded.filter(
-          (x) => x.direction === "out" && x.category === "Uncategorised",
+          (t) => t.direction === "out" && t.category === "Uncategorised",
         ),
       };
     }
+
+    if (useExample && data) {
+      return {
+        source: "example" as DataSource,
+        allowance: data.allowance,
+        totals: data.totals,
+        transactions: data.transactions,
+        income: 0,
+        uncategorised: [] as ParsedTxn[],
+      };
+    }
+
     return {
-      totals: data?.totals ?? { Needs: 0, Wants: 0, Savings: 0 },
-      transactions: data?.transactions ?? [],
+      source: "declared" as DataSource,
+      allowance: budget.allowance,
+      totals: budget.totals as Record<string, number>,
+      transactions: [] as Txn[],
       income: 0,
       uncategorised: [] as ParsedTxn[],
     };
-  }, [uploaded, data]);
+  }, [uploaded, useExample, data, budget]);
 
-  const ratio = useMemo(
-    () => ratios(totals, profile.allowance),
-    [totals, profile.allowance],
-  );
+  const { source, allowance, totals, transactions, income, uncategorised } =
+    resolved;
+
+  const ratio = useMemo(() => ratios(totals, allowance), [totals, allowance]);
   const health = useMemo(
-    () => healthScore(totals, profile.allowance),
-    [totals, profile.allowance],
+    () => healthScore(totals, allowance),
+    [totals, allowance],
+  );
+  const envelope = useMemo(
+    () => guiltFree(totals, allowance),
+    [totals, allowance],
   );
 
   const value = useMemo<Ctx>(
     () => ({
-      profile, setProfile, data, loading, error, reload,
+      profile, saveProfile, onboarded, budget,
+      source, allowance, totals, ratio, health, envelope,
+      transactions, income, uncategorised,
       uploaded, setUploaded, assignCategory,
-      totals, income, uncategorised, transactions, ratio, health,
+      useExample, setUseExample,
+      params, data, loading, error, reload,
       done, toggleTask,
+      lastReview, recordReview,
     }),
     [
-      profile, setProfile, data, loading, error, reload,
-      uploaded, assignCategory, totals, income, uncategorised,
-      transactions, ratio, health, done, toggleTask,
+      profile, saveProfile, onboarded, budget,
+      source, allowance, totals, ratio, health, envelope,
+      transactions, income, uncategorised,
+      uploaded, assignCategory, useExample,
+      params, data, loading, error, reload,
+      done, toggleTask, lastReview, recordReview,
     ],
   );
 

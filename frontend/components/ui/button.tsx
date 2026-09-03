@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 /**
@@ -23,7 +24,8 @@ import { cn } from "@/lib/utils";
  * WCAG 2.2 SC 1.4.11.
  */
 
-type Variant = "primary" | "secondary" | "quiet" | "critical";
+export type ButtonVariant = "primary" | "secondary" | "quiet" | "critical";
+type Variant = ButtonVariant;
 type Size = "sm" | "md";
 
 const VARIANTS: Record<Variant, string> = {
@@ -41,6 +43,26 @@ const SIZES: Record<Size, string> = {
   sm: "h-8 px-2 gap-1",
   md: "h-10 px-4 gap-2",
 };
+
+/**
+ * The shared shape. Exported so `ButtonLink` can wear it without a second
+ * copy of the variant table — a link that only *looks* like a button is
+ * how the two drift apart.
+ */
+export function buttonClass(
+  variant: Variant = "secondary",
+  size: Size = "md",
+  className?: string,
+) {
+  return cn(
+    "type-label inline-flex select-none items-center justify-center whitespace-nowrap",
+    "transition-colors duration-(--dur-fast) ease-(--ease-out)",
+    "disabled:cursor-not-allowed disabled:border-line disabled:bg-transparent disabled:text-ink-disabled",
+    VARIANTS[variant],
+    SIZES[size],
+    className,
+  );
+}
 
 export type ButtonProps = React.ComponentProps<"button"> & {
   variant?: Variant;
@@ -73,14 +95,7 @@ export function Button({
       disabled={isDisabled}
       aria-disabled={isDisabled || undefined}
       aria-busy={loading || undefined}
-      className={cn(
-        "type-label inline-flex select-none items-center justify-center whitespace-nowrap",
-        "transition-colors duration-(--dur-fast) ease-(--ease-out)",
-        "disabled:cursor-not-allowed disabled:border-line disabled:bg-transparent disabled:text-ink-disabled",
-        VARIANTS[variant],
-        SIZES[size],
-        className,
-      )}
+      className={buttonClass(variant, size, className)}
       {...props}
     >
       {loading ? (
@@ -118,5 +133,33 @@ export function ButtonRow({
     >
       {children}
     </div>
+  );
+}
+
+/**
+ * A NAVIGATION that looks like a button.
+ *
+ * It is an `<a>`, not a button with an onClick that pushes a route. That
+ * distinction is the difference between middle-click, ctrl-click, "open in
+ * new tab", the status bar showing where it goes, and a screen reader
+ * announcing "link" — none of which a button can offer, and all of which
+ * someone expects from something that takes them elsewhere.
+ */
+export function ButtonLink({
+  href,
+  variant = "secondary",
+  size = "md",
+  className,
+  children,
+  ...props
+}: Omit<React.ComponentProps<typeof Link>, "href"> & {
+  href: string;
+  variant?: Variant;
+  size?: Size;
+}) {
+  return (
+    <Link href={href} className={buttonClass(variant, size, className)} {...props}>
+      {children}
+    </Link>
   );
 }

@@ -519,10 +519,13 @@ export function parseStatement(text: string): ParseResult {
     }
 
     if (net === 0) {
+      // A literal zero in a skip reason, not a formatted amount: there is
+      // no Paise value to pass through formatINR here, because the row was
+      // rejected precisely for carrying no usable figure.
       skip(
         plan.shape === "debit-credit"
-          ? "debit and credit cancel to ₹0"
-          : "amount is ₹0",
+          ? "debit and credit cancel to ₹0" // design-lint-allow: manual-currency — a literal zero in a skip reason; there is no amount to format
+          : "amount is ₹0", // design-lint-allow: manual-currency — a literal zero in a skip reason; there is no amount to format
       );
       continue;
     }

@@ -53,12 +53,15 @@ export function PageHeader({
  * drawing the ledger rule here would spend the signature on decoration.
  */
 export function Section({
+  id,
   title,
   description,
   actions,
   children,
   className,
 }: {
+  /** Anchor target, when something links to this section by name. */
+  id?: string;
   title: string;
   description?: string;
   actions?: React.ReactNode;
@@ -66,7 +69,7 @@ export function Section({
   className?: string;
 }) {
   return (
-    <section className={cn("flex flex-col gap-4", className)}>
+    <section id={id} className={cn("flex flex-col gap-4", className)}>
       <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-line pb-2">
         <div className="min-w-0">
           <h2 className="type-heading text-ink">{title}</h2>

@@ -3,7 +3,7 @@
 /* ============================================================
    FINPATH DESIGN SYSTEM
 
-   Thirteen colour tokens. No fourteenth.
+   Fifteen colour tokens. No sixteenth.
    Radius zero. No shadows. No gradients. No dark mode.
 
    Every value in this file is enforced by two scripts:
@@ -11,12 +11,10 @@
      npm run design-lint      asserts nothing outside this file
                               introduces a colour, a radius, a
                               shadow, or an arbitrary size
-
-   Section references are to the FinPath master specification.
    ============================================================ */
 
 @theme {
-  /* ---- GROUNDS (§11) ----
+  /* ---- GROUNDS ----
      Three steps. Depth comes from these and from --line. Never from a
      shadow, a blur, or a gradient. Note there is no pure white: #FCFCFB
      is warm off-white, which is what stops the page reading as a browser
@@ -47,10 +45,26 @@
   --color-line: #e4e4e0; /* dividers, table rules, card edges */
   --color-line-strong: #2a2a2e; /* every interactive boundary */
 
+  /* ---- ACCENT ----
+     ONE brand colour, and it is a deep pine green rather than a bright
+     one: at 7.28:1 on canvas it is legible as TEXT, which is the whole
+     point — an accent that can only be a background is an accent that ends
+     up as decoration.
+
+     Where it is allowed: the wordmark, the primary link, the plotted
+     "your position" series, the health arc, and the selected state of a
+     control. Where it is not: any surface larger than a control, any
+     heading, any amount. If a screen looks livelier for having more of it,
+     that is the signal to use less.
+
+     It is NEVER a status colour. Positive/critical below own that job, and
+     accent must not creep into meaning "good" or the two systems collide. */
+  --color-accent: #1f5f4f;
+  --color-accent-wash: #eef3f1;
+
   /* ---- STATUS ----
-     The only colour in the product. It appears when a rule has actually
-     fired, never as emphasis and never as decoration. A month with nothing
-     wrong in it is entirely ink on canvas.
+     Appears when a rule has actually fired, never as emphasis and never as
+     decoration. A month with nothing wrong in it is entirely ink on canvas.
 
      --critical and --positive sit 1.21:1 apart, so they are near-identical
      in luminance. That is deliberate and it forces the right thing: they
@@ -61,14 +75,14 @@
   --color-positive: #4c5d50;
   --color-positive-wash: #f0f2ef;
 
-  /* ---- TYPE (§13) ----
+  /* ---- TYPE ----
      Two families. Instrument Serif for titles and editorial statements;
      Inter for everything else, including every numeral. Loaded through
      next/font in app/layout.tsx, so there is no external request. */
   --font-display: var(--font-instrument-serif), ui-serif, Georgia, serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
-  /* ---- GEOMETRY (§15) ----
+  /* ---- GEOMETRY ----
      Radius is zero everywhere. These are pinned rather than merely
      unused, so that a `rounded-md` that slips past design-lint is inert
      instead of visible. The one circle in the product is the user avatar,
@@ -93,15 +107,15 @@
   --shadow-2xl: 0 0 #0000;
 
   /* ---- LAYOUT ----
-     1200px is the widest the content ever goes (§15). 68ch is the widest a
+     1200px is the widest the content ever goes. 68ch is the widest a
      paragraph ever goes — a financial explanation set at 1200px is
      unreadable however much whitespace surrounds it. */
   --container-page: 1200px;
   --container-prose: 68ch;
   --container-form: 420px;
 
-  /* The marginalia gutter (§16). One number, used by the layout utility
-     and by the styleguide's own documentation of it. */
+  /* The marginalia gutter. One number, used by the layout utility and by
+     the styleguide's own documentation of it. */
   --width-gutter: 160px;
 
   /* ---- MOTION ----
@@ -113,20 +127,15 @@
 }
 
 /* ============================================================
-   SPACING — the 8px scale (§15)
+   SPACING — the 8px scale
 
    Tailwind's base step is 4px, so FinPath's 8px scale is the EVEN steps:
-   2=8, 4=16, 6=24, 8=32, 12=48, 16=64.
+   2=8, 4=16, 6=24, 8=32, 12=48, 16=64, 24=96.
 
-   Odd steps (p-1, gap-3, mt-5) are off-scale and design-lint rejects them
-   in new code. The half-step 0.5 (2px) and step 1 (4px) are permitted
-   inside components/ui/ only, for optical adjustment within a control —
-   a 13px-tall glyph centred in a 32px button needs a 4px nudge and there
-   is no honest way around it.
-
-   The base step is deliberately NOT redefined to 8px: doing so would
-   silently double every spacing value in the not-yet-rebuilt pages and
-   push them into horizontal overflow at 375px.
+   Odd steps (p-1, gap-3, mt-5) are off-scale. The half-step 0.5 (2px) and
+   step 1 (4px) are permitted inside components/ui/ only, for optical
+   adjustment within a control — a 13px-tall glyph centred in a 32px button
+   needs a 4px nudge and there is no honest way around it.
    ============================================================ */
 
 /* ============================================================
@@ -154,7 +163,7 @@
     font-weight: 400;
   }
 
-  /* §39: a visible focus ring on everything interactive. :where() keeps
+  /* A visible focus ring on everything interactive. :where() keeps
      specificity at zero so a primitive can restyle it, and the offset is
      what makes it legible against a square-cornered control. */
   :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
@@ -172,19 +181,37 @@
   .recharts-cartesian-grid line {
     stroke: var(--color-line);
   }
+
+  /* Range inputs are the one native control the product keeps, because a
+     hand-built slider loses keyboard stepping and the OS's own touch
+     target. Pin the fill to the accent so it is not the browser's blue. */
+  input[type="range"] {
+    accent-color: var(--color-accent);
+  }
 }
 
 /* ============================================================
-   TYPE ROLES (§13)
+   TYPE ROLES
 
-   Six roles, and a component may use nothing else. An arbitrary size
-   (text-[13px]) is a design-lint failure — the pre-rebuild tree carries
-   about 190 of them, which is why the rule exists.
+   Seven roles, and a component may use nothing else. An arbitrary size
+   (text-[13px]) is a design-lint failure.
 
    Serif is reserved for page titles, section headings and editorial
    statements. It never appears in a control, a label, a table cell, or a
    number.
    ============================================================ */
+
+/**
+ * The landing headline, and nothing else. One per site.
+ * 44px at 390px, 76px at 1440px.
+ */
+@utility type-hero {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.75rem, 1.6667rem + 4.4444vw, 4.75rem);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+}
 
 /** Page title. One per page. Continuous between 390px and 1440px. */
 @utility type-display {
@@ -230,11 +257,26 @@
 }
 
 /**
+ * Metadata only, and sparingly: the one word that says what KIND of thing
+ * follows. Never a heading, never a button, never a sentence — uppercase
+ * is unreadable past about four words and it is the fastest way to make a
+ * calm interface shout.
+ */
+@utility type-eyebrow {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.6875rem; /* 11 */
+  line-height: 1.3;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/**
  * EVERY numeral in the product: currency, percentages, dates, counts.
  *
  * Not decoration. A column of rupee figures in proportional numerals does
  * not align, and a ledger that does not align is not a ledger. The size is
- * inherited so this role can sit inside any of the five above.
+ * inherited so this role can sit inside any of the roles above.
  */
 @utility type-data {
   font-family: var(--font-sans);
@@ -248,7 +290,7 @@
    LAYOUT UTILITIES
    ============================================================ */
 
-/** The 1200px content column (§15). */
+/** The 1200px content column. */
 @utility page-shell {
   width: 100%;
   max-width: var(--container-page);
@@ -265,7 +307,7 @@
 }
 
 /**
- * THE SIGNATURE ELEMENT (§16) — the marginalia system.
+ * THE SIGNATURE ELEMENT — the marginalia system.
  *
  * A fixed gutter in which annotations sit BESIDE what they annotate, the
  * way a clause reference sits beside a statutory paragraph. Below 1024px
@@ -327,7 +369,7 @@
 }
 
 /**
- * The one rounded element in the entire product (§12).
+ * The one rounded element in the entire product.
  *
  * It exists as a utility rather than as `rounded-full` so that the
  * exception is a single named thing that design-lint can point at, and so
@@ -354,9 +396,31 @@
 
 /* ============================================================
    MOTION
-   §42: loading is a static neutral block, never a shimmer. There is
-   therefore no pulse or skeleton animation defined anywhere.
+
+   Loading is a static neutral block, never a shimmer, so there is no pulse
+   or skeleton animation anywhere in this file.
+
+   `enter` is the only entrance in the product: 4px and 200ms, once, on the
+   content of a route or a newly revealed panel. It exists so a step change
+   (advancing the onboarding, switching a scenario) reads as a movement
+   rather than a flicker. Anything longer or larger than this is a
+   distraction in a product about money.
    ============================================================ */
+
+@keyframes finpath-enter {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@utility enter {
+  animation: finpath-enter var(--dur-base) var(--ease-out) both;
+}
 
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -365,214 +429,5 @@
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
-  }
-}
-
-/* ============================================================
-   LEGACY COMPATIBILITY — DELETE IN PHASE 3
-
-   The pre-rebuild pages (/, /spending, /simulator, /counselor, /vault,
-   /roadmap) still reference the previous 40-token system. Every one of
-   those names is re-pointed here onto the thirteen tokens above so those
-   pages keep rendering coherently until they are rebuilt.
-
-   This block introduces NO new colour. It is an alias table, and it is
-   the reason design-lint reports a legacy debt count instead of zero.
-   When the last page is rebuilt, delete from here to the end of the file
-   and the debt goes to zero on its own.
-   ============================================================ */
-
-@theme {
-  /* grounds */
-  --color-paper: var(--color-canvas);
-  --color-surface-1: var(--color-surface);
-  --color-surface-2: var(--color-surface);
-  --color-surface-3: var(--color-surface-sunken);
-  --color-surface-hover: var(--color-surface);
-
-  /* rules */
-  --color-rule: var(--color-line);
-  --color-rule-subtle: var(--color-line);
-  --color-rule-strong: var(--color-line-strong);
-
-  /* ink */
-  --color-ink-faint: var(--color-ink-muted);
-
-  /* brand — the old system had a green identity colour. There is no brand
-     colour in the new palette: identity is carried by type and structure,
-     so these resolve to ink. */
-  --color-brand: var(--color-ink);
-  --color-brand-hover: var(--color-ink);
-  --color-brand-press: var(--color-ink);
-  --color-brand-weak: var(--color-surface);
-  --color-brand-border: var(--color-line-strong);
-  --color-on-brand: var(--color-canvas);
-  --color-accent: var(--color-ink);
-  --color-accent-weak: var(--color-surface);
-
-  /* status */
-  --color-positive-weak: var(--color-positive-wash);
-  --color-positive-border: var(--color-positive);
-  --color-caution: var(--color-critical);
-  --color-caution-weak: var(--color-critical-wash);
-  --color-caution-border: var(--color-critical);
-  --color-critical-weak: var(--color-critical-wash);
-  --color-critical-border: var(--color-critical);
-  --color-warn: var(--color-critical);
-  --color-warn-weak: var(--color-critical-wash);
-  --color-danger: var(--color-critical);
-  --color-danger-weak: var(--color-critical-wash);
-  --color-info: var(--color-ink-secondary);
-  --color-info-weak: var(--color-surface);
-  --color-info-border: var(--color-line);
-
-  /* categorical data — the old six-colour ramp. The new palette has no
-     categorical hues on purpose (--positive and --critical are 1.21:1
-     apart, so hue cannot carry series identity accessibly). These resolve
-     to an ink ramp; the rebuilt charts separate series by direct labelling
-     and position instead. */
-  --color-data-1: var(--color-ink);
-  --color-data-2: var(--color-ink-secondary);
-  --color-data-3: var(--color-ink-muted);
-  --color-data-4: var(--color-critical);
-  --color-data-5: var(--color-ink-secondary);
-  --color-data-6: var(--color-ink-muted);
-}
-
-/* Legacy card utilities. Flattened: no shadow, no radius, border only. */
-@utility card-flat {
-  background-color: transparent;
-  border: 1px solid var(--color-line);
-}
-
-@utility card-raised {
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-line);
-}
-
-@utility card-inset {
-  background-color: var(--color-surface-sunken);
-}
-
-@utility card-overlay {
-  background-color: var(--color-canvas);
-  border: 1px solid var(--color-line-strong);
-}
-
-/* Legacy type roles, re-pointed onto the six new ones. */
-@utility display-xl {
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(2.25rem, 1.8786rem + 1.5238vw, 3.25rem);
-  line-height: 1.1;
-  letter-spacing: -0.015em;
-}
-
-@utility display-lg {
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: 2rem;
-  line-height: 1.17;
-  letter-spacing: -0.015em;
-}
-
-@utility display-md {
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: 1.5rem;
-  line-height: 1.25;
-  letter-spacing: -0.01em;
-}
-
-@utility body-lg {
-  font-family: var(--font-sans);
-  font-weight: 400;
-  font-size: 1.0625rem;
-  line-height: 1.6;
-}
-
-@utility body-base {
-  font-family: var(--font-sans);
-  font-weight: 400;
-  font-size: 0.9375rem;
-  line-height: 1.6;
-}
-
-@utility label-ui {
-  font-family: var(--font-sans);
-  font-weight: 500;
-  font-size: 0.8125rem;
-  line-height: 1.4;
-  letter-spacing: 0.01em;
-}
-
-@utility caption {
-  font-family: var(--font-sans);
-  font-weight: 400;
-  font-size: 0.75rem;
-  line-height: 1.35;
-}
-
-@utility eyebrow {
-  font-family: var(--font-sans);
-  font-weight: 600;
-  font-size: 0.6875rem;
-  line-height: 1.3;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: var(--color-ink-muted);
-}
-
-@utility overline-ui {
-  font-family: var(--font-sans);
-  font-weight: 600;
-  font-size: 0.6875rem;
-  line-height: 1.3;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-@utility amount-xl {
-  font-family: var(--font-sans);
-  font-weight: 500;
-  font-size: 2.125rem;
-  line-height: 1.12;
-  letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum";
-}
-
-@utility amount {
-  font-family: var(--font-sans);
-  font-weight: 500;
-  font-size: 0.9375rem;
-  line-height: 1.6;
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum";
-}
-
-@utility tnum {
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum";
-}
-
-@utility figure {
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum";
-}
-
-@utility prose-column {
-  max-width: var(--container-prose);
-}
-
-@utility caret-stream {
-  &::after {
-    content: "";
-    display: inline-block;
-    width: 2px;
-    height: 1em;
-    margin-left: 2px;
-    vertical-align: -0.15em;
-    background-color: var(--color-ink);
   }
 }

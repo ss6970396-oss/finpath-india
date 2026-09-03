@@ -11,12 +11,7 @@
  * explicit conversion first.
  */
 
-import {
-  PAISE_PER_RUPEE,
-  type Paise,
-  rupeesToPaise,
-  toEngineRupees,
-} from "./money";
+import { PAISE_PER_RUPEE, type Paise, toEngineRupees } from "./money";
 
 /* ---------------------------------------------------------------- money */
 
@@ -164,36 +159,4 @@ export function prettySource(file: string): string {
     .replace(/[_-]+/g, " ")
     .replace(/\s+/g, " ")
     .trim();
-}
-
-/* ============================================================
-   DEPRECATED — rupee-taking shims. DELETE IN PHASE 3.
-
-   The not-yet-rebuilt pages pass float rupees. These keep them compiling
-   and rendering correctly until each page is rebuilt onto the paise API
-   above. They are counted as legacy debt by `npm run design-lint`.
-
-   Do not call these from new code.
-   ============================================================ */
-
-/** @deprecated Pass paise to `formatINR`. */
-export const inr = (rupeeValue: number) => formatINR(rupeesToPaise(rupeeValue));
-
-/** @deprecated Pass paise to `formatCompactINR`. */
-export const inrCompact = (rupeeValue: number) =>
-  formatCompactINR(rupeesToPaise(rupeeValue));
-
-/** @deprecated Use `formatPercent`. Note the different digit default. */
-export const pct = (fraction: number, digits = 0) =>
-  formatPercent(fraction, { digits });
-
-/** @deprecated Use `formatDate`, which includes the year. */
-export function shortDate(iso: string): string {
-  const d = utcFromIso(iso);
-  if (!d) return iso;
-  return new Intl.DateTimeFormat("en-IN", {
-    day: "2-digit",
-    month: "short",
-    timeZone: "UTC",
-  }).format(d);
 }

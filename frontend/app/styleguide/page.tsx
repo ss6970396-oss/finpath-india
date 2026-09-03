@@ -12,12 +12,19 @@ import {
 } from "lucide-react";
 
 import {
+  ActionCard,
   Annotated,
   Avatar,
   Badge,
   BareInput,
   Button,
   ButtonRow,
+  ChartFrame,
+  Checkbox,
+  Choice,
+  DisclaimerNote,
+  DistributionBar,
+  DropZone,
   Card,
   CardBody,
   CardFooter,
@@ -27,6 +34,7 @@ import {
   ErrorState,
   Header,
   Input,
+  Insight,
   LoadingState,
   MarginBody,
   MarginLayout,
@@ -38,14 +46,20 @@ import {
   ModalClose,
   Money,
   PageHeader,
+  PasswordInput,
   ProgressMeter,
+  Provenance,
+  ScoreDial,
   Section,
+  Segmented,
   Select,
   Sheet,
   Sidebar,
   Skeleton,
+  Slider,
   SourcePanel,
   StatusDot,
+  Stepper,
   TBody,
   TD,
   TH,
@@ -57,6 +71,8 @@ import {
   TabPanel,
   Table,
   Tabs,
+  Timeline,
+  TimelineStage,
   ToastProvider,
   Tooltip,
   TooltipProvider,
@@ -133,6 +149,8 @@ const COLOUR_TOKENS = [
   ["ink-disabled", "disabled only"],
   ["line", "dividers — never a control"],
   ["line-strong", "every control boundary"],
+  ["accent", "the one brand colour — legible as text"],
+  ["accent-wash", "accent ground"],
   ["critical", "a rule has fired"],
   ["critical-wash", "critical ground"],
   ["positive", "on target"],
@@ -177,7 +195,7 @@ function ColourTable() {
   );
 
   return (
-    <Table caption="The thirteen colour tokens and their resolved values">
+    <Table caption="The fifteen colour tokens and their resolved values">
       <THead>
         <TR>
           <TH>Token</TH>
@@ -210,11 +228,14 @@ function ColourTable() {
 /* -------------------------------------------------------------------- type */
 
 const TYPE_ROLES = [
+  ["type-hero", "Instrument Serif, 44 → 76px", "See where your money is going"],
   ["type-display", "Instrument Serif, 36 → 52px", "Understand your money"],
   ["type-heading", "Instrument Serif, 24px", "This month at a glance"],
   ["type-subhead", "Inter 600, 16px", "Where it went"],
   ["type-body", "Inter 400, 15px", "Your dining spend is above the share you set for it."],
   ["type-label", "Inter 500, 13px", "Monthly allowance"],
+  ["type-eyebrow", "Inter 600, 11px, uppercase", "Your biggest opportunity"],
+  ["type-data", "Inter 500, tabular, size inherited", "1,24,500"],
 ] as const;
 
 /* ---------------------------------------------------------------- fixtures */
@@ -239,13 +260,13 @@ const SOURCE_FIXTURE = [
 ];
 
 const NAV_ITEMS = [
-  { href: "/app", label: "Overview", icon: LayoutGrid },
-  { href: "/app/spending", label: "Spending", icon: Wallet },
-  { href: "/app/simulator", label: "Simulators", icon: Compass },
-  { href: "/app/counselor", label: "Counselor", icon: MessageSquare },
-  { href: "/app/plan", label: "Plan", icon: BookOpen },
-  { href: "/app/sources", label: "Sources", icon: FileText },
-  { href: "/app/settings/profile", label: "Settings", icon: Settings },
+  { href: "/home", label: "Home", icon: LayoutGrid },
+  { href: "/spending", label: "Spending", icon: Wallet },
+  { href: "/plan", label: "Plan", icon: BookOpen },
+  { href: "/what-if", label: "What-if", icon: Compass },
+  { href: "/ask", label: "Ask", icon: MessageSquare },
+  { href: "/sources", label: "Sources", icon: FileText },
+  { href: "/profile", label: "Profile", icon: Settings },
 ];
 
 /**
@@ -280,7 +301,7 @@ export default function StyleGuidePage() {
           {/* ---------------------------------------------------- colour */}
           <Section
             title="Colour"
-            description="Thirteen tokens. No fourteenth — check-contrast fails the build if the palette grows."
+            description="Fifteen tokens. No sixteenth — check-contrast fails the build if the palette grows, and every one of these is asserted against a WCAG ratio."
           >
             <Annotated
               note={
@@ -316,7 +337,7 @@ export default function StyleGuidePage() {
           {/* ------------------------------------------------ typography */}
           <Section
             title="Typography"
-            description="Six roles. A component may use nothing else; an arbitrary size is a design-lint failure."
+            description="Eight roles. A component may use nothing else; an arbitrary size is a design-lint failure."
           >
             <div className="flex w-full flex-col">
               {TYPE_ROLES.map(([role, spec, sample]) => (
@@ -889,11 +910,179 @@ export default function StyleGuidePage() {
             </div>
           </Section>
 
+          <Section
+            title="ScoreDial"
+            description="The one dominant figure on /home. An open arc, so the score reads as a position on a scale rather than a percentage complete."
+          >
+            <ScoreDial
+              score={62}
+              band="Stable"
+              caption="Savings are on target. Discretionary spending is over the 30% line."
+            />
+          </Section>
+
+          <Section
+            title="DistributionBar"
+            description="A stacked band, not a pie: lengths against a shared baseline are read accurately, angles are not. The legend is the data table."
+          >
+            <DistributionBar
+              total={24000}
+              slices={[
+                {
+                  key: "needs",
+                  label: "Essentials",
+                  value: 11400,
+                  display: <Money amount={rupees(11400)} size="sm" />,
+                },
+                {
+                  key: "wants",
+                  label: "Discretionary",
+                  value: 8600,
+                  flagged: true,
+                  display: <Money amount={rupees(8600)} size="sm" />,
+                },
+                {
+                  key: "savings",
+                  label: "Set aside",
+                  value: 4000,
+                  display: <Money amount={rupees(4000)} size="sm" />,
+                },
+              ]}
+            />
+          </Section>
+
+          <Section
+            title="Insight and ActionCard"
+            description="One finding with a figure and one route to the fix. Never a list of five — a page with five opportunities has named none."
+          >
+            <Insight
+              title="Discretionary spending is above your target"
+              detail="That is the largest amount you could redirect this month without earning a rupee more."
+              tone="critical"
+              amount={<Money amount={rupees(1400)} size="xl" />}
+              amountLabel="Worked out from your own figures, not a rule of thumb."
+              action={<Button variant="primary">Review spending</Button>}
+            />
+            <ActionCard
+              n={1}
+              title="Set up a monthly instruction for your savings target"
+              why="Investing after spending is investing with whatever is left. Dating the instruction to the day after income arrives reverses that."
+            />
+          </Section>
+
+          <Section
+            title="Timeline"
+            description="Vertical, because the stages take wildly different lengths of time and exactly one is ever live."
+          >
+            <Timeline>
+              <TimelineStage
+                n={1}
+                title="Clear what you owe at the highest rate"
+                purpose="No balance rolling over on a card or a pay-later plan."
+                status="complete"
+              />
+              <TimelineStage
+                n={2}
+                title="Build three months of breathing room"
+                purpose="Enough cash to cover your essentials if income stops."
+                status="attention"
+              >
+                <ProgressMeter
+                  label="Buffer progress"
+                  value={0.42}
+                  detail="42%"
+                  status="Measured against three months of the essentials you declared."
+                />
+              </TimelineStage>
+              <TimelineStage
+                n={3}
+                title="Let it compound"
+                purpose="Contributions that rise with income, reviewed once a year."
+                status="upcoming"
+                last
+              />
+            </Timeline>
+          </Section>
+
+          <Section
+            title="Slider, Segmented and Stepper"
+            description={LIVE_STATE_NOTE}
+          >
+            <StyleguideControls />
+          </Section>
+
+          <Section
+            title="Choice, Checkbox and PasswordInput"
+            description="All three wrap a real native input: the space bar, the form value and the platform touch target come free and cannot be reimplemented."
+          >
+            <StyleguideForms />
+          </Section>
+
+          <Section
+            title="ChartFrame"
+            description="Everything that has to be true around a chart: one insight in words, the assumptions, and the data as a real table for screen readers."
+          >
+            <ChartFrame
+              title="What this becomes"
+              insight="The gap between the two lines is what a small annual increase is worth. It opens slowly and then does not stop."
+              assumptions="Illustrative compounding at 12% a year over 10 years. Real returns vary and are not guaranteed."
+              rowHeader="Year"
+              rowLabels={["0", "5", "10"]}
+              series={[
+                {
+                  label: "Rising 10% a year",
+                  values: [
+                    formatINR(rupees(0)),
+                    formatINR(rupees(230000)),
+                    formatINR(rupees(640000)),
+                  ],
+                },
+              ]}
+            >
+              <div className="flex h-32 items-end gap-1 border-b border-line">
+                {[8, 18, 30, 46, 68, 100].map((h) => (
+                  <span
+                    key={h}
+                    className="flex-1 bg-accent"
+                    style={{ height: `${h}%` }}
+                  />
+                ))}
+              </div>
+            </ChartFrame>
+          </Section>
+
+          <Section
+            title="DropZone and Provenance"
+            description="Where a file comes in, and where every figure says what it was built from."
+          >
+            <Provenance source="The figures you entered" />
+            <Provenance source="An example month" illustrative />
+            <DropZone
+              label="Drop your statement here, or choose a file"
+              hint="A CSV export from your bank."
+              privacyNote="Your file stays in your browser. It is parsed on this device and never uploaded."
+              onFile={() => {}}
+            />
+          </Section>
+
+          <Section
+            title="DisclaimerNote"
+            description="The compliance copy lives in one file. Never retyped at a call site, so a wording change is one edit and an audit is one grep."
+          >
+            <div className="flex flex-col gap-2">
+              <DisclaimerNote variant="advice" />
+              <DisclaimerNote variant="projection" />
+              <DisclaimerNote variant="example" />
+            </div>
+          </Section>
+
           <footer className="border-t border-line pt-8">
-            <p className="type-label text-ink-muted">
-              Phase 2 inventory. Application pages are rebuilt in Phase 3 —
-              until then <code className="type-data">npm run design-lint</code>{" "}
-              reports their remaining debt on every run.
+            <p className="type-label prose-measure text-ink-muted">
+              The complete inventory. Every application page is built from
+              exactly these primitives, and{" "}
+              <code className="type-data">npm run design-lint</code> reports a
+              baseline of zero — nothing outside app/globals.css introduces a
+              colour, a radius, a shadow or an arbitrary size.
             </p>
           </footer>
         </main>
@@ -929,5 +1118,68 @@ function ToastDemo() {
         Show another
       </Button>
     </ButtonRow>
+  );
+}
+
+/** Live controls. Kept out of the page body so their state stays local. */
+function StyleguideControls() {
+  const [monthly, setMonthly] = React.useState(4000);
+  const [horizon, setHorizon] = React.useState("10");
+
+  return (
+    <div className="flex w-full max-w-md flex-col gap-8">
+      <Stepper current={3} total={8} label="What must you pay?" />
+      <Slider
+        label="Invested each month"
+        value={monthly}
+        onValueChange={setMonthly}
+        min={500}
+        max={20000}
+        step={500}
+        display={formatINR(rupees(monthly))}
+        bounds={[formatINR(rupees(500)), formatINR(rupees(20000))]}
+        description="The value is always rendered as text. A slider whose position is the only readout cannot be checked."
+      />
+      <Segmented
+        label="Time horizon"
+        value={horizon}
+        onValueChange={setHorizon}
+        segments={[
+          { value: "10", label: "10 years" },
+          { value: "20", label: "20 years" },
+          { value: "30", label: "30 years" },
+        ]}
+      />
+    </div>
+  );
+}
+
+function StyleguideForms() {
+  const [password, setPassword] = React.useState("");
+  const [checked, setChecked] = React.useState(true);
+  const [choice, setChoice] = React.useState(true);
+
+  return (
+    <div className="flex w-full max-w-md flex-col gap-4">
+      <PasswordInput
+        label="Password"
+        autoComplete="new-password"
+        value={password}
+        onValueChange={setPassword}
+        description="At least 10 characters. The reveal toggle is a security feature: it makes a long passphrase typeable."
+      />
+      <Checkbox
+        label="Pay the full statement balance"
+        description="Not the minimum."
+        checked={checked}
+        onCheckedChange={setChecked}
+      />
+      <Choice
+        label="Safety first"
+        description="Clear debt and build a cash buffer before anything else."
+        checked={choice}
+        onSelect={setChoice}
+      />
+    </div>
   );
 }

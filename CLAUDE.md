@@ -93,30 +93,168 @@ If you edit either implementation, keep `sip_future_value` and `sipFutureValue` 
 
 ### Frontend routes
 
-Verified against `frontend/app/` — every directory holding a `page.tsx`:
+The app is split into three shells, each a route group with its own chrome:
 
-- `/` — landing page
-- `/counselor` — streaming chat against `/api/chat`
-- `/spending` — the spending engine; this is the page the old "dashboard" became
-- `/simulator`, `/vault`, `/roadmap` — the rest of the pre-spec build
-- `/styleguide` — every design token, type role and primitive on one page. One word, no hyphen.
-- `/dashboard` — **not a page.** It is a `redirect()` to `/spending` kept so old links resolve.
+**Public** — `app/page.tsx` (landing) and `app/sources/page.tsx`. `PublicHeader` +
+`SiteFooter`. No session required.
 
-`app/components/` and `app/providers/` hold no `page.tsx` and are not routes.
+**`(auth)`** — `/login`, `/signup`, `/forgot-password`. Split-screen layout,
+branding left and form right; the panel is dropped rather than stacked below
+1024px.
 
-The API base lives in exactly one place — `API` in `app/providers/FinPathProvider.tsx`, which reads `NEXT_PUBLIC_API_URL` and falls back to `http://127.0.0.1:8000`. Do not re-derive a base URL at a call site. CORS on the backend is an explicit allowlist (`ALLOWED_ORIGINS` in `main.py`: localhost and 127.0.0.1 on :3000), not `["*"]` — a new frontend origin has to be added there.
+**`(app)`** — `/home`, `/spending`, `/plan`, `/what-if`, `/ask`, `/profile`.
+`app/(app)/layout.tsx` holds the ROUTE GUARD: no session → `/login?next=…`;
+session but `isComplete(profile)` false → `/onboarding`. It waits for
+`status === "resolved"` before deciding, which is why `AuthProvider.status` is
+three-valued — a boolean would bounce a signed-in user on every hard reload.
+The guard is routing, not authorisation; server-side enforcement arrives with
+`NEXT_PUBLIC_AUTH_MODE=backend`.
+
+`/onboarding` sits outside `(app)` (it would otherwise guard itself into a
+loop) and requires only a session.
+
+Legacy paths are kept as `redirect()` pages so old links resolve:
+`/dashboard`→`/home`, `/counselor`→`/ask`, `/simulator`→`/what-if`,
+`/roadmap`→`/plan`, `/vault`→`/sources`.
+
+`/styleguide` is the review surface — every token, type role and primitive on
+one page, with the token values read out of the DOM so it proves what the
+utilities compile to. Check a visual change there before a feature page.
+
+Primary navigation is five items, defined once in `app/components/nav.ts`:
+Home, Spending, Plan, What-if, Ask. The desktop header and the phone bottom
+bar render the SAME five — a navigation that changes shape between devices
+teaches two mental models. Internal subsystem names never appear as labels
+(no "Nudge Simulator", no "AI Counselor", no "Spending Engine").
+
+The API base lives in exactly one place — `API` in
+`app/providers/FinPathProvider.tsx`, which reads `NEXT_PUBLIC_API_URL` and
+falls back to `http://127.0.0.1:8000`. Do not re-derive a base URL at a call
+site, and route every request through `lib/api.ts` (`design-lint` fails on a
+bare `fetch(`). CORS on the backend is an explicit allowlist
+(`ALLOWED_ORIGINS` in `main.py`), not `["*"]`.
+
+### Authentication (`frontend/lib/auth.ts`)
+
+**The backend exposes no auth routes.** `lib/auth.ts` therefore defines the
+contract and ships two implementations of it:
+
+- `createHttpAuth(base)` — the real one. POSTs to `${API}/api/auth/*` with
+  `credentials: "include"`, so the credential is an HttpOnly cookie the page
+  cannot read and no token is ever put in localStorage. Selected by
+  `NEXT_PUBLIC_AUTH_MODE=backend`. Turn it on the day those routes exist; no
+  screen changes.
+- `createDeviceAuth()` — the default. Accounts live in THIS BROWSER. It never
+  stores a password: a random salt plus a PBKDF2-SHA-256 verifier (210,000
+  iterations) via WebCrypto. It ships zero seeded accounts. **It is not
+  secure**, and every auth screen says so through `DeviceAccountNote`.
+
+Both refuse to leak account existence: an unknown email does the same
+derivation work and returns the same message, and a reset request always
+resolves.
+
+### The declared profile (`frontend/lib/onboarding.ts`)
+
+The eight-step wizard writes one `FinancialProfile`. `deriveBudget()` maps it
+into **exactly the shape the frozen engines already take** — a bucket-total
+map plus an allowance — so the health score, ratios, guilt-free envelope and
+projections are computed by the same code for a declared profile, a parsed
+statement and the generated example. That is what keeps onboarding real
+rather than decorative.
+
+Essentials → Needs, lifestyle → Wants, `monthlySavings` → Savings, and
+`Uncategorised: 0`. Debt is deliberately NOT a bucket: the balances collected
+are stocks, and adding a stock to a month of flows would either invent an
+instalment or double-count one. It drives the plan instead.
+
+`completedAt` is written only on the final step. A draft persisted per
+keystroke would let someone who abandoned at step 3 into a dashboard scoring
+an income with no expenses — a 100/100 built from unanswered questions.
+
+### Where the numbers come from (§28)
+
+`FinPathProvider` resolves one of three sources, in precedence order, and
+names it:
+
+1. `statement` — an uploaded file, parsed in the browser. Actuals.
+2. `declared` — the onboarding profile. The student's own estimate.
+3. `example` — the API's generated month. **Opt-in, never silently on.**
+
+`SOURCE_LABEL` is the only wording for these, and `<SourceLine />` renders it
+on every page that shows a figure. A projection built from an example month
+and one built from a real statement look identical and mean entirely
+different things.
+
+`reviewStore` holds one snapshot of the health score, written by `/home` on
+each visit. It is the only history the product has, and "since your last
+review" appears only when a genuine prior snapshot exists.
+
+### The plan (`frontend/lib/plan.ts`)
+
+`buildPlan()` returns four ordered stages — debt → buffer → invest → wealth —
+with **exactly one ever in `"attention"`**. `priority` reorders only the two
+middle stages; debt is always first and compounding always last. Every stage
+carries a `measure` string stating in words how its progress was read,
+including "Self-attested — nothing in your statement can confirm a cleared
+balance." A progress bar without its stated source is a claim the product
+cannot back.
+
+`biggestOpportunity()` returns exactly ONE finding, in planner order. A list
+of five opportunities is a list of none.
+
+`/home` and `/plan` both derive through `app/components/usePlan.ts`, so they
+cannot disagree. `emergencyFund` and `debtTotal` are nullable on purpose:
+passing 0 for "not declared" would silently upgrade "we have no idea" into
+"you owe nothing".
 
 ### Design system
 
-`frontend/app/globals.css` is the whole system, and it is closed: **eleven colour variables, and no twelfth may be added.** Six roles (`paper`, `surface`, `rule`, `ink`, `ink-muted`, `accent` + `accent-weak`) and two semantics (`warn`, `danger`, each with a `-weak` tint). `warn` renders only when a rule has actually fired — never as emphasis. No gradients, no blur backdrops, no accent stripes, nothing rounded past `--radius-lg` (10px), and exactly two shadows.
+`frontend/app/globals.css` is the whole system and it is closed.
 
-Dark mode re-points those same eleven variables under a single `.dark` class. There is no second palette and no `prefers-color-scheme` block: `lib/theme.ts` resolves System → light/dark in a blocking script in `app/layout.tsx`, so the stylesheet never duplicates the values. `ThemeToggle` reads the setting through `useSyncExternalStore` — do not copy it into state inside an effect, the lint rule rejects it.
+**Fifteen colour tokens. No sixteenth.** Three grounds (`canvas`, `surface`,
+`surface-sunken`), four inks (`ink`, `ink-secondary`, `ink-muted`,
+`ink-disabled`), two rules (`line`, `line-strong`), one accent
+(`accent`, `accent-wash`) and two statuses (`critical`, `positive`, each with
+a wash). `npm run check-contrast` FAILS THE BUILD if the palette grows, and
+asserts a WCAG ratio for every pair.
 
-Type roles are utilities, not ad-hoc sizes: `display-xl/lg/md`, `body-lg`, `body-base`, `label-ui`, `caption`, `overline-ui`, `amount-xl`, `amount`. Three of those are renamed from the design spec because Tailwind already owns the plain name — `overline` is a text-decoration utility, so the role is `overline-ui`; likewise `label-ui` and `body-base`. Fonts are Newsreader (display), IBM Plex Sans + Devanagari (UI), IBM Plex Mono (every numeral, always tabular).
+Two splits carry most of the meaning:
 
-`components/ui/` is generated shadcn code that reads its own semantic names (`--color-primary`, `--color-muted`, …). Those are bridged onto the eleven tokens in the `@theme inline` block, so a regenerated primitive cannot smuggle in a colour. Note the one trap: shadcn's `accent` means "subtle hover ground" while ours means the brand green, so the primitives use `muted` for hover instead — check any newly added primitive for `bg-accent`.
+- `--line` is 1.24:1 and draws dividers, table rules and card edges ONLY.
+  Every interactive boundary — input, select, checkbox, button, focus ring —
+  takes `--line-strong` (13.92:1), because WCAG 2.2 SC 1.4.11 exempts
+  decorative boundaries and not control boundaries.
+- `--accent` is a deep pine green at 7.28:1 on canvas, which means it is
+  legible **as text**. That is the constraint that stops it becoming
+  decoration. It is never a status colour — `critical` and `positive` own
+  that job, and they always travel with a word and a glyph because they sit
+  only 1.21:1 apart in luminance.
 
-**`/styleguide` is the review surface.** It reads each token's resolved value out of the DOM, so it proves what the utilities actually compile to rather than restating the source. Check a visual change there in both themes before checking it on a feature page.
+Radius is zero everywhere and every `--radius-*` and `--shadow-*` token is
+pinned to 0, so a `rounded-md` that slips past the linter is inert rather
+than visible. The one rounded element in the product is the avatar, via the
+`avatar` utility. **There is no dark mode** and no `prefers-color-scheme`
+block; `design-lint` fails on any `dark:` variant.
+
+**Eight type roles**, and a component may use nothing else — an arbitrary
+size (`text-[13px]`) is a design-lint failure: `type-hero` (landing headline,
+one per site), `type-display`, `type-heading`, `type-subhead`, `type-body`,
+`type-label`, `type-eyebrow` (metadata only, the one uppercase role), and
+`type-data` for EVERY numeral, always tabular. Fonts are Instrument Serif
+(display, single weight) and Inter (everything else including numerals),
+self-hosted through `next/font`.
+
+`ledger-rule` is the product's signature: the 1px hairline an amount rests
+on. It CARRIES MEANING — "a real number sits here, and it came from
+somewhere" — so **never draw it as decoration**, not under a heading and not
+as a divider flourish.
+
+`margin-layout` / `margin-note` are the marginalia system: a fixed gutter for
+a citation, the rule behind a figure, or an as-of date. An empty margin is
+correct; the device earns its meaning by being uncommon.
+
+`enter` (4px, 200ms, once) is the only entrance animation in the product.
+Loading placeholders are static blocks — no shimmer.
 
 ### The statement parser (`frontend/lib/csv.ts`)
 
@@ -137,16 +275,41 @@ Two header-matching traps, both fixed and both regression-tested:
 
 ### Frontend components
 
-`components/finpath/` is the application component set; import from the `@/components/finpath` barrel, never from the individual files. The primitive everything money-related composes from is `LedgerRule` — label, tabular amount, and a 1px hairline the amount rests on. That hairline is the product's signature and carries meaning ("this is a real number"), so **never draw a rule as decoration** — not under a heading, not as a divider flourish.
+`frontend/components/ui/` is the complete primitive inventory. **Import from
+the `@/components/ui` barrel, never from an individual file**, so the
+inventory stays one reviewable surface and `/styleguide` can prove it is
+complete. `components/finpath/` and `app/components/ui.tsx` are gone.
 
-`lib/money.ts` is the only place rupees are formatted (`en-IN` grouping, never a rounded-off `1.2L` outside a chart axis) and it carries `inrToWords` for the accessible label every amount needs. `lib/format.ts` is a thin shorthand over it — do not add a second implementation there.
+`lib/money.ts` is the money layer: integer `Paise` with a brand, becoming a
+rupee number in exactly two places — `lib/format.ts` (and through it
+`<Money>`) and `toEngineRupees`, the single documented crossing point into
+the float-rupee engines. `lib/format.ts` is the only place a number becomes a
+string; `design-lint` fails on a bare `Intl.`, a `.toFixed(` or a hand-typed
+`₹`.
 
-Compliance copy lives in `DisclaimerNote` and is never retyped at a call site. It is required on every counsellor answer, the simulator, every goal card, every nudge, and the dashboard hero.
+Compliance copy lives in `DisclaimerNote` (`components/ui/disclaimer.tsx`)
+and is never retyped at a call site — one edit changes the wording, one grep
+audits it. It is required on every coach answer, every projection, every plan
+stage and the `/home` hero.
+
+### Gates
+
+```bash
+cd frontend
+npm run verify   # typecheck + design-lint + check-contrast + test + build
+npx eslint app components lib
+```
+
+`design-lint.baseline.json` is **empty**, which is the §53 end state: nothing
+outside `app/globals.css` introduces a colour, a radius, a shadow or an
+arbitrary size. It may only ever shrink. A permanent, argued exception uses
+`// design-lint-allow: <rule> — <reason>` on the offending line; the reason is
+mandatory and a bare allow is itself a failure.
 
 ## Conventions
 
 - Backend deps go through `uv add`, never bare `pip` — `uv.lock` is committed.
-- Frontend UI primitives come from shadcn (`components/ui/`, alias `@/`); icons from `lucide-react`.
+- Frontend UI primitives are hand-built in `components/ui/` (alias `@/`) on Base UI (`@base-ui/react`) for anything with real interaction semantics — Select, Tabs, Dialog, Menu, Field, Toast, Tooltip. Icons come from `lucide-react`, one stroke weight, pinned in `globals.css`. Charts are Recharts, always wrapped in `ChartFrame` so no plot ships without its insight, its assumptions and an accessible data table.
 - `frontend/CLAUDE.md` imports `frontend/AGENTS.md`, which is **generated and re-added by `next dev`**. Do not delete it from a diff; commit it with your work to keep the tree clean. It requires reading `node_modules/next/dist/docs/` before writing Next.js code, since Next 16 has breaking changes (async request APIs, Turbopack default, `next lint` removed, `middleware` → `proxy`).
 - Python version is inconsistent: root `.python-version` says 3.12, `backend/.python-version` says 3.14, and `pyproject.toml` requires `>=3.14`. The backend one wins for backend work.
 - The root `data/` directory is empty; the real corpus lives in `backend/data/`.
