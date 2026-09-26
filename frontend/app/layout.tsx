@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Instrument_Serif, Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "./providers/AuthProvider";
@@ -40,6 +40,16 @@ export const metadata: Metadata = {
   },
   description:
     "A financial-health companion for students in India. Score your month, find the one thing worth changing, and read answers traced to RBI, SEBI and NCFE sources.",
+};
+
+/**
+ * `viewportFit: "cover"` lets the page run under a phone's rounded corners
+ * and home indicator, which is what makes `env(safe-area-inset-*)` report a
+ * real value. The bottom bar then pads itself with `safe-bottom`; nothing
+ * else on the page sits near an edge. Width and scale keep Next's defaults.
+ */
+export const viewport: Viewport = {
+  viewportFit: "cover",
 };
 
 /**

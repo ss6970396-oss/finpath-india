@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
  * what §39's "accessible errors" actually requires: `aria-describedby` to
  * the message, `aria-invalid` on the control, and both surviving re-render.
  *
- * The control border is --line-strong. --line is 1.25:1 and would fail
+ * The control border is --line-strong. --line is 1.27:1 and would fail
  * WCAG 2.2 SC 1.4.11 for a component boundary.
  */
 

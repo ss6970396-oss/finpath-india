@@ -121,11 +121,16 @@ Legacy paths are kept as `redirect()` pages so old links resolve:
 one page, with the token values read out of the DOM so it proves what the
 utilities compile to. Check a visual change there before a feature page.
 
-Primary navigation is five items, defined once in `app/components/nav.ts`:
-Home, Spending, Plan, What-if, Ask. The desktop header and the phone bottom
-bar render the SAME five — a navigation that changes shape between devices
-teaches two mental models. Internal subsystem names never appear as labels
-(no "Nudge Simulator", no "AI Counselor", no "Spending Engine").
+Primary navigation is four items, defined once in `app/components/nav.ts`:
+Home, Actions (`/plan` — the URL did not change), Ask, Profile. The desktop
+header and the phone bottom bar render the SAME four — a navigation that
+changes shape between devices teaches two mental models. Spending and
+What-if are not in it: Home covers them through `also` (so Home stays marked
+while you are there), and `SECONDARY` in `nav.ts` offers them as links on
+Home and Actions via `SecondaryLinks`. Active state is `isNavActive()` in
+`components/ui/sidebar.tsx`. Labels are student words, verbs where a verb
+fits ("Ask", not "AI"); internal subsystem names never appear (no "Nudge
+Simulator", no "AI Counselor", no "Spending Engine").
 
 The API base lives in exactly one place — `API` in
 `app/providers/FinPathProvider.tsx`, which reads `NEXT_PUBLIC_API_URL` and
@@ -224,11 +229,11 @@ asserts a WCAG ratio for every pair.
 
 Two splits carry most of the meaning:
 
-- `--line` is 1.25:1 and draws hairlines, table rules and card edges ONLY.
+- `--line` is 1.27:1 and draws hairlines, table rules and card edges ONLY.
   Every interactive boundary — input, select, checkbox, button — takes
   `--line-strong` (13.95:1 even on the sunken ground), because WCAG 2.2
   SC 1.4.11 exempts decorative boundaries and not control boundaries.
-- `--accent` is a deep pine green at 6.99:1 on canvas, legible **as text**.
+- `--accent` is a deep pine green at 7.11:1 on canvas, legible **as text**.
   It has exactly four jobs: the ONE primary button on a screen (accent
   fill), progress (score arc, onboarding bar, plan progress), links, and
   the focus ring (asserted ≥ 3:1 on every ground). Never decoration, never

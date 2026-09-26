@@ -17,12 +17,15 @@ import { DisclaimerNote } from "./disclaimer";
 const GROUPS: { heading: string; links: { href: string; label: string }[] }[] = [
   {
     heading: "Product",
+    // The four NAV items, then the two places reached from them. Written
+    // out rather than imported: this is a primitive, and app/ imports ui/,
+    // never the reverse.
     links: [
       { href: "/home", label: "Home" },
-      { href: "/spending", label: "Spending" },
-      { href: "/plan", label: "Plan" },
-      { href: "/what-if", label: "What-if" },
+      { href: "/plan", label: "Actions" },
       { href: "/ask", label: "Ask" },
+      { href: "/spending", label: "Spending" },
+      { href: "/what-if", label: "What-if" },
     ],
   },
   {

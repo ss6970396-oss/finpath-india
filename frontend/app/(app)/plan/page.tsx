@@ -16,9 +16,10 @@ import { rupeesToPaise } from "@/lib/money";
 import { useFinPath } from "../../providers/FinPathProvider";
 import { SourceLine } from "../../components/SourceLine";
 import { usePlan } from "../../components/usePlan";
+import { SecondaryLinks } from "../../components/SecondaryLinks";
 
 /**
- * /plan (§10) — the roadmap, as a vertical ladder.
+ * /plan (§10) — "Actions" in the nav: the roadmap, as a vertical ladder.
  *
  * EXACTLY ONE STAGE IS LIVE. `lib/plan.ts` marks the first unfinished stage
  * "attention" and everything after it "upcoming", which is the entire point
@@ -41,7 +42,7 @@ export default function PlanPage() {
   return (
     <div className="enter flex flex-col gap-16">
       <PageHeader
-        title="Your plan"
+        title="Your actions"
         purpose="Four stages, in the order a planner would take them. One is live at a time."
       >
         <div className="flex flex-col gap-4">
@@ -58,6 +59,8 @@ export default function PlanPage() {
           />
         </div>
       </PageHeader>
+
+      <SecondaryLinks />
 
       <Timeline>
         {plan.steps.map((step, i) => (

@@ -22,7 +22,7 @@ import { cn } from "@/lib/utils";
  * important, neither is.
  *
  * The border weight is deliberate: every interactive boundary takes
- * --line-strong (or the accent, on primary), never --line (1.25:1), which
+ * --line-strong (or the accent, on primary), never --line (1.27:1), which
  * would fail WCAG 2.2 SC 1.4.11.
  */
 

@@ -49,7 +49,7 @@ export { ScoreDial } from "./score-dial";
 export { Segmented, type Segment } from "./segmented";
 export { Select, type SelectItem, type SelectProps } from "./select";
 export { Sheet } from "./sheet";
-export { MobileNav, Sidebar, type NavItem } from "./sidebar";
+export { MobileNav, Sidebar, isNavActive, type NavItem } from "./sidebar";
 export { Slider } from "./slider";
 export { SourcePanel, type SourceEntry } from "./source-panel";
 export { EmptyState, ErrorState, LoadingState, Skeleton } from "./states";

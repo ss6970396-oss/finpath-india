@@ -27,7 +27,7 @@ export type Slice = {
   value: number;
   /** Pre-formatted amount for the legend row. */
   display: React.ReactNode;
-  /** Marks a segment as over its guideline. Adds a word, not just a hue. */
+  /** Marks a segment as over its guideline: a word, a sign, and a 2px ink rule — never a hue. */
   flagged?: boolean;
   /** One line: what this bucket contains, or why it is flagged. */
   note?: string;
@@ -88,7 +88,12 @@ export function DistributionBar({
         {slices.map((slice, i) => (
           <div
             key={slice.key}
-            className="ledger-rule flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-2"
+            className={cn(
+              "ledger-rule flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-2",
+              // An over-target row is marked by a 2px ink rule down its left
+              // edge as well as by the words: easy to find, never red.
+              slice.flagged && "border-l-2 border-ink pl-2",
+            )}
           >
             <dt className="flex min-w-0 items-center gap-2">
               <span
@@ -98,14 +103,19 @@ export function DistributionBar({
               <span className="type-label text-ink">{slice.label}</span>
               {slice.flagged ? (
                 // Information, not an error: ink, a sign and a word — never red.
-                <span className="type-label inline-flex items-center gap-1 text-ink-secondary">
+                <span className="type-label inline-flex items-center gap-1 text-ink">
                   <ArrowUp className="lucide size-3.5 shrink-0" aria-hidden="true" />
                   Above target
                 </span>
               ) : null}
             </dt>
             <dd className="flex items-baseline gap-4">
-              <span className="type-data amount-sm text-ink-muted">
+              <span
+                className={cn(
+                  "type-data amount-sm",
+                  slice.flagged ? "text-ink" : "text-ink-muted",
+                )}
+              >
                 {Math.round(share(slice.value) * 100)}%
               </span>
               {slice.display}

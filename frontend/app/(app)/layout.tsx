@@ -56,10 +56,12 @@ export default function AppLayout({
   }, [ready, session, onboarded, pathname, router]);
 
   return (
-    <div className="flex min-h-dvh flex-col">
+    // nav-clearance on the shell, not on <main>: the footer comes after
+    // main, and it is the footer the fixed bottom bar would otherwise cover.
+    <div className="nav-clearance flex min-h-dvh flex-col md:pb-0">
       <AppHeader />
 
-      <main id="main" className="page-shell w-full flex-1 py-8 pb-24 md:pb-8">
+      <main id="main" className="page-shell w-full flex-1 py-8">
         {allowed ? (
           children
         ) : (
@@ -69,7 +71,7 @@ export default function AppLayout({
 
       <SiteFooter />
 
-      {/* Bottom bar on phones only; the same five destinations as the
+      {/* Bottom bar on phones only; the same four destinations as the
           header, so there is one mental model rather than two. */}
       <MobileNav items={NAV} currentPath={pathname} className="md:hidden" />
     </div>

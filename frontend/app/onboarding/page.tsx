@@ -128,7 +128,7 @@ export default function OnboardingPage() {
   return (
     <div className="flex min-h-dvh flex-col">
       <header className="border-b border-line">
-        <div className="page-shell flex h-16 items-center justify-between gap-4">
+        <div className="page-shell flex h-14 items-center justify-between gap-4">
           <Wordmark href="/" />
           <span className="type-label text-ink-muted">
             Setting up {displayName(session)}&rsquo;s FinPath

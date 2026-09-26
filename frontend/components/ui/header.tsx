@@ -67,7 +67,7 @@ export function Header({
       className={cn("w-full border-b border-line bg-canvas", className)}
     >
       <SkipLink />
-      <div className="page-shell flex h-16 items-center justify-between gap-4">
+      <div className="page-shell flex h-14 items-center justify-between gap-4">
         <div className="flex min-w-0 items-center gap-2">
           {leading}
           <Wordmark />

@@ -2,16 +2,6 @@
 
 import * as React from "react";
 import {
-  BookOpen,
-  Compass,
-  FileText,
-  LayoutGrid,
-  MessageSquare,
-  Settings,
-  Wallet,
-} from "lucide-react";
-
-import {
   ActionCard,
   Annotated,
   Avatar,
@@ -90,6 +80,7 @@ import {
   formatPercent,
 } from "@/lib/format";
 import { paise, rupees } from "@/lib/money";
+import { NAV } from "../components/nav";
 
 /**
  * /styleguide (§18) — the visual source of truth.
@@ -365,16 +356,6 @@ const SOURCE_FIXTURE = [
   },
 ];
 
-const NAV_ITEMS = [
-  { href: "/home", label: "Home", icon: LayoutGrid },
-  { href: "/spending", label: "Spending", icon: Wallet },
-  { href: "/plan", label: "Plan", icon: BookOpen },
-  { href: "/what-if", label: "What-if", icon: Compass },
-  { href: "/ask", label: "Ask", icon: MessageSquare },
-  { href: "/sources", label: "Sources", icon: FileText },
-  { href: "/profile", label: "Profile", icon: Settings },
-];
-
 /**
  * The forms §14 forbids, printed verbatim so a reviewer can recognise them
  * on sight. These are the only literal rupee strings in the codebase outside
@@ -425,7 +406,7 @@ export default function StyleGuidePage() {
                 Two rules that fall out of the measurements
               </p>
               <p className="type-body prose-measure text-ink-secondary">
-                <strong>--line is 1.25:1 against canvas.</strong> That is below
+                <strong>--line is 1.27:1 against canvas.</strong> That is below
                 the 3:1 WCAG 2.2 SC 1.4.11 requires of a UI component boundary,
                 and it is fine, because 1.4.11 exempts decorative boundaries. So
                 --line draws dividers, table rules and card edges, and never the
@@ -1139,22 +1120,23 @@ export default function StyleGuidePage() {
               />
               <div className="flex">
                 <Sidebar
-                  items={NAV_ITEMS}
-                  currentPath="/app/spending"
+                  items={NAV}
+                  currentPath="/spending"
                   className="hidden md:flex"
                 />
                 <div className="flex-1 px-4 py-8">
                   <p className="type-body text-ink-secondary">
-                    Content area. The sidebar is one level deep — second-level
-                    routes are Tabs under the page header, so the reader always
-                    knows which of two hierarchies they are moving in.
+                    The product nav: Home · Actions · Ask · Profile, from
+                    app/components/nav.ts. The current path here is
+                    /spending, which is not in the nav — Home stays marked
+                    because it covers it through `also`.
                   </p>
                 </div>
               </div>
               <div className="relative h-16 md:hidden">
                 <MobileNav
-                  items={NAV_ITEMS.slice(0, 5)}
-                  currentPath="/app/spending"
+                  items={NAV}
+                  currentPath="/spending"
                   className="absolute"
                 />
               </div>

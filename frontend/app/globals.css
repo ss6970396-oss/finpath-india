@@ -24,9 +24,9 @@
   /* ---- GROUNDS ----
      Warm paper, three steps. Depth comes from these and from --line.
      Never from a shadow, a blur, or a gradient. Nothing in the product is
-     pure white: #FAF7F0 is the colour of a good book page, which is what
+     pure white: #FBF9F4 is the colour of a good book page, which is what
      stops the site reading as a browser default — or as a storefront. */
-  --color-canvas: #faf7f0; /* the page (paper) */
+  --color-canvas: #fbf9f4; /* the page (paper) */
   --color-surface: #f4f0e6; /* panels that sit on the page */
   --color-surface-sunken: #ece7db; /* wells, inputs, the user's own turn */
 
@@ -42,7 +42,7 @@
   /* ---- RULES ----
      Two weights, and the split is load-bearing.
 
-     --line is 1.25:1 against canvas. That is BELOW the 3:1 that WCAG 2.2
+     --line is 1.27:1 against canvas. That is BELOW the 3:1 that WCAG 2.2
      SC 1.4.11 requires of a UI component boundary, and it is fine, because
      1.4.11 exempts purely decorative boundaries. So --line draws the
      hairlines between sections, table rules and card edges — and NEVER the
@@ -55,7 +55,7 @@
 
   /* ---- ACCENT ----
      ONE brand colour, a deep pine green rather than a bright one: at
-     6.99:1 on canvas it is legible as TEXT, which is the whole point — an
+     7.11:1 on canvas it is legible as TEXT, which is the whole point — an
      accent that can only be a background ends up as decoration.
 
      Where it is allowed, and nowhere else:
@@ -478,6 +478,25 @@
   &:hover {
     background-color: var(--color-surface);
   }
+}
+
+/**
+ * Safe-area insets for the phone bottom bar. `env()` is non-zero only on
+ * phones without a bottom bezel, and only because the root layout sets
+ * `viewportFit: "cover"`.
+ *
+ *   safe-bottom      the bar's own padding, so labels clear the home
+ *                    indicator
+ *   nav-clearance    the page's bottom padding under the bar: the bar's
+ *                    height plus the same inset, so the last line of
+ *                    content is never hidden behind it
+ */
+@utility safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@utility nav-clearance {
+  padding-bottom: calc(6rem + env(safe-area-inset-bottom, 0px));
 }
 
 /**

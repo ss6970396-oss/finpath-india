@@ -20,7 +20,7 @@ export function PublicHeader() {
   return (
     <header className="border-b border-line bg-canvas">
       <SkipLink />
-      <div className="page-shell flex h-16 items-center justify-between gap-4">
+      <div className="page-shell flex h-14 items-center justify-between gap-4">
         <Wordmark href="/" />
 
         <div className="flex items-center gap-4">

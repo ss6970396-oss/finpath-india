@@ -19,6 +19,7 @@ import { displayName, useAuth } from "../../providers/AuthProvider";
 import { useFinPath } from "../../providers/FinPathProvider";
 import { SourceLine } from "../../components/SourceLine";
 import { useOpportunity, usePlan } from "../../components/usePlan";
+import { SecondaryLinks } from "../../components/SecondaryLinks";
 
 /**
  * /home (§6, §26).
@@ -136,6 +137,8 @@ export default function HomePage() {
         </div>
       </section>
 
+      <SecondaryLinks />
+
       {/* ----------------------------------------------- 2. key numbers */}
       <Section
         title="Your month, in three numbers"
@@ -195,7 +198,7 @@ export default function HomePage() {
       <Section
         title="Your next best actions"
         description={`${plan.completedCount} of ${plan.totalCount} actions completed across the whole plan.`}
-        actions={<ButtonLink href="/plan">View my plan</ButtonLink>}
+        actions={<ButtonLink href="/plan">See all actions</ButtonLink>}
       >
         {nextBest.length === 0 ? (
           <p className="type-body prose-measure text-ink-secondary">
@@ -212,7 +215,7 @@ export default function HomePage() {
                   title={action.title}
                   why={action.why}
                   selfAttested={action.selfAttested}
-                  action={<ButtonLink href="/plan">Open in the plan</ButtonLink>}
+                  action={<ButtonLink href="/plan">Open in Actions</ButtonLink>}
                 />
               </li>
             ))}
