@@ -46,6 +46,7 @@ export { Menu, MenuAction, MenuHeading, MenuLink, MenuSeparator } from "./menu";
 export { Metric, MetricRow } from "./metric";
 export { Modal, ModalClose } from "./modal";
 export { Money } from "./money";
+export { Notice } from "./notice";
 export { PageHeader, Section } from "./page-header";
 export { PasswordInput } from "./password-input";
 export { ProgressMeter } from "./progress-meter";

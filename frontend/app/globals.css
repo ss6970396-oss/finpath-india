@@ -149,6 +149,11 @@
      the styleguide's own documentation of it. */
   --width-gutter: 160px;
 
+  /* A reading column WITH its margin: the prose measure, the gutter, and
+     the 2rem between them. The coach's column uses it at >= 1280px so its
+     citations can sit beside the answer they belong to. */
+  --container-annotated: calc(68ch + 160px + 2rem);
+
   /* ---- MOTION ----
      Short and few. Everything here is disabled under
      prefers-reduced-motion at the bottom of this file. */
@@ -497,6 +502,30 @@
 
 @utility nav-clearance {
   padding-bottom: calc(6rem + env(safe-area-inset-bottom, 0px));
+}
+
+/**
+ * For something pinned to the bottom of the viewport (the coach's
+ * composer): sit just above the phone bottom bar — its 56px minimum, 2px
+ * indicator and 1px hairline, plus the inset — and flush with the bottom
+ * once the bar is gone at md.
+ */
+@utility above-nav {
+  bottom: calc(3.875rem + env(safe-area-inset-bottom, 0px));
+  @media (width >= 48rem) {
+    bottom: 0;
+  }
+}
+
+/**
+ * Indent content by exactly the margin gutter at >= 1280px, so a block
+ * with no marginal note (a question, the composer) lines up with the
+ * annotated body beside it.
+ */
+@utility gutter-offset {
+  @media (width >= 80rem) {
+    padding-left: calc(var(--width-gutter) + 2rem);
+  }
 }
 
 /**

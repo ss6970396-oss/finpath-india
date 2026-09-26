@@ -4,7 +4,7 @@ import { CORPUS_PHRASE, LoadingState } from "@/components/ui";
 import { Coach } from "./Coach";
 
 export const metadata: Metadata = {
-  title: "Your financial coach",
+  title: "Ask",
   description:
     `Ask a question and get an answer traced to ${CORPUS_PHRASE}.`,
 };
