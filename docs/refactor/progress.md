@@ -171,3 +171,25 @@ Edit switches a block to an inline form with Save (primary) and Cancel. One bloc
 **Where to see it**
 - `/profile`: four boxes. Personal shows your name and email with "cannot be changed on this build"; Income lists your figures with a green Edit; Goals lists goals and priority; Security lists where things are stored and a Sign out button.
 - Edit any block: it turns into a form with Save and Cancel, and the other Edit buttons disappear until you finish.
+
+## Phase 10 — Component standardisation, part 1 · `15af285`
+
+**What changed.**
+- The `quiet` button variant is renamed `ghost`.
+- A new `Notice` primitive replaces six hand-rolled alert panels. It is critical only for real errors: sign-in or sign-up failure, and an unreadable file.
+- `SectionLabel` replaces the hand-typed section labels on Home, Ask, Profile, the landing page and the Spending/What-if links.
+- `BareTextarea` gives the coach's composer the same control styles as `Input`.
+
+`npm run verify` passes (267 tests).
+
+**Not done: stopped at the usage limit.**
+- `Card` for `AllowancePrompt` and `SkipReport`.
+- `Metric` for the What-if, import-summary and onboarding figure blocks.
+- Styleguide coverage of every variant (ghost, Notice, SectionLabel).
+
+**Needs a human look.** `/login` and `/signup` error notices, and `/forgot-password` after a submit.
+
+**Where to see it**
+- `/login` with a wrong password: a red-ruled "Not signed in" note, not a red box.
+- `/forgot-password` after submitting: calm ink-ruled notes.
+- `/spending` with a broken CSV: a red-ruled "That file could not be used" note.
