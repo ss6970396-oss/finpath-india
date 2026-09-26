@@ -52,7 +52,18 @@ import { AmountField } from "./AmountField";
  * The running totals under each step are the reason people finish these
  * forms: they turn eight boxes into a conversation with visible
  * consequences.
+ *
+ * THE FLOW. Each step is one question — its serif headline — and one line
+ * on why FinPath asks. The step is a real <form>, so Enter advances; Back
+ * keeps every answer (the draft lives above the steps). Focus moves to the
+ * new heading on every step change. Income is the one required answer and
+ * it is validated inline, on blur and on Continue, in plain words — never
+ * by disabling the button, which would leave a keyboard user stranded on a
+ * control that does nothing and says nothing. Finish goes straight to
+ * Home, where the first action is already waiting.
  */
+
+const INCOME_REQUIRED = "Enter your monthly income in rupees.";
 
 const TOTAL = STEPS.length;
 
@@ -85,8 +96,11 @@ export default function OnboardingPage() {
     setDraft(profile);
   }
   const seedKey = profile.completedAt ?? "new";
-  const [saved, setSaved] = React.useState(false);
   const headingRef = React.useRef<HTMLHeadingElement>(null);
+  const incomeRef = React.useRef<HTMLInputElement>(null);
+  // Set on blur of the income field and on Continue; cleared by typing a
+  // valid figure. Never shown while someone is still typing.
+  const [incomeTouched, setIncomeTouched] = React.useState(false);
 
   React.useEffect(() => {
     if (status === "resolved" && !session) router.replace("/login?next=/onboarding");
@@ -109,21 +123,33 @@ export default function OnboardingPage() {
   }
 
   const current = STEPS[step];
-  const budget = deriveBudget(draft);
   const patch = (next: Partial<FinancialProfile>) =>
     setDraft((d) => ({ ...d, ...next }));
 
-  // Only the income step blocks progress: everything else is legitimately
-  // zero for somebody, and a form that will not let you past "no debt" is
-  // a form that teaches people to type a number they do not mean.
-  const blocked = current.id === "income" && draft.monthlyIncome <= 0;
+  // Only income blocks progress: everything else is legitimately zero for
+  // somebody, and a form that will not let you past "no debt" is a form
+  // that teaches people to type a number they do not mean.
+  const incomeMissing = draft.monthlyIncome <= 0;
+  const incomeError =
+    incomeTouched && incomeMissing ? INCOME_REQUIRED : undefined;
 
   function finish() {
     saveProfile({ ...draft, completedAt: new Date().toISOString() });
-    setSaved(true);
+    // Straight to Home: the profile is written synchronously, so the (app)
+    // guard sees a complete profile on the very next render.
+    router.replace("/home");
   }
 
-  if (saved) return <Done budget={budget} />;
+  function advance(e: React.FormEvent) {
+    e.preventDefault();
+    if (current.id === "income" && incomeMissing) {
+      setIncomeTouched(true);
+      incomeRef.current?.focus();
+      return;
+    }
+    if (step < TOTAL - 1) setStep((s) => s + 1);
+    else finish();
+  }
 
   return (
     <div className="flex min-h-dvh flex-col">
@@ -140,7 +166,12 @@ export default function OnboardingPage() {
         <div className="mx-auto flex w-full max-w-2xl flex-col gap-8">
           <Stepper current={step + 1} total={TOTAL} label={current.title} />
 
-          <div key={current.id} className="enter flex flex-col gap-8">
+          <form
+            key={current.id}
+            noValidate
+            onSubmit={advance}
+            className="enter flex flex-col gap-8"
+          >
             <div className="flex flex-col gap-2">
               <h1
                 ref={headingRef}
@@ -159,37 +190,23 @@ export default function OnboardingPage() {
               draft={draft}
               patch={patch}
               stepId={current.id}
+              incomeRef={incomeRef}
+              incomeError={incomeError}
+              onIncomeBlur={() => setIncomeTouched(true)}
             />
-          </div>
 
-          <ButtonRow align="start" className="border-t border-line pt-4">
-            {step > 0 ? (
-              <Button onClick={() => setStep((s) => s - 1)}>Back</Button>
-            ) : (
-              <ButtonLink href="/">Leave for now</ButtonLink>
-            )}
+            <ButtonRow align="start" className="border-t border-line pt-4">
+              {step > 0 ? (
+                <Button onClick={() => setStep((s) => s - 1)}>Back</Button>
+              ) : (
+                <ButtonLink href="/">Leave for now</ButtonLink>
+              )}
 
-            {step < TOTAL - 1 ? (
-              <Button
-                variant="primary"
-                disabled={blocked}
-                onClick={() => setStep((s) => s + 1)}
-              >
-                Continue
+              <Button type="submit" variant="primary">
+                {step < TOTAL - 1 ? "Continue" : "Finish and see my health"}
               </Button>
-            ) : (
-              <Button variant="primary" onClick={finish}>
-                Finish and see my health
-              </Button>
-            )}
-
-            {blocked ? (
-              <p className="type-label w-full text-ink-muted">
-                An income figure is needed — every ratio on the next screen is
-                measured against it.
-              </p>
-            ) : null}
-          </ButtonRow>
+            </ButtonRow>
+          </form>
 
           <DisclaimerNote />
         </div>
@@ -204,10 +221,16 @@ function StepBody({
   stepId,
   draft,
   patch,
+  incomeRef,
+  incomeError,
+  onIncomeBlur,
 }: {
   stepId: (typeof STEPS)[number]["id"];
   draft: FinancialProfile;
   patch: (next: Partial<FinancialProfile>) => void;
+  incomeRef: React.Ref<HTMLInputElement>;
+  incomeError?: string;
+  onIncomeBlur: () => void;
 }) {
   const budget = deriveBudget(draft);
 
@@ -240,11 +263,13 @@ function StepBody({
       return (
         <div className="flex flex-col gap-4">
           <AmountField
+            ref={incomeRef}
             label="Monthly income, after tax"
             description="Add up everything that arrives in a normal month."
             value={draft.monthlyIncome}
             onValueChange={(v) => patch({ monthlyIncome: v })}
-            autoFocus
+            onBlur={onIncomeBlur}
+            error={incomeError}
           />
           <AmountField
             label="Your age"
@@ -322,7 +347,6 @@ function StepBody({
             description="Money that actually leaves for savings or investments — not what you hope is left over."
             value={draft.monthlySavings}
             onValueChange={(v) => patch({ monthlySavings: v })}
-            autoFocus
           />
           <AmountField
             label="Emergency balance you hold today"
@@ -432,51 +456,3 @@ function Running({
   );
 }
 
-/* ------------------------------------------------------------ completion */
-
-function Done({ budget }: { budget: ReturnType<typeof deriveBudget> }) {
-  return (
-    <main
-      id="main"
-      className="page-shell flex min-h-dvh flex-col items-start justify-center gap-8 py-16"
-    >
-      <div className="enter flex max-w-2xl flex-col gap-4">
-        <p className="type-eyebrow text-ink-muted">Setup complete</p>
-        <h1 className="type-display text-ink">Your FinPath is ready.</h1>
-        <p className="type-body prose-measure text-ink-secondary">
-          Everything from here is worked out from the figures you just
-          entered. Change any of them at any time in your profile, and every
-          score, ratio and projection follows.
-        </p>
-
-        <dl className="flex flex-col">
-          {[
-            ["Monthly income", budget.allowance],
-            ["Essentials", budget.totals.Needs],
-            ["Discretionary", budget.totals.Wants],
-            ["Set aside", budget.totals.Savings],
-          ].map(([label, value]) => (
-            <div
-              key={label as string}
-              className="ledger-rule flex items-baseline justify-between gap-4 py-2"
-            >
-              <dt className="type-label text-ink">{label as string}</dt>
-              <dd>
-                <Money amount={rupeesToPaise(value as number)} />
-              </dd>
-            </div>
-          ))}
-        </dl>
-
-        <ButtonRow align="start">
-          <ButtonLink href="/home" variant="primary">
-            See my financial health
-          </ButtonLink>
-          <ButtonLink href="/spending">Upload a statement instead</ButtonLink>
-        </ButtonRow>
-
-        <DisclaimerNote />
-      </div>
-    </main>
-  );
-}
