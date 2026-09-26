@@ -35,7 +35,7 @@ export {
   type ActionCardAction,
   type ActionCardPriority,
 } from "./action-card";
-export { BareInput, Input, type InputProps } from "./input";
+export { BareInput, BareTextarea, Input, type InputProps } from "./input";
 export {
   Annotated,
   MarginBody,
@@ -51,6 +51,7 @@ export { PageHeader, Section } from "./page-header";
 export { PasswordInput } from "./password-input";
 export { ProgressMeter } from "./progress-meter";
 export { Provenance } from "./provenance";
+export { SectionLabel } from "./section-label";
 export { ScoreDial } from "./score-dial";
 export { Segmented, type Segment } from "./segmented";
 export { Select, type SelectItem, type SelectProps } from "./select";

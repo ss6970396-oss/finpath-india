@@ -1,6 +1,11 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { DisclaimerNote, SiteFooter, TRUST_LINE } from "@/components/ui";
+import {
+  DisclaimerNote,
+  SectionLabel,
+  SiteFooter,
+  TRUST_LINE,
+} from "@/components/ui";
 import { Diagnostic } from "./components/Diagnostic";
 import { HeroCta } from "./components/HeroCta";
 import { PublicHeader } from "./components/PublicHeader";
@@ -60,7 +65,7 @@ export default function LandingPage() {
           className="page-shell flex flex-col gap-8 border-t border-line py-16"
         >
           <div className="flex flex-col gap-2">
-            <p className="type-eyebrow text-ink-muted">What one purchase becomes</p>
+            <SectionLabel as="p">What one purchase becomes</SectionLabel>
             <h2 id="diagnostic-heading" className="type-heading prose-measure text-ink">
               Every rupee has a second life you do not see at the till.
             </h2>
@@ -70,7 +75,7 @@ export default function LandingPage() {
 
         {/* ------------------------------------------------- trust line */}
         <section className="page-shell flex flex-col gap-4 border-t border-line py-16">
-          <p className="type-eyebrow text-ink-muted">Where answers come from</p>
+          <SectionLabel as="p">Where answers come from</SectionLabel>
           <p className="type-reading prose-measure text-ink">{TRUST_LINE}</p>
           <DisclaimerNote />
         </section>

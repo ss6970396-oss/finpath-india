@@ -12,6 +12,7 @@ import {
   Metric,
   ProgressMeter,
   ScoreDial,
+  SectionLabel,
 } from "@/components/ui";
 import { RULE } from "@/lib/finance";
 import { formatINR, formatPercent } from "@/lib/format";
@@ -115,9 +116,9 @@ export default function HomePage() {
         aria-labelledby="score-heading"
         className="flex flex-col gap-4 border-t border-line pt-8"
       >
-        <h2 id="score-heading" className="type-eyebrow text-ink-muted">
+        <SectionLabel id="score-heading">
           Money health score
-        </h2>
+        </SectionLabel>
         <ScoreDial
           score={health.score}
           band={health.band}
@@ -207,9 +208,9 @@ export default function HomePage() {
         aria-labelledby="figures-heading"
         className="flex flex-col gap-4 border-t border-line pt-8"
       >
-        <h2 id="figures-heading" className="type-eyebrow text-ink-muted">
+        <SectionLabel id="figures-heading">
           This month
-        </h2>
+        </SectionLabel>
 
         {noSpending ? (
           // The empty state for a student with no spending data yet — which
@@ -223,7 +224,7 @@ export default function HomePage() {
             <div className="flex flex-wrap items-center gap-4">
               <ButtonLink href="/spending">Import a statement</ButtonLink>
               <Button
-                variant="quiet"
+                variant="ghost"
                 onClick={() => setUseExample(true)}
                 disabled={!data}
               >
@@ -275,9 +276,9 @@ export default function HomePage() {
         aria-labelledby="ask-heading"
         className="flex flex-col gap-2 border-t border-line pt-8"
       >
-        <h2 id="ask-heading" className="type-eyebrow text-ink-muted">
+        <SectionLabel id="ask-heading">
           Ask a question
-        </h2>
+        </SectionLabel>
         <form
           onSubmit={ask}
           className="flex max-w-(--container-prose) items-stretch gap-2"

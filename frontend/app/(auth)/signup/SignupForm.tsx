@@ -4,7 +4,12 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { safeNext } from "@/lib/safe-next";
-import { Button, Input, PasswordInput } from "@/components/ui";
+import {
+  Button,
+  Input,
+  Notice,
+  PasswordInput,
+} from "@/components/ui";
 import {
   AuthError,
   MIN_PASSWORD_LENGTH,
@@ -86,12 +91,9 @@ export function SignupForm() {
 
       <form noValidate onSubmit={onSubmit} className="flex flex-col gap-4">
         {failure ? (
-          <p
-            role="alert"
-            className="type-label border border-critical bg-critical-wash px-2 py-2 text-critical"
-          >
+          <Notice tone="critical" announce="alert" title="Account not created">
             {failure}
-          </p>
+          </Notice>
         ) : null}
 
         <Input

@@ -14,7 +14,8 @@ import { cn } from "@/lib/utils";
  *              text — the accent's first job, so a second primary on the
  *              same screen is visible as a mistake.
  *   secondary  a real alternative. Bordered, transparent.
- *   quiet      navigation and reversible actions. No border until hover.
+ *   ghost      navigation and reversible actions. No border until hover.
+ *              (Was `quiet` before the editorial refactor.)
  *   critical   destructive and irreversible. The only coloured button, and
  *              it must always be confirmed elsewhere.
  *
@@ -26,7 +27,7 @@ import { cn } from "@/lib/utils";
  * would fail WCAG 2.2 SC 1.4.11.
  */
 
-export type ButtonVariant = "primary" | "secondary" | "quiet" | "critical";
+export type ButtonVariant = "primary" | "secondary" | "ghost" | "critical";
 type Variant = ButtonVariant;
 type Size = "sm" | "md";
 
@@ -35,7 +36,7 @@ const VARIANTS: Record<Variant, string> = {
     "border border-accent bg-accent text-canvas hover:bg-accent/90 active:bg-accent",
   secondary:
     "border border-line-strong bg-transparent text-ink hover:bg-surface active:bg-surface-sunken",
-  quiet:
+  ghost:
     "border border-transparent bg-transparent text-ink-secondary hover:border-line hover:bg-surface hover:text-ink active:bg-surface-sunken",
   critical:
     "border border-critical bg-critical text-canvas hover:bg-critical/90 active:bg-critical",

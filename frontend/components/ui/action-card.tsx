@@ -121,7 +121,7 @@ export function ActionCard({
                 Done
               </span>
               {onUndo ? (
-                <Button variant="quiet" size="sm" onClick={onUndo}>
+                <Button variant="ghost" size="sm" onClick={onUndo}>
                   Undo
                 </Button>
               ) : null}
@@ -140,7 +140,7 @@ export function ActionCard({
                 )
               ) : null}
               {onMarkDone ? (
-                <Button variant="quiet" onClick={onMarkDone}>
+                <Button variant="ghost" onClick={onMarkDone}>
                   Mark as done
                 </Button>
               ) : null}

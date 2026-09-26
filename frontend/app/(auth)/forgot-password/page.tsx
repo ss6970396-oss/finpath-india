@@ -2,7 +2,11 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Button, Input } from "@/components/ui";
+import {
+  Button,
+  Input,
+  Notice,
+} from "@/components/ui";
 import { isEmailShaped } from "@/lib/auth";
 import { useAuth } from "../../providers/AuthProvider";
 
@@ -57,28 +61,20 @@ export default function ForgotPasswordPage() {
 
       {sent ? (
         <div className="flex flex-col gap-4" aria-live="polite">
-          <div className="border border-line-strong bg-surface px-4 py-4">
-            <h2 className="type-subhead text-ink">Request received</h2>
-            <p className="type-body prose-measure mt-1 text-ink-secondary">
-              If an account exists for that address, a reset link is on its
-              way. We do not confirm either way — that would let anyone check
-              which addresses are registered here.
-            </p>
-          </div>
+          <Notice title="Request received">
+            If an account exists for that address, a reset link is on its
+            way. We do not confirm either way — that would let anyone check
+            which addresses are registered here.
+          </Notice>
 
           {isDeviceLocal ? (
-            <div className="border border-line-strong bg-surface px-4 py-4">
-              <h2 className="type-subhead text-ink">
-                On this build, no email can be sent
-              </h2>
-              <p className="type-body prose-measure mt-1 text-ink">
-                This installation has no authentication server and no mail
-                transport, so nothing was actually sent. Accounts here live in
-                your browser: if the password is lost, create a new account —
-                the figures you entered are stored separately and will still
-                be there.
-              </p>
-            </div>
+            <Notice title="On this build, no email can be sent">
+              This installation has no authentication server and no mail
+              transport, so nothing was actually sent. Accounts here live in
+              your browser: if the password is lost, create a new account.
+              Figures are stored per account, so a new account starts with
+              its own.
+            </Notice>
           ) : null}
 
           <p className="type-body text-ink-secondary">

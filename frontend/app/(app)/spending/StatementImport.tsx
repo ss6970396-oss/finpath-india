@@ -7,14 +7,15 @@ import {
   DropZone,
   EmptyState,
   Money,
+  Notice,
   Select,
   Table,
+  TableScroll,
   TBody,
   TD,
   TH,
   THead,
   TR,
-  TableScroll,
   useToast,
 } from "@/components/ui";
 import {
@@ -140,22 +141,17 @@ export function StatementImport() {
       />
 
       {result?.errors.length ? (
-        <div role="alert" className="border border-critical bg-critical-wash px-4 py-4">
-          <h3 className="type-subhead text-critical">
-            That file could not be used
-          </h3>
-          <ul className="mt-2 flex flex-col gap-1">
+        <Notice tone="critical" announce="alert" title="That file could not be used">
+          <ul className="flex flex-col gap-1 text-ink">
             {result.errors.map((error) => (
-              <li key={error} className="type-body text-ink">
-                {error}
-              </li>
+              <li key={error}>{error}</li>
             ))}
           </ul>
           <p className="type-label mt-2 text-ink-muted">
             The file needs a date column, a description column, and at least
             one column carrying the amount.
           </p>
-        </div>
+        </Notice>
       ) : null}
 
       {result && result.transactions.length > 0 ? (
@@ -163,12 +159,12 @@ export function StatementImport() {
       ) : null}
 
       {result?.magnitudesOnly ? (
-        <p className="type-body prose-measure border-l-2 border-line-strong pl-4 text-ink-secondary">
+        <Notice title="Read as money going out">
           Every amount in that file was positive, so it has been read as a
           list of money going out. If it was meant to include credits, they
           would need a minus sign or their own column — otherwise an
           allowance arriving would be counted as spending.
-        </p>
+        </Notice>
       ) : null}
 
       {suggestion ? (

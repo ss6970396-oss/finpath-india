@@ -10,6 +10,7 @@ import {
   DisclaimerNote,
   Money,
   PageHeader,
+  SectionLabel,
   useToast,
 } from "@/components/ui";
 import {
@@ -391,9 +392,9 @@ function Block({
       )}
     >
       <div className="flex min-h-11 flex-wrap items-center justify-between gap-2">
-        <h2 id={headingId} className="type-eyebrow text-ink-muted">
+        <SectionLabel id={headingId}>
           {label}
-        </h2>
+        </SectionLabel>
         {onEdit && !editing && !locked ? (
           <Button variant={primaryEdit ? "primary" : "secondary"} size="sm" onClick={onEdit}>
             Edit <span className="sr-only-text">{label.toLowerCase()}</span>

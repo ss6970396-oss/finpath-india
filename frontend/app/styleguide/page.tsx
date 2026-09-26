@@ -646,7 +646,7 @@ export default function StyleGuidePage() {
               <Row label="Default" hint="one primary per page">
                 <Button variant="primary">Import transactions</Button>
                 <Button variant="secondary">Add a transaction</Button>
-                <Button variant="quiet">Skip for now</Button>
+                <Button variant="ghost">Skip for now</Button>
                 <Button variant="critical">Delete account</Button>
               </Row>
               <Row label="Small">
@@ -664,7 +664,7 @@ export default function StyleGuidePage() {
                 <Button variant="secondary" disabled>
                   Add a transaction
                 </Button>
-                <Button variant="quiet" disabled>
+                <Button variant="ghost" disabled>
                   Skip for now
                 </Button>
                 <Button variant="critical" disabled>
@@ -1027,7 +1027,7 @@ export default function StyleGuidePage() {
               </Sheet>
 
               <Tooltip label="Registered with SEBI">
-                <Button variant="quiet">Hover or focus me</Button>
+                <Button variant="ghost">Hover or focus me</Button>
               </Tooltip>
             </div>
             <p className="type-label prose-measure text-ink-muted">
@@ -1113,7 +1113,7 @@ export default function StyleGuidePage() {
               <Header
                 user={{ name: "Priya Sharma" }}
                 actions={
-                  <Button size="sm" variant="quiet">
+                  <Button size="sm" variant="ghost">
                     Sign out
                   </Button>
                 }

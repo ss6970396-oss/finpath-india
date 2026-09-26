@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { SectionLabel } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import { SECONDARY } from "./nav";
 
@@ -18,7 +19,7 @@ export function SecondaryLinks({ className }: { className?: string }) {
       aria-label="More in FinPath"
       className={cn("flex flex-col gap-2 border-t border-line pt-4", className)}
     >
-      <h2 className="type-eyebrow text-ink-muted">Also in FinPath</h2>
+      <SectionLabel>Also in FinPath</SectionLabel>
       <ul className="grid gap-4 sm:grid-cols-2">
         {SECONDARY.map((link) => (
           <li key={link.href} className="flex flex-col gap-1">

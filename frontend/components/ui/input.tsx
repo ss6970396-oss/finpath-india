@@ -107,3 +107,15 @@ export function BareInput({
     />
   );
 }
+
+/**
+ * A multi-line control with no label or field chrome — for a composer
+ * whose label is visually hidden and whose layout the caller owns (the
+ * coach). Same boundary, focus ring and states as Input.
+ */
+export const BareTextarea = React.forwardRef<
+  HTMLTextAreaElement,
+  React.ComponentProps<"textarea">
+>(function BareTextarea({ className, ...props }, ref) {
+  return <textarea ref={ref} className={cn(CONTROL, "resize-none", className)} {...props} />;
+});

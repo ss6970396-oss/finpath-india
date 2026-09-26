@@ -104,5 +104,5 @@ export function ModalClose({
 }: {
   children?: React.ReactNode;
 }) {
-  return <Dialog.Close render={<Button variant="quiet">{children}</Button>} />;
+  return <Dialog.Close render={<Button variant="ghost">{children}</Button>} />;
 }

@@ -3,7 +3,12 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Button, Input, PasswordInput } from "@/components/ui";
+import {
+  Button,
+  Input,
+  Notice,
+  PasswordInput,
+} from "@/components/ui";
 import { AuthError, isEmailShaped } from "@/lib/auth";
 import { useAuth } from "../../providers/AuthProvider";
 import { hasCompletedProfile } from "../../providers/FinPathProvider";
@@ -83,14 +88,11 @@ export function LoginForm() {
 
       <form noValidate onSubmit={onSubmit} className="flex flex-col gap-4">
         {failure ? (
-          // role="alert" so the failure is announced without moving focus
-          // away from the field the student is about to correct.
-          <p
-            role="alert"
-            className="type-label border border-critical bg-critical-wash px-2 py-2 text-critical"
-          >
+          // announce="alert" so the failure is announced without moving
+          // focus away from the field the student is about to correct.
+          <Notice tone="critical" announce="alert" title="Not signed in">
             {failure}
-          </p>
+          </Notice>
         ) : null}
 
         <Input

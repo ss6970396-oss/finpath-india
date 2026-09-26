@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { ArrowUp, CircleAlert, Square } from "lucide-react";
 import {
   Badge,
+  BareTextarea,
   Button,
   Citation,
   DisclaimerNote,
@@ -13,11 +14,12 @@ import {
   MarginLayout,
   MarginNote,
   Notice,
+  SectionLabel,
   Sheet,
+  type SourceEntry,
   SourcePanel,
   TRUST_LINE,
   UnverifiedNote,
-  type SourceEntry,
 } from "@/components/ui";
 import { apiFetch, describeApiFailure } from "@/lib/api";
 import { prettySource } from "@/lib/format";
@@ -219,7 +221,7 @@ export function Coach() {
             </Link>
           </p>
           <div className="flex flex-col gap-2">
-            <h2 className="type-eyebrow text-ink-muted">Try one of these</h2>
+            <SectionLabel>Try one of these</SectionLabel>
             <ul className="flex flex-col">
               {SUGGESTIONS.map((suggestion) => (
                 <li key={suggestion} className="border-b border-line">
@@ -268,7 +270,7 @@ export function Coach() {
           Ask your financial coach a question
         </label>
         <div className="flex items-end gap-2">
-          <textarea
+          <BareTextarea
             id="ask-input"
             ref={composer}
             rows={2}
@@ -283,7 +285,6 @@ export function Coach() {
               }
             }}
             placeholder="Ask about saving, investing, inflation, loans…"
-            className="type-body w-full resize-none border border-line-strong bg-canvas px-2 py-2 text-ink placeholder:text-ink-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           />
           {busy ? (
             <Button type="button" onClick={stop} className="h-11 shrink-0">
@@ -431,7 +432,7 @@ function SourceList({
 }) {
   return (
     <div className="flex flex-col gap-2">
-      <p className="type-eyebrow text-ink-muted">Sources</p>
+      <SectionLabel as="p">Sources</SectionLabel>
       <ol className="flex flex-col gap-1">
         {turn.sources.map((s) => (
           <li key={s.n} className="flex items-baseline gap-2 xl:justify-end">
