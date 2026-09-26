@@ -37,3 +37,19 @@ Home · Actions · Ask · Profile from one `NAV`; slimmer header with an ink ind
 - Header on `/` and `/sources`: the button is outlined, not filled.
 - `/sources`, `/login`, `/ask`, footer: the corpus description now names SEBI's investor-education programme.
 - `/spending`: every "Where you are off track" row has the ink left rule and an arrow.
+
+## Phase 5 — Onboarding · `9471a4e`
+
+**What changed.** Each of the 8 frozen steps is now a real `<form>`, so Enter advances. The serif question heading and the one-line purpose are unchanged. Back keeps every answer, and focus moves to the step heading on each change; the `autoFocus` on fields that used to steal it is gone. Income is validated inline, on blur and on Continue ("Enter your monthly income in rupees."), and focus goes back to the field. Continue is never disabled. `Stepper` is now "Step X of N" plus one thin accent bar. Finish saves exactly as before and goes straight to `/home`; the "Your FinPath is ready" screen is gone. `lib/onboarding.ts` is untouched.
+
+**Files.** `app/onboarding/{page,AmountField}.tsx`, `components/ui/stepper.tsx`.
+
+**Checked.** By screenshot at 1280 px, then by page structure: advancing from step 1 puts focus on the step 2 `h1`; the progress bar reads "Step 2 of 8"; clearing income and pressing Enter keeps you on the step, focuses the field, sets `aria-invalid` and shows the message. Finish wasn't pressed, so your stored profile is unchanged.
+
+**Needs a human look.** `/onboarding` at 375 px, and one full run through to Finish (which rewrites your stored profile).
+
+**Deferred.** B-8 (`?next=` through sign-up and onboarding) moves to Phase 9, which touches the auth forms.
+
+**Where to see it**
+- `/onboarding`: "STEP 2 OF 8" above a thin green bar; the heading takes focus on each step; Enter moves forward; an empty income gives an inline message instead of a greyed-out button.
+- Finishing lands directly on `/home`; there is no intermediate "ready" screen.
