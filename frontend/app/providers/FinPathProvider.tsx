@@ -26,10 +26,12 @@ import {
   type DerivedBudget,
   type FinancialProfile,
 } from "@/lib/onboarding";
-import { createPersistedStore } from "@/lib/persist";
+import { createScopedStore } from "@/lib/persist";
 import { apiJson, describeApiFailure } from "@/lib/api";
+import { API } from "./api-base";
+import { useAuth } from "./AuthProvider";
 
-export const API = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
+export { API };
 
 /**
  * The API's fallback assumptions, used only until /api/spending answers.
@@ -94,11 +96,18 @@ export const SOURCE_LABEL: Record<DataSource, string> = {
 /** Where an uploaded ledger came from. */
 export type UploadOrigin = "file" | "sample";
 
-const profileStore = createPersistedStore<FinancialProfile>(
+/*
+ * PER ACCOUNT. Each store is keyed by the signed-in account's id
+ * (`finpath.profile:<userId>`), so two device accounts in one browser never
+ * see each other's figures, ticks or history. Data written under the old
+ * unscoped keys is migrated once, by AuthProvider, to the first account
+ * resolved or signed in — see lib/account-storage.ts.
+ */
+const profileStore = createScopedStore<FinancialProfile>(
   "finpath.profile",
   EMPTY_PROFILE,
 );
-const tasksStore = createPersistedStore<Record<string, boolean>>(
+const tasksStore = createScopedStore<Record<string, boolean>>(
   "finpath.plan",
   {},
 );
@@ -113,7 +122,16 @@ const tasksStore = createPersistedStore<Record<string, boolean>>(
  */
 export type Review = { score: number; savingsRate: number; wantsRate: number; at: string };
 
-const reviewStore = createPersistedStore<Review | null>("finpath.review", null);
+const reviewStore = createScopedStore<Review | null>("finpath.review", null);
+
+/**
+ * Whether an account has finished onboarding, read straight from storage.
+ * For the sign-in form, which has to decide where to go in the same event
+ * that established the session — before the provider has re-rendered.
+ */
+export function hasCompletedProfile(userId: string): boolean {
+  return isComplete(profileStore.getFor(userId));
+}
 
 type Ctx = {
   /* ---- the declared profile ---- */
@@ -164,20 +182,22 @@ const FinPathContext = createContext<Ctx | null>(null);
 
 export function FinPathProvider({ children }: { children: React.ReactNode }) {
   // Persisted state reads through useSyncExternalStore: no setState in an
-  // effect, and the server snapshot keeps hydration consistent.
+  // effect, and the server snapshot keeps hydration consistent. Every read
+  // and write is for the signed-in account; signed out reads the fallback.
+  const userId = useAuth().session?.userId ?? null;
   const profile = useSyncExternalStore(
     profileStore.subscribe,
-    profileStore.get,
+    () => profileStore.getFor(userId),
     profileStore.getServer,
   );
   const done = useSyncExternalStore(
     tasksStore.subscribe,
-    tasksStore.get,
+    () => tasksStore.getFor(userId),
     tasksStore.getServer,
   );
   const lastReview = useSyncExternalStore(
     reviewStore.subscribe,
-    reviewStore.get,
+    () => reviewStore.getFor(userId),
     reviewStore.getServer,
   );
 
@@ -239,18 +259,23 @@ export function FinPathProvider({ children }: { children: React.ReactNode }) {
   const error = res.key === reqKey ? res.error : null;
   const params = data?.projection_params ?? FALLBACK_PARAMS;
 
-  const saveProfile = useCallback((next: FinancialProfile) => {
-    profileStore.set(next);
-  }, []);
+  const saveProfile = useCallback(
+    (next: FinancialProfile) => profileStore.setFor(userId, next),
+    [userId],
+  );
 
-  const toggleTask = useCallback((id: string) => {
-    const current = tasksStore.get();
-    tasksStore.set({ ...current, [id]: !current[id] });
-  }, []);
+  const toggleTask = useCallback(
+    (id: string) => {
+      const current = tasksStore.getFor(userId);
+      tasksStore.setFor(userId, { ...current, [id]: !current[id] });
+    },
+    [userId],
+  );
 
-  const recordReview = useCallback((review: Review) => {
-    reviewStore.set(review);
-  }, []);
+  const recordReview = useCallback(
+    (review: Review) => reviewStore.setFor(userId, review),
+    [userId],
+  );
 
   const reload = useCallback(() => setNonce((n) => n + 1), []);
 

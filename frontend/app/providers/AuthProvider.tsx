@@ -9,7 +9,8 @@ import {
   useState,
 } from "react";
 import { createAuth, type AuthAdapter, type Session } from "@/lib/auth";
-import { API } from "./FinPathProvider";
+import { migrateInBrowser } from "@/lib/account-storage";
+import { API } from "./api-base";
 
 /**
  * Session state for the whole app.
@@ -53,6 +54,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       .current()
       .then((s) => {
         if (cancelled) return;
+        // One-time migration of pre-per-account data, BEFORE the session is
+        // published: the route guard reads the profile as soon as status
+        // resolves, and must find it under the scoped key.
+        if (s) migrateInBrowser(s.userId);
         setSession(s);
         setStatus("resolved");
       })
@@ -69,6 +74,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signIn = useCallback(
     async (email: string, password: string) => {
       const s = await adapter.signIn(email, password);
+      migrateInBrowser(s.userId);
       setSession(s);
       return s;
     },
@@ -77,6 +83,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signUp = useCallback(
     async (name: string, email: string, password: string) => {
+      // No migration on sign-up: a brand-new account is a new person, and
+      // must not inherit whatever the browser held before it existed.
       const s = await adapter.signUp(name, email, password);
       setSession(s);
       return s;

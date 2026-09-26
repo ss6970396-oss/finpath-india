@@ -2,7 +2,8 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { safeNext } from "@/lib/safe-next";
 import { Button, Input, PasswordInput } from "@/components/ui";
 import {
   AuthError,
@@ -28,7 +29,10 @@ import { DeviceAccountNote } from "../DeviceAccountNote";
  */
 export function SignupForm() {
   const router = useRouter();
+  const params = useSearchParams();
   const { signUp } = useAuth();
+  // B-8: where the student was going before they had an account.
+  const next = safeNext(params.get("next"));
 
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
@@ -57,7 +61,9 @@ export function SignupForm() {
       await signUp(name, email, password);
       // Straight into onboarding: an account with no figures in it has
       // nothing to show, and /home would be an empty state on arrival.
-      router.replace("/onboarding");
+      router.replace(
+        next ? `/onboarding?next=${encodeURIComponent(next)}` : "/onboarding",
+      );
     } catch (err) {
       setFailure(
         err instanceof AuthError
@@ -143,7 +149,10 @@ export function SignupForm() {
 
       <p className="type-body text-ink-secondary">
         Already have an account?{" "}
-        <Link href="/login" className="text-accent underline underline-offset-4">
+        <Link
+          href={next ? `/login?next=${encodeURIComponent(next)}` : "/login"}
+          className="text-accent underline underline-offset-4"
+        >
           Sign in
         </Link>
       </p>

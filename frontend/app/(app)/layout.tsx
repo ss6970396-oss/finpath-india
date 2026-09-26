@@ -52,7 +52,9 @@ export default function AppLayout({
       router.replace(`/login?next=${encodeURIComponent(pathname)}`);
       return;
     }
-    if (!onboarded) router.replace("/onboarding");
+    if (!onboarded) {
+      router.replace(`/onboarding?next=${encodeURIComponent(pathname)}`);
+    }
   }, [ready, session, onboarded, pathname, router]);
 
   return (

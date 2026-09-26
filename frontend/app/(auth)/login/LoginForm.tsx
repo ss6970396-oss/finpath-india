@@ -6,7 +6,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button, Input, PasswordInput } from "@/components/ui";
 import { AuthError, isEmailShaped } from "@/lib/auth";
 import { useAuth } from "../../providers/AuthProvider";
-import { useFinPath } from "../../providers/FinPathProvider";
+import { hasCompletedProfile } from "../../providers/FinPathProvider";
+import { safeNext } from "@/lib/safe-next";
 import { DeviceAccountNote } from "../DeviceAccountNote";
 
 /**
@@ -27,9 +28,8 @@ export function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
   const { signIn } = useAuth();
-  const { onboarded } = useFinPath();
-
-  const next = params.get("next");
+  // Sanitised: only a path on this site, never another origin (B-8).
+  const next = safeNext(params.get("next"));
 
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -50,10 +50,18 @@ export function LoginForm() {
 
     setSubmitting(true);
     try {
-      await signIn(email, password);
+      const session = await signIn(email, password);
       // Onboarding is what the app's own guard checks next, so send an
       // unfinished profile straight there rather than through a bounce.
-      router.replace(onboarded ? (next ?? "/home") : "/onboarding");
+      // Read from storage for THIS account: the provider still reflects the
+      // previous session in this same event.
+      router.replace(
+        hasCompletedProfile(session.userId)
+          ? (next ?? "/home")
+          : next
+            ? `/onboarding?next=${encodeURIComponent(next)}`
+            : "/onboarding",
+      );
     } catch (err) {
       setFailure(
         err instanceof AuthError

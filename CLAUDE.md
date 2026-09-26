@@ -132,9 +132,10 @@ Home and Actions via `SecondaryLinks`. Active state is `isNavActive()` in
 fits ("Ask", not "AI"); internal subsystem names never appear (no "Nudge
 Simulator", no "AI Counselor", no "Spending Engine").
 
-The API base lives in exactly one place — `API` in
-`app/providers/FinPathProvider.tsx`, which reads `NEXT_PUBLIC_API_URL` and
-falls back to `http://127.0.0.1:8000`. Do not re-derive a base URL at a call
+The API base lives in exactly one place — `app/providers/api-base.ts`,
+re-exported as `API` from `app/providers/FinPathProvider.tsx` (import it from
+there). It reads `NEXT_PUBLIC_API_URL` and falls back to
+`http://127.0.0.1:8000`. Do not re-derive a base URL at a call
 site, and route every request through `lib/api.ts` (`design-lint` fails on a
 bare `fetch(`). CORS on the backend is an explicit allowlist
 (`ALLOWED_ORIGINS` in `main.py`), not `["*"]`.
@@ -178,10 +179,13 @@ an income with no expenses — a 100/100 built from unanswered questions.
 
 ### Where the numbers come from (§28)
 
-`FinPathProvider` resolves one of three sources, in precedence order, and
+`FinPathProvider` resolves one of four sources, in precedence order, and
 names it:
 
-1. `statement` — an uploaded file, parsed in the browser. Actuals.
+1. `statement` — an uploaded file, parsed in the browser. Actuals. Or
+   `sample` — FinPath's own `SAMPLE_CSV`, loaded through the same parser by
+   "Try it with a sample file" and labelled "A sample statement", never as
+   the student's own. No allowance suggestion is made from it.
 2. `declared` — the onboarding profile. The student's own estimate.
 3. `example` — the API's generated month. **Opt-in, never silently on.**
 
@@ -189,6 +193,12 @@ names it:
 on every page that shows a figure. A projection built from an example month
 and one built from a real statement look identical and mean entirely
 different things.
+
+Profile, plan ticks and `reviewStore` are stored PER ACCOUNT
+(`finpath.profile:<userId>` etc., `createScopedStore` in `lib/persist.ts`);
+`lib/account-storage.ts` migrates the old global keys once, to the first
+account resolved or signed in — never on sign-up. See
+`docs/refactor/MIGRATION.md`.
 
 `reviewStore` holds one snapshot of the health score, written by `/home` on
 each visit. It is the only history the product has, and "since your last

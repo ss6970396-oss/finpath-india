@@ -27,6 +27,7 @@ import {
   type Priority,
 } from "@/lib/onboarding";
 import { rupeesToPaise } from "@/lib/money";
+import { safeNext } from "@/lib/safe-next";
 import { formatPercent } from "@/lib/format";
 import { displayName, useAuth } from "../providers/AuthProvider";
 import { useFinPath } from "../providers/FinPathProvider";
@@ -135,9 +136,13 @@ export default function OnboardingPage() {
 
   function finish() {
     saveProfile({ ...draft, completedAt: new Date().toISOString() });
-    // Straight to Home: the profile is written synchronously, so the (app)
-    // guard sees a complete profile on the very next render.
-    router.replace("/home");
+    // Straight to Home — or to where the student was going before sign-up
+    // (B-8). The profile is written synchronously, so the (app) guard sees
+    // it complete on the very next render. Read from location in the event
+    // handler rather than useSearchParams, which would need a Suspense
+    // boundary around the whole wizard.
+    const next = safeNext(new URLSearchParams(window.location.search).get("next"));
+    router.replace(next ?? "/home");
   }
 
   function advance(e: React.FormEvent) {
