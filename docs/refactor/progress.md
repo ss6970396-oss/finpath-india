@@ -104,3 +104,37 @@ The three score meters are still there, one tap away under "How the score was bu
 - `/plan`: each stage's actions are bordered cards with a priority word, "~N min", the why and a button. Self-attested ones say so. The first open action has the only green button. Ticking shows "Done" with Undo.
 - `/home`: the three "Your next steps" cards match the ones on Actions and link to where each fix lives (Spending, What-if, Profile), or record a tick.
 - `/styleguide` → "Insight and ActionCard": primary, secondary-with-note and done examples.
+
+## Phase 8 — AI chat · `7e26522`
+
+**What changed.** `/ask` is one centred reading column with the composer pinned to the bottom (above the phone bar). Your questions sit in sunken blocks on the right; answers sit directly on the paper at 17 px, with no bubble. Each answer is labelled at the top in words: "Grounded in N sources", "Not from a verified source" (with the unverified note), or "No verified source for this yet". Sources appear as margin notes beside the answer at ≥ 1280 px and as a compact list under it below that. The inspector is a side panel on wide screens and a bottom sheet on narrow ones. Also:
+- **Stop:** you can stop an answer mid-stream; the partial answer is kept and marked as stopped.
+- **B-2:** in-stream generation failures and 429s now show as calm notes with "Ask again", not as a "grounded" answer.
+- **B-3:** a network error keeps whatever had already streamed.
+- **Empty state:** a serif "Ask anything about money", the trust line, and four suggestions taken from the indexed booklet's own chapters. Choosing one fills and focuses the composer.
+- **Combined markers:** "[1, 2]" now renders as two citation buttons.
+- **New:** `Notice` primitive, `useMediaQuery`, utilities `above-nav` and `gutter-offset`, token `--container-annotated`.
+
+The streaming contract is unchanged.
+
+**Files.** `app/(app)/ask/{Coach,page}.tsx`, `components/ui/{notice,index}.tsx`, `app/components/useMediaQuery.ts`, `app/globals.css`.
+
+**Checked.** Live, against your running backend: one real question (one call to your Gemini key; the repeat was served from the API's answer cache). By page structure:
+- The empty state renders, and a suggestion fills and focuses the composer.
+- Send turns into Stop while streaming; the answer is grounded with sources in the margin at 1536 px, and 19 citation buttons render.
+- `?q=` prefills without sending.
+- The inspector is a right-hand panel at 1536 px and a full-width bottom sheet at 375 px.
+- At 375 px: no overflow, margin notes hidden, list under the answer.
+
+A screenshot of the empty state at 1280 px looked right.
+
+**Needs a human look.**
+- `/ask` with an answer, at 1280 and 375 px. At 375 px the composer may overlap the bottom bar by about 4 px.
+- Enter-to-send, which the automation couldn't deliver to a hidden window. The send button and the Enter handler are the same code path as before.
+
+**Deferred.** None.
+
+**Where to see it**
+- `/ask` (empty): serif headline, trust line with a "How answers are sourced" link, four suggestions, composer at the bottom.
+- `/ask` (after a question): your question in a sunken block on the right; the answer on paper with a "Grounded in N sources" label; numbered sources in the left margin at ≥ 1280 px or listed under the answer on phones; "Read the passages" opens the side panel or bottom sheet; "Stop" appears while it streams.
+- Home → Ask with a question: the question waits in the composer.
