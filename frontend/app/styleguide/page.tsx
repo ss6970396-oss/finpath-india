@@ -1196,11 +1196,41 @@ export default function StyleGuidePage() {
               amountLabel="Worked out from your own figures, not a rule of thumb."
               action={<Button variant="primary">Review spending</Button>}
             />
-            <ActionCard
-              n={1}
-              title="Set up a monthly instruction for your savings target"
-              why="Investing after spending is investing with whatever is left. Dating the instruction to the day after income arrives reverses that."
-            />
+            <div className="flex w-full flex-col gap-4">
+              <p className="type-label text-ink-muted">
+                ActionCard: priority as a word, minutes, at most two lines of
+                why. Only the card its parent marks primary gets the accent
+                button.
+              </p>
+              <ActionCard
+                n={1}
+                primary
+                priority="high"
+                estimatedMinutes={20}
+                title="Set up a monthly instruction for your savings target"
+                explanation="Investing after spending is investing with whatever is left. Dating the instruction to the day after income arrives reverses that."
+                action={{ label: "See what it becomes", href: "/what-if" }}
+                onMarkDone={() => {}}
+              />
+              <ActionCard
+                n={2}
+                priority="medium"
+                estimatedMinutes={10}
+                title="Pay your card's full statement balance, not the minimum"
+                explanation="Paying the minimum leaves the rest accruing at the card's full rate, which is almost always the most expensive money you hold."
+                note="Nothing in your figures can confirm this one — ticking it is your own record."
+                action={{ label: "I have paid it in full", onClick: () => {} }}
+              />
+              <ActionCard
+                n={3}
+                done
+                priority="low"
+                estimatedMinutes={30}
+                title="Review costs and allocation once a year — no more often"
+                explanation="Checking more frequently reliably costs more in switching than it earns in timing."
+                onUndo={() => {}}
+              />
+            </div>
           </Section>
 
           <Section

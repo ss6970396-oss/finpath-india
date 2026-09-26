@@ -29,7 +29,12 @@ export { DistributionBar, type Slice } from "./distribution";
 export { DropZone } from "./drop-zone";
 export { SiteFooter } from "./footer";
 export { Header, SkipLink, Wordmark } from "./header";
-export { ActionCard, Insight } from "./insight";
+export { Insight } from "./insight";
+export {
+  ActionCard,
+  type ActionCardAction,
+  type ActionCardPriority,
+} from "./action-card";
 export { BareInput, Input, type InputProps } from "./input";
 export {
   Annotated,

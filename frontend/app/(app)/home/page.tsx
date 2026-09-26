@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, MessageCircleQuestion } from "lucide-react";
 import {
-  ActionCard,
   BareInput,
   Button,
   ButtonLink,
@@ -19,11 +18,13 @@ import { formatINR, formatPercent } from "@/lib/format";
 import { rupeesToPaise } from "@/lib/money";
 import type { Opportunity } from "@/lib/plan";
 import { PART_LABEL, scoreDriver } from "@/lib/score";
+import { priorities } from "@/lib/action-meta";
 import { displayName, useAuth } from "../../providers/AuthProvider";
 import { useFinPath } from "../../providers/FinPathProvider";
 import { SourceLine } from "../../components/SourceLine";
 import { SecondaryLinks } from "../../components/SecondaryLinks";
 import { useOpportunity, usePlan } from "../../components/usePlan";
+import { PlanActionCard } from "../../components/PlanActionCard";
 
 /**
  * /home (§6, §26) — the primary screen. It answers one question within the
@@ -76,6 +77,7 @@ export default function HomePage() {
   const delta = previous ? health.score - previous.score : null;
   const driver = scoreDriver(health);
   const nextBest = plan.open.slice(0, 3);
+  const rank = React.useMemo(() => priorities(plan), [plan]);
   const noSpending = source === "declared";
 
   function ask(e: React.FormEvent) {
@@ -188,19 +190,11 @@ export default function HomePage() {
           <ol className="flex flex-col gap-4">
             {nextBest.map((action, i) => (
               <li key={action.id}>
-                <ActionCard
+                <PlanActionCard
                   n={i + 1}
-                  title={action.title}
-                  why={action.why}
-                  selfAttested={action.selfAttested}
-                  action={
-                    <ButtonLink
-                      href="/plan"
-                      variant={i === 0 ? "primary" : "secondary"}
-                    >
-                      {i === 0 ? "Start here" : "Open in Actions"}
-                    </ButtonLink>
-                  }
+                  action={action}
+                  priority={rank[action.id] ?? "low"}
+                  primary={i === 0}
                 />
               </li>
             ))}
