@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useSearchParams } from "next/navigation";
-import { ArrowUp } from "lucide-react";
+import { ArrowUp, CircleAlert } from "lucide-react";
 import {
   Badge,
   Button,
@@ -222,7 +222,7 @@ export function Coach() {
                   }
                 }}
                 placeholder="Ask about savings, investing, UPI, KYC, insurance…"
-                className="type-body w-full resize-none border border-line-strong bg-canvas px-2 py-2 text-ink placeholder:text-ink-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-line-strong"
+                className="type-body w-full resize-none border border-line-strong bg-canvas px-2 py-2 text-ink placeholder:text-ink-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               />
               <Button
                 type="submit"
@@ -302,7 +302,11 @@ function TurnView({
         <>
           {turn.mode === "general" ? (
             <div className="flex flex-col gap-2">
-              <Badge tone="critical">Not from a verified source</Badge>
+              {/* A label, not an alarm: neutral ground, a glyph and the words. */}
+              <Badge tone="neutral">
+                <CircleAlert className="lucide size-3.5 shrink-0" aria-hidden="true" />
+                Not from a verified source
+              </Badge>
               <UnverifiedNote />
             </div>
           ) : turn.done ? (

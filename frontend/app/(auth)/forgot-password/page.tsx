@@ -67,8 +67,8 @@ export default function ForgotPasswordPage() {
           </div>
 
           {isDeviceLocal ? (
-            <div className="border border-critical bg-critical-wash px-4 py-4">
-              <h2 className="type-subhead text-critical">
+            <div className="border border-line-strong bg-surface px-4 py-4">
+              <h2 className="type-subhead text-ink">
                 On this build, no email can be sent
               </h2>
               <p className="type-body prose-measure mt-1 text-ink">

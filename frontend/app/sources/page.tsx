@@ -182,7 +182,7 @@ export default function SourcesPage() {
                 ],
               ].map(([title, body], i) => (
                 <li key={title} className="ledger-rule flex gap-4 py-4">
-                  <span className="type-data shrink-0 text-sm text-ink-muted">
+                  <span className="type-data shrink-0 amount-sm text-ink-muted">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span className="flex flex-col gap-1">

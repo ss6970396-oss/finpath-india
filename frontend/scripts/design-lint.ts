@@ -3,7 +3,7 @@
  *
  * Mechanically enforces the parts of the design system that a human review
  * will always eventually miss: colours outside the token file, radius,
- * shadow, dark-mode variants, arbitrary type sizes, ungoverned fetches,
+ * shadow, dark-mode variants, arbitrary and default type sizes, ungoverned fetches,
  * hand-rolled currency formatting, and mock data in a production path.
  *
  * Run: npm run design-lint
@@ -319,6 +319,18 @@ const RULES: Rule[] = [
     message:
       "arbitrary font size. Use a type role: type-display/heading/subhead/body/label/data.",
     test: /\btext-\[[^\]]*(?:\d(?:px|rem|em|pt|ch|vw|vh)|clamp\(|calc\()[^\]]*\]/g,
+  },
+  {
+    // Tailwind's own scale (text-sm … text-9xl) is a second, parallel set of
+    // sizes. It passes the arbitrary-size rule above, which is how ~20 of
+    // them crept into Money, ScoreDial and friends before the editorial
+    // refactor. Every size now comes from the --fs-* scale via a role.
+    id: "default-font-size",
+    scope: "strings",
+    message:
+      "Tailwind default font size. Use a type role (type-body, type-label, …) or an amount size (amount-sm/md/lg, type-figure).",
+    classLike: true,
+    test: /(?<![\w-])(?:[a-z0-9-]+:)*text-(?:xs|sm|base|lg|xl|[2-9]xl)(?![\w-])/g,
   },
   {
     id: "direct-fetch",

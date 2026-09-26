@@ -80,7 +80,7 @@ function SidebarLink({
       className={cn(
         "type-label flex items-center gap-2 border-l-2 px-4 py-2",
         "transition-colors duration-(--dur-fast) ease-(--ease-out)",
-        "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-line-strong",
+        "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent",
         active
           ? "border-line-strong bg-surface font-semibold text-ink"
           : "border-transparent text-ink-secondary hover:bg-surface hover:text-ink",
@@ -128,7 +128,7 @@ export function MobileNav({
             aria-current={active ? "page" : undefined}
             className={cn(
               "type-label flex min-h-11 flex-1 flex-col items-center justify-center gap-0.5 border-t-2 px-1 py-2",
-              "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-line-strong",
+              "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent",
               active
                 ? "border-line-strong font-semibold text-ink"
                 : "border-transparent text-ink-muted",

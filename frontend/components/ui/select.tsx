@@ -70,7 +70,7 @@ export function Select<T extends string>({
             "border border-line-strong bg-canvas px-2 text-left text-ink",
             "transition-colors duration-(--dur-fast) ease-(--ease-out)",
             "hover:bg-surface",
-            "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-line-strong",
+            "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
             "data-disabled:cursor-not-allowed data-disabled:border-line data-disabled:bg-surface-sunken data-disabled:text-ink-disabled",
             error && "border-critical",
           )}

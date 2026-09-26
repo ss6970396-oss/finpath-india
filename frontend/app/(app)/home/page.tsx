@@ -43,8 +43,9 @@ import { useOpportunity, usePlan } from "../../components/usePlan";
  */
 export default function HomePage() {
   const { session } = useAuth();
-  const { health, ratio, allowance, totals, envelope, lastReview, recordReview } =
-    useFinPath();
+  const {
+    health, ratio, allowance, totals, envelope, budget, lastReview, recordReview,
+  } = useFinPath();
   const plan = usePlan();
   const opportunity = useOpportunity();
 
@@ -165,7 +166,14 @@ export default function HomePage() {
       <Insight
         title={opportunity.title}
         detail={opportunity.detail}
-        tone={opportunity.tone}
+        // lib/plan.ts marks both a revolving balance and wants above target
+        // as "critical". Only the balance is money actively being lost;
+        // overspending is information, so it renders in ink.
+        tone={
+          opportunity.tone === "critical" && budget.debtTotal <= 0
+            ? "default"
+            : opportunity.tone
+        }
         amount={
           opportunity.amount !== null ? (
             <Money amount={rupeesToPaise(opportunity.amount)} size="xl" />

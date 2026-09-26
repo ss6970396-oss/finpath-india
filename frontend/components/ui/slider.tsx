@@ -61,7 +61,7 @@ export function Slider({
         <label htmlFor={id} className="type-label text-ink">
           {label}
         </label>
-        <span className="type-data text-base text-ink">{display}</span>
+        <span className="type-data amount-md text-ink">{display}</span>
       </div>
 
       <input
@@ -80,8 +80,8 @@ export function Slider({
 
       {bounds ? (
         <div className="flex items-baseline justify-between gap-2">
-          <span className="type-data text-sm text-ink-muted">{bounds[0]}</span>
-          <span className="type-data text-sm text-ink-muted">{bounds[1]}</span>
+          <span className="type-data amount-sm text-ink-muted">{bounds[0]}</span>
+          <span className="type-data amount-sm text-ink-muted">{bounds[1]}</span>
         </div>
       ) : null}
 

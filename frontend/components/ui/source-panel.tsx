@@ -52,7 +52,7 @@ export function SourcePanel({
       aria-label="Sources"
       className={cn("flex flex-col gap-4", className)}
     >
-      <h2 className="type-label border-b border-line pb-2 text-ink-muted uppercase">
+      <h2 className="type-eyebrow border-b border-line pb-2 text-ink-muted">
         Sources
       </h2>
 
@@ -108,7 +108,7 @@ function SourceItem({
       <div className="flex items-start gap-2 border-b border-line px-4 py-2">
         <span
           className={cn(
-            "type-data flex size-6 shrink-0 items-center justify-center border text-sm",
+            "type-data flex size-6 shrink-0 items-center justify-center border amount-sm",
             active
               ? "border-line-strong bg-ink text-canvas"
               : "border-line text-ink-secondary",
@@ -139,7 +139,7 @@ function SourceItem({
           <button
             type="button"
             onClick={() => onSelect(entry.n)}
-            className="type-label text-ink-secondary underline underline-offset-2 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-line-strong"
+            className="type-label text-ink-secondary underline underline-offset-2 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           >
             Show where this was cited
           </button>
@@ -159,7 +159,7 @@ function DateField({ label, value }: { label: string; value?: string }) {
       <dt className="type-label text-ink-muted">{label}</dt>
       <dd
         className={cn(
-          value ? "type-data text-sm text-ink" : "type-label text-ink-muted italic",
+          value ? "type-data amount-sm text-ink" : "type-label text-ink-muted italic",
         )}
       >
         {value ?? "not stated in the document"}

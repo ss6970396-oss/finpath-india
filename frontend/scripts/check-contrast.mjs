@@ -36,13 +36,15 @@ const CSS = readFileSync(join(here, "..", "app", "globals.css"), "utf8");
 /**
  * Pull `--color-x: #hex;` pairs from the FIRST @theme block only.
  *
- * The legacy compatibility block at the bottom of globals.css is a second
- * @theme, but every value in it is a `var()` alias rather than a hex
- * literal, so it contributes nothing here — by construction. If a hex ever
- * appears there, the token count assertion below catches it.
+ * globals.css has exactly one @theme block, and every colour token lives in
+ * it. Reading only the first keeps it that way: a colour smuggled into a
+ * later block is not asserted here, and the token count below would not
+ * move — so a second block is a review item, not a loophole.
  */
 function primaryTokens() {
-  const start = CSS.indexOf("@theme {");
+  // `@theme static` is the form in use: it emits every token as a CSS
+  // variable, including ones no class references yet.
+  const start = CSS.search(/@theme(?:\s+static)?\s*\{/);
   if (start === -1) throw new Error("no @theme block in globals.css");
 
   // Walk braces to find the matching close, so a nested block cannot end it early.
@@ -124,9 +126,11 @@ checks.push(
   { kind: "text", need: 4.5, label: "ink on positive-wash", fg: T.ink, bg: T["positive-wash"] },
 );
 
-// Filled controls: the label sits on the fill.
+// Filled controls: the label sits on the fill. Ink fill is the SELECTED
+// state (checkbox, segment, active citation) and the tooltip; the primary
+// button is the accent fill, asserted with the accent checks below.
 checks.push(
-  { kind: "text", need: 4.5, label: "canvas on ink (primary button)", fg: T.canvas, bg: T.ink },
+  { kind: "text", need: 4.5, label: "canvas on ink (selected control, tooltip)", fg: T.canvas, bg: T.ink },
   { kind: "text", need: 4.5, label: "canvas on critical (critical button)", fg: T.canvas, bg: T.critical },
   { kind: "text", need: 4.5, label: "canvas on positive", fg: T.canvas, bg: T.positive },
 );
@@ -147,19 +151,28 @@ for (const bg of GROUNDS) {
 checks.push(
   { kind: "text", need: 4.5, label: "accent on accent-wash", fg: T.accent, bg: T["accent-wash"] },
   { kind: "text", need: 4.5, label: "ink on accent-wash", fg: T.ink, bg: T["accent-wash"] },
-  { kind: "text", need: 4.5, label: "canvas on accent (selected control)", fg: T.canvas, bg: T.accent },
-  { kind: "boundary", need: 3, label: "accent border on canvas", fg: T.accent, bg: T.canvas },
+  { kind: "text", need: 4.5, label: "canvas on accent (primary button)", fg: T.canvas, bg: T.accent },
 );
 
-// 1.4.11: control boundaries and the focus ring.
+// 1.4.11: control boundaries, and the focus ring — which is the accent,
+// so it has to clear 3:1 on every ground a focusable element sits on.
 for (const bg of GROUNDS) {
-  checks.push({
-    kind: "boundary",
-    need: 3,
-    label: `line-strong (control border, focus ring) on ${bg}`,
-    fg: T["line-strong"],
-    bg: T[bg],
-  });
+  checks.push(
+    {
+      kind: "boundary",
+      need: 3,
+      label: `line-strong (control border) on ${bg}`,
+      fg: T["line-strong"],
+      bg: T[bg],
+    },
+    {
+      kind: "boundary",
+      need: 3,
+      label: `accent (focus ring, primary border) on ${bg}`,
+      fg: T.accent,
+      bg: T[bg],
+    },
+  );
 }
 
 // The status washes must be distinguishable from the page they sit on.

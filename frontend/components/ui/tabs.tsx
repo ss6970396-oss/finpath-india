@@ -83,7 +83,7 @@ export function Tab({
         "hover:text-ink",
         // Weight and rule together, so the state survives greyscale.
         "data-selected:border-line-strong data-selected:font-semibold data-selected:text-ink",
-        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-line-strong",
+        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
         className,
       )}
     >

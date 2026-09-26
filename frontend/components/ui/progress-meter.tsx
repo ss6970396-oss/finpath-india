@@ -13,8 +13,13 @@ import { cn } from "@/lib/utils";
  * Accessibility: this is a `meter`, not a `progressbar` — the value sits
  * within a known range with a meaningful threshold, which is exactly the
  * distinction the two roles draw. The state is also stated in text next to
- * the bar, so nothing depends on reading a 6px band of colour (§39), and
- * over-target is marked by a hatched overflow segment as well as by hue.
+ * the bar, so nothing depends on reading a 6px band of colour (§39).
+ *
+ * OVER TARGET IS INFORMATION, NOT AN ERROR. The fill is the accent (it is
+ * progress, one of the accent's four jobs) up to the target line; anything
+ * past the line is drawn in muted ink as a separate segment, and the status
+ * sentence says "above" in words. Nothing turns red: a meter that goes
+ * red for ordinary spending teaches people to stop reading it.
  */
 
 export function ProgressMeter({
@@ -49,7 +54,7 @@ export function ProgressMeter({
     <div className={cn("flex flex-col gap-1", className)}>
       <div className="flex items-baseline justify-between gap-2">
         <span className="type-label text-ink">{label}</span>
-        {detail ? <span className="type-data text-sm text-ink-secondary">{detail}</span> : null}
+        {detail ? <span className="type-data amount-sm text-ink-secondary">{detail}</span> : null}
       </div>
 
       <div
@@ -64,12 +69,22 @@ export function ProgressMeter({
         className="relative h-2 w-full border border-line bg-surface-sunken"
       >
         <div
-          className={cn(
-            "absolute inset-y-0 left-0",
-            over ? "bg-critical" : "bg-ink",
-          )}
-          style={{ width: pctOf(safe) }}
+          className="absolute inset-y-0 left-0 bg-accent"
+          style={{ width: pctOf(over ? (target ?? safe) : safe) }}
         />
+
+        {over && target !== undefined ? (
+          // The overflow: the part past the line, in muted ink, so the ink
+          // target line stays visible against it.
+          <div
+            aria-hidden="true"
+            className="absolute inset-y-0 bg-ink-muted"
+            style={{
+              left: pctOf(target),
+              width: `calc(${pctOf(safe)} - ${pctOf(target)})`,
+            }}
+          />
+        ) : null}
 
         {target !== undefined ? (
           // The target line. 2px of ink, full height, sitting above the
@@ -86,7 +101,7 @@ export function ProgressMeter({
         <span
           className={cn(
             "type-label",
-            over ? "text-critical" : "text-ink-muted",
+            over ? "text-ink" : "text-ink-muted",
           )}
         >
           {status}

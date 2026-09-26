@@ -55,7 +55,7 @@ export function Stepper({
             className={cn(
               "h-1 flex-1",
               "transition-colors duration-(--dur-base) ease-(--ease-out)",
-              i < clamped ? "bg-ink" : "bg-surface-sunken",
+              i < clamped ? "bg-accent" : "bg-surface-sunken",
             )}
           />
         ))}

@@ -109,7 +109,7 @@ export function ActionCard({
       {n !== undefined ? (
         <span
           aria-hidden="true"
-          className="type-data shrink-0 text-sm text-ink-muted"
+          className="type-data shrink-0 amount-sm text-ink-muted"
         >
           {String(n).padStart(2, "0")}
         </span>

@@ -78,7 +78,7 @@ export function Modal({
             </div>
             <Dialog.Close
               aria-label="Close"
-              className="shrink-0 border border-transparent p-1 text-ink-muted hover:border-line hover:bg-surface hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-line-strong"
+              className="shrink-0 border border-transparent p-1 text-ink-muted hover:border-line hover:bg-surface hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
               <X className="lucide size-4" aria-hidden="true" />
             </Dialog.Close>

@@ -191,6 +191,7 @@ export function ScenarioExplorer() {
             flat={flatLine}
             delayed={delayedLine}
             delayYears={DELAY_YEARS}
+            stepUpLabel={`Rising ${formatPercent(stepUp, { digits: 0 })} a year`}
           />
         </ChartFrame>
       </div>

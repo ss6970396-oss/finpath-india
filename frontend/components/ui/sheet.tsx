@@ -87,7 +87,7 @@ export function Sheet({
             <Dialog.Close
               aria-label="Close"
               // 44px hit area: this is the primary dismiss on a phone.
-              className="-m-2 shrink-0 border border-transparent p-2 text-ink-muted hover:border-line hover:bg-surface hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-line-strong"
+              className="-m-2 shrink-0 border border-transparent p-2 text-ink-muted hover:border-line hover:bg-surface hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
               <X className="lucide size-5" aria-hidden="true" />
             </Dialog.Close>

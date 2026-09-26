@@ -190,7 +190,7 @@ export function StatementImport() {
                 >
                   <span className="flex min-w-0 flex-col">
                     <span className="type-label text-ink">{txn.merchant}</span>
-                    <span className="type-data text-sm text-ink-muted">
+                    <span className="type-data amount-sm text-ink-muted">
                       {formatDate(txn.date)}
                     </span>
                   </span>
@@ -250,7 +250,7 @@ function ImportSummary({ result }: { result: ParseResult }) {
           <dt className="type-label text-ink-muted">{item.label}</dt>
           <dd className="ledger-rule pb-2">
             {item.value !== null ? (
-              <span className="type-data text-2xl text-ink">{item.value}</span>
+              <span className="type-data amount-lg text-ink">{item.value}</span>
             ) : (
               <Money amount={rupeesToPaise(item.amount ?? 0)} size="lg" />
             )}
@@ -326,7 +326,7 @@ function Ledger({
             {rows.map((txn) => (
               <TR key={txn.id}>
                 <TD>
-                  <span className="type-data text-sm">
+                  <span className="type-data amount-sm">
                     {formatDate(txn.date)}
                   </span>
                 </TD>

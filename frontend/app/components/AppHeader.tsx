@@ -68,7 +68,7 @@ export function AppHeader() {
                     className={cn(
                       "type-label py-2",
                       "transition-colors duration-(--dur-fast) ease-(--ease-out)",
-                      "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-line-strong",
+                      "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
                       active
                         ? "font-semibold text-ink"
                         : "text-ink-muted hover:text-ink",
@@ -109,7 +109,7 @@ export function AppHeader() {
               <button
                 type="button"
                 aria-label={`Account: ${name}`}
-                className="flex items-center gap-2 border border-transparent p-1 hover:border-line focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-line-strong"
+                className="flex items-center gap-2 border border-transparent p-1 hover:border-line focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
                 <Avatar name={session?.name || name} />
                 <span className="type-label hidden text-ink sm:inline">

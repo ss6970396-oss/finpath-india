@@ -80,7 +80,7 @@ export function Segmented<T extends string>({
             className={cn(
               "type-label whitespace-nowrap",
               "transition-colors duration-(--dur-fast) ease-(--ease-out)",
-              "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-line-strong",
+              "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent",
               i > 0 && "border-l border-line-strong",
               size === "sm" ? "px-2 py-1" : "px-4 py-2",
               selected

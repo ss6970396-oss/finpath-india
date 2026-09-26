@@ -10,7 +10,9 @@ import { cn } from "@/lib/utils";
  * Square, bordered, no shadow. The variants are a hierarchy of *commitment*,
  * not of decoration:
  *
- *   primary    the one action the page exists for. Ink fill, canvas text.
+ *   primary    the one action the page exists for. Accent fill, paper
+ *              text — the accent's first job, so a second primary on the
+ *              same screen is visible as a mistake.
  *   secondary  a real alternative. Bordered, transparent.
  *   quiet      navigation and reversible actions. No border until hover.
  *   critical   destructive and irreversible. The only coloured button, and
@@ -20,8 +22,8 @@ import { cn } from "@/lib/utils";
  * important, neither is.
  *
  * The border weight is deliberate: every interactive boundary takes
- * --line-strong (13.92:1), never --line (1.24:1), which would fail
- * WCAG 2.2 SC 1.4.11.
+ * --line-strong (or the accent, on primary), never --line (1.25:1), which
+ * would fail WCAG 2.2 SC 1.4.11.
  */
 
 export type ButtonVariant = "primary" | "secondary" | "quiet" | "critical";
@@ -30,7 +32,7 @@ type Size = "sm" | "md";
 
 const VARIANTS: Record<Variant, string> = {
   primary:
-    "border border-line-strong bg-ink text-canvas hover:bg-ink-secondary active:bg-ink",
+    "border border-accent bg-accent text-canvas hover:bg-accent/90 active:bg-accent",
   secondary:
     "border border-line-strong bg-transparent text-ink hover:bg-surface active:bg-surface-sunken",
   quiet:

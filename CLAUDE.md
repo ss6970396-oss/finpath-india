@@ -209,9 +209,13 @@ passing 0 for "not declared" would silently upgrade "we have no idea" into
 
 ### Design system
 
-`frontend/app/globals.css` is the whole system and it is closed.
+`frontend/app/globals.css` is the whole system and it is closed. The
+direction is "calm editorial": warm paper, clear type, numbers given room,
+sources in the margin (see `docs/refactor/`). The token block is
+`@theme static`, so every token is emitted as a CSS variable even before a
+utility uses it.
 
-**Fifteen colour tokens. No sixteenth.** Three grounds (`canvas`, `surface`,
+**Fifteen colour tokens. No sixteenth.** Three warm-paper grounds (`canvas`, `surface`,
 `surface-sunken`), four inks (`ink`, `ink-secondary`, `ink-muted`,
 `ink-disabled`), two rules (`line`, `line-strong`), one accent
 (`accent`, `accent-wash`) and two statuses (`critical`, `positive`, each with
@@ -220,15 +224,21 @@ asserts a WCAG ratio for every pair.
 
 Two splits carry most of the meaning:
 
-- `--line` is 1.24:1 and draws dividers, table rules and card edges ONLY.
-  Every interactive boundary — input, select, checkbox, button, focus ring —
-  takes `--line-strong` (13.92:1), because WCAG 2.2 SC 1.4.11 exempts
-  decorative boundaries and not control boundaries.
-- `--accent` is a deep pine green at 7.28:1 on canvas, which means it is
-  legible **as text**. That is the constraint that stops it becoming
-  decoration. It is never a status colour — `critical` and `positive` own
-  that job, and they always travel with a word and a glyph because they sit
-  only 1.21:1 apart in luminance.
+- `--line` is 1.25:1 and draws hairlines, table rules and card edges ONLY.
+  Every interactive boundary — input, select, checkbox, button — takes
+  `--line-strong` (13.95:1 even on the sunken ground), because WCAG 2.2
+  SC 1.4.11 exempts decorative boundaries and not control boundaries.
+- `--accent` is a deep pine green at 6.99:1 on canvas, legible **as text**.
+  It has exactly four jobs: the ONE primary button on a screen (accent
+  fill), progress (score arc, onboarding bar, plan progress), links, and
+  the focus ring (asserted ≥ 3:1 on every ground). Never decoration, never
+  a heading or an amount. It is never a status colour — `critical` and
+  `positive` own that job, and they always travel with a word and a glyph
+  because they sit only ~1.2:1 apart in luminance.
+- `critical` is for real problems only (errors, failed parses, a revolving
+  balance). Overspending is information: it renders in ink with a sentence
+  and a sign, never red. `lib/plan.ts` still returns `tone: "critical"` for
+  wants above target; the view layer maps it to default.
 
 Radius is zero everywhere and every `--radius-*` and `--shadow-*` token is
 pinned to 0, so a `rounded-md` that slips past the linter is inert rather
@@ -236,12 +246,19 @@ than visible. The one rounded element in the product is the avatar, via the
 `avatar` utility. **There is no dark mode** and no `prefers-color-scheme`
 block; `design-lint` fails on any `dark:` variant.
 
-**Eight type roles**, and a component may use nothing else — an arbitrary
-size (`text-[13px]`) is a design-lint failure: `type-hero` (landing headline,
-one per site), `type-display`, `type-heading`, `type-subhead`, `type-body`,
-`type-label`, `type-eyebrow` (metadata only, the one uppercase role), and
-`type-data` for EVERY numeral, always tabular. Fonts are Instrument Serif
-(display, single weight) and Inter (everything else including numerals),
+**Ten type roles over one `--fs-*` size scale**, and a component may use
+nothing else — an arbitrary size (`text-[13px]`) and a Tailwind default size
+(`text-sm`, `text-2xl`) are both design-lint failures: `type-hero` (landing
+headline, one per site), `type-display`, `type-heading` (24px, the serif
+floor), `type-figure` (the ONE serif hero figure per block — score,
+diagnostic result, the big amount; never in a column), `type-subhead`,
+`type-body` (16px, the floor for anything read), `type-reading` (17px/1.6
+for answers and explanations), `type-label` (14px), `type-eyebrow` (12px
+section label, the one uppercase role), and `type-data` for every other
+numeral, always tabular. A `type-data` numeral that needs its own size takes
+`amount-sm|md|lg`; `<Money size="xl">` is `type-figure`. At most three text
+sizes per screen, not counting the hero figure. Fonts are Instrument Serif
+(display, single weight, never below 24px) and Inter (everything else),
 self-hosted through `next/font`.
 
 `ledger-rule` is the product's signature: the 1px hairline an amount rests
@@ -250,8 +267,9 @@ somewhere" — so **never draw it as decoration**, not under a heading and not
 as a divider flourish.
 
 `margin-layout` / `margin-note` are the marginalia system: a fixed gutter for
-a citation, the rule behind a figure, or an as-of date. An empty margin is
-correct; the device earns its meaning by being uncommon.
+a citation, the rule behind a figure, or an as-of date. The gutter opens at
+≥ 1280px; below that, notes sit inline. An empty margin is correct; the
+device earns its meaning by being uncommon.
 
 `enter` (4px, 200ms, once) is the only entrance animation in the product.
 Loading placeholders are static blocks — no shimmer.

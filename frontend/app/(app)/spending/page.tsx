@@ -152,7 +152,8 @@ export default function SpendingPage() {
         <Insight
           eyebrow="Recommended adjustment"
           title="Bring discretionary spending back to the line"
-          tone="critical"
+          // Overspending is information, not an error: stated in ink.
+          tone="default"
           amount={<Money amount={rupeesToPaise(wantsExcess)} size="xl" />}
           amountLabel={
             "The amount above your target. Redirecting it needs no extra income."

@@ -1,4 +1,5 @@
 import * as React from "react";
+import { ArrowUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -96,11 +97,15 @@ export function DistributionBar({
               />
               <span className="type-label text-ink">{slice.label}</span>
               {slice.flagged ? (
-                <span className="type-label text-critical">Above target</span>
+                // Information, not an error: ink, a sign and a word — never red.
+                <span className="type-label inline-flex items-center gap-1 text-ink-secondary">
+                  <ArrowUp className="lucide size-3.5 shrink-0" aria-hidden="true" />
+                  Above target
+                </span>
               ) : null}
             </dt>
             <dd className="flex items-baseline gap-4">
-              <span className="type-data text-sm text-ink-muted">
+              <span className="type-data amount-sm text-ink-muted">
                 {Math.round(share(slice.value) * 100)}%
               </span>
               {slice.display}
@@ -120,7 +125,7 @@ export function DistributionBar({
               />
               <span className="type-label text-ink-muted">{remainderLabel}</span>
             </dt>
-            <dd className="type-data text-sm text-ink-muted">
+            <dd className="type-data amount-sm text-ink-muted">
               {Math.round(share(remainder) * 100)}%
             </dd>
           </div>

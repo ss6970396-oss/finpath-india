@@ -45,11 +45,14 @@ export function ScenarioChart({
   flat,
   delayed,
   delayYears,
+  stepUpLabel,
 }: {
   stepUp: Series;
   flat: Series;
   delayed: Series;
   delayYears: number;
+  /** The step-up line's name as the page prints it, e.g. "Rising 12% a year". */
+  stepUpLabel: string;
 }) {
   const data: Point[] = stepUp.map((point, i) => ({
     year: point.year,
@@ -67,19 +70,19 @@ export function ScenarioChart({
             dataKey="year"
             tickLine={false}
             axisLine={{ stroke: "var(--color-line-strong)" }}
-            tick={{ fill: "var(--color-ink-muted)", fontSize: 12 }}
+            tick={{ fill: "var(--color-ink-muted)" }}
             tickFormatter={(y: number) => (y === 0 ? "now" : `${y}y`)}
           />
           <YAxis
             width={64}
             tickLine={false}
             axisLine={false}
-            tick={{ fill: "var(--color-ink-muted)", fontSize: 12 }}
+            tick={{ fill: "var(--color-ink-muted)" }}
             tickFormatter={(v: number) => formatCompactINR(rupeesToPaise(v))}
           />
           <Tooltip
             cursor={{ stroke: "var(--color-line-strong)", strokeWidth: 1 }}
-            content={<ScenarioTooltip delayYears={delayYears} />}
+            content={<ScenarioTooltip delayYears={delayYears} stepUpLabel={stepUpLabel} />}
           />
           <Line
             type="monotone"
@@ -121,11 +124,13 @@ function ScenarioTooltip({
   payload,
   label,
   delayYears,
+  stepUpLabel,
 }: {
   active?: boolean;
   payload?: { dataKey?: string | number; value?: number }[];
   label?: string | number;
   delayYears: number;
+  stepUpLabel: string;
 }) {
   if (!active || !payload?.length) return null;
 
@@ -139,13 +144,13 @@ function ScenarioTooltip({
       </p>
       <dl className="mt-1 flex flex-col gap-0.5">
         {[
-          ["Rising 10% a year", value("stepUp")],
+          [stepUpLabel, value("stepUp")],
           ["Same amount every year", value("flat")],
           [`Starting ${delayYears} year later`, value("delayed")],
         ].map(([name, amount]) => (
           <div key={name as string} className="flex items-baseline gap-4">
             <dt className="type-label text-ink-muted">{name as string}</dt>
-            <dd className="type-data ml-auto text-sm text-ink">
+            <dd className="type-data ml-auto amount-sm text-ink">
               {formatINR(rupeesToPaise(amount as number))}
             </dd>
           </div>

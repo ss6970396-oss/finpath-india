@@ -42,7 +42,7 @@ export function Wordmark({ href = "/" }: { href?: string }) {
   return (
     <Link
       href={href}
-      className="type-heading text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-line-strong"
+      className="type-heading text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
     >
       FinPath
     </Link>

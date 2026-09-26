@@ -1,10 +1,14 @@
 @import "tailwindcss";
 
 /* ============================================================
-   FINPATH DESIGN SYSTEM
+   FINPATH DESIGN SYSTEM — "calm editorial"
+
+   A quiet library, not a shop: warm paper, clear type, numbers
+   given room, sources in the margin.
 
    Fifteen colour tokens. No sixteenth.
-   Radius zero. No shadows. No gradients. No dark mode.
+   Radius zero. No shadows. No gradients. No dark mode — the
+   paper aesthetic is light by nature.
 
    Every value in this file is enforced by two scripts:
      npm run check-contrast   asserts the WCAG ratios below
@@ -13,67 +17,76 @@
                               shadow, or an arbitrary size
    ============================================================ */
 
-@theme {
+/* `static`: emit every token as a CSS variable even when no utility uses
+   it yet. The tokens are the contract — pages, charts and /styleguide read
+   them with var(), and a tree-shaken token resolves to nothing. */
+@theme static {
   /* ---- GROUNDS ----
-     Three steps. Depth comes from these and from --line. Never from a
-     shadow, a blur, or a gradient. Note there is no pure white: #FCFCFB
-     is warm off-white, which is what stops the page reading as a browser
-     default. */
-  --color-canvas: #fcfcfb; /* the page */
-  --color-surface: #f6f6f4; /* panels that sit on the page */
-  --color-surface-sunken: #efefec; /* wells, inputs, the user's own turn */
+     Warm paper, three steps. Depth comes from these and from --line.
+     Never from a shadow, a blur, or a gradient. Nothing in the product is
+     pure white: #FAF7F0 is the colour of a good book page, which is what
+     stops the site reading as a browser default — or as a storefront. */
+  --color-canvas: #faf7f0; /* the page (paper) */
+  --color-surface: #f4f0e6; /* panels that sit on the page */
+  --color-surface-sunken: #ece7db; /* wells, inputs, the user's own turn */
 
   /* ---- INK ----
-     Four weights. No pure black: #2A2A2E is warm charcoal, and it is also
-     --line-strong, because the boundary of a control and the text inside
-     it are the same commitment. */
-  --color-ink: #2a2a2e; /* headings, amounts, primary text */
-  --color-ink-secondary: #5a5a62; /* supporting text */
-  --color-ink-muted: #64646c; /* labels, captions, marginalia */
-  --color-ink-disabled: #a8a8ae; /* disabled only — see the note below */
+     Four weights, all warm. No pure black: #1C1B19 is the ink of a
+     printed page, and it is also --line-strong, because the boundary of a
+     control and the text inside it are the same commitment. */
+  --color-ink: #1c1b19; /* headings, amounts, primary text */
+  --color-ink-secondary: #4f4b44; /* supporting text */
+  --color-ink-muted: #5e5a52; /* labels, captions, marginalia */
+  --color-ink-disabled: #a8a298; /* disabled only — see the note below */
 
   /* ---- RULES ----
      Two weights, and the split is load-bearing.
 
-     --line is 1.24:1 against canvas. That is BELOW the 3:1 that WCAG 2.2
+     --line is 1.25:1 against canvas. That is BELOW the 3:1 that WCAG 2.2
      SC 1.4.11 requires of a UI component boundary, and it is fine, because
-     1.4.11 exempts purely decorative boundaries. So --line draws dividers,
-     table rules and card edges — and NEVER the border of an input, a
-     select, a checkbox or a button.
+     1.4.11 exempts purely decorative boundaries. So --line draws the
+     hairlines between sections, table rules and card edges — and NEVER the
+     border of an input, a select, a checkbox or a button.
 
-     Controls take --line-strong (13.92:1). check-contrast asserts both. */
-  --color-line: #e4e4e0; /* dividers, table rules, card edges */
-  --color-line-strong: #2a2a2e; /* every interactive boundary */
+     Controls take --line-strong (13.95:1 even on the sunken ground).
+     check-contrast asserts both. */
+  --color-line: #e4ded1; /* hairline rules, card edges */
+  --color-line-strong: #1c1b19; /* every interactive boundary */
 
   /* ---- ACCENT ----
-     ONE brand colour, and it is a deep pine green rather than a bright
-     one: at 7.28:1 on canvas it is legible as TEXT, which is the whole
-     point — an accent that can only be a background is an accent that ends
-     up as decoration.
+     ONE brand colour, a deep pine green rather than a bright one: at
+     6.99:1 on canvas it is legible as TEXT, which is the whole point — an
+     accent that can only be a background ends up as decoration.
 
-     Where it is allowed: the wordmark, the primary link, the plotted
-     "your position" series, the health arc, and the selected state of a
-     control. Where it is not: any surface larger than a control, any
-     heading, any amount. If a screen looks livelier for having more of it,
-     that is the signal to use less.
+     Where it is allowed, and nowhere else:
+       - the ONE primary action on a screen (the filled button)
+       - progress: the score arc, the onboarding bar, plan progress
+       - links
+       - the focus ring
+     Where it is not: decoration of any kind, headings, amounts, or a
+     surface larger than a control. If a screen looks livelier for having
+     more of it, that is the signal to use less.
 
      It is NEVER a status colour. Positive/critical below own that job, and
      accent must not creep into meaning "good" or the two systems collide. */
   --color-accent: #1f5f4f;
-  --color-accent-wash: #eef3f1;
+  --color-accent-wash: #eaf0e8; /* warm-tinted green ground */
 
   /* ---- STATUS ----
-     Appears when a rule has actually fired, never as emphasis and never as
-     decoration. A month with nothing wrong in it is entirely ink on canvas.
+     Critical appears for real problems only: an error, a failed parse, a
+     revolving balance. Overspending is INFORMATION, not an error — it is
+     stated in ink with a clear sentence, never in a red panel. A month
+     with nothing wrong in it is entirely ink on paper.
 
-     --critical and --positive sit 1.21:1 apart, so they are near-identical
-     in luminance. That is deliberate and it forces the right thing: they
-     are never used as two ends of a scale, never adjacent, and never the
-     sole carrier of meaning. Each always travels with a word. */
+     --critical and --positive sit about 1.2:1 apart, so they are
+     near-identical in luminance. That is deliberate and it forces the right
+     thing: they are never used as two ends of a scale, never adjacent, and
+     never the sole carrier of meaning. Each always travels with a word, a
+     sign or a glyph. The washes are warmed to sit on paper. */
   --color-critical: #a34a45;
-  --color-critical-wash: #f7efee;
+  --color-critical-wash: #f6ece6;
   --color-positive: #4c5d50;
-  --color-positive-wash: #f0f2ef;
+  --color-positive-wash: #edefe6;
 
   /* ---- TYPE ----
      Two families. Instrument Serif for titles and editorial statements;
@@ -81,6 +94,24 @@
      next/font in app/layout.tsx, so there is no external request. */
   --font-display: var(--font-instrument-serif), ui-serif, Georgia, serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* ---- TYPE SCALE ----
+     Every font size in the product, defined once. The type roles below
+     and <Money> read these; nothing else sets a size. The `--fs-` prefix
+     is deliberately outside Tailwind's namespaces, so these generate no
+     utilities of their own — a size is reached through a ROLE, never
+     directly.
+
+     Serif is a display face with one weight: it is never set below 24px
+     (--fs-heading), and never for a paragraph, a label or a button. */
+  --fs-eyebrow: 0.75rem; /* 12 — section labels, the uppercase role */
+  --fs-label: 0.875rem; /* 14 — labels, captions, controls, marginalia */
+  --fs-body: 1rem; /* 16 — body text; the floor for anything read */
+  --fs-reading: 1.0625rem; /* 17 — long reading: answers, explanations */
+  --fs-heading: 1.5rem; /* 24 — section headlines; the serif floor */
+  --fs-display: clamp(2.25rem, 1.8786rem + 1.5238vw, 3.25rem); /* 36 -> 52 */
+  --fs-figure: clamp(2.5rem, 2.1286rem + 1.5238vw, 3.5rem); /* 40 -> 56 */
+  --fs-hero: clamp(2.75rem, 1.6667rem + 4.4444vw, 4.75rem); /* 44 -> 76 */
 
   /* ---- GEOMETRY ----
      Radius is zero everywhere. These are pinned rather than merely
@@ -163,11 +194,13 @@
     font-weight: 400;
   }
 
-  /* A visible focus ring on everything interactive. :where() keeps
-     specificity at zero so a primitive can restyle it, and the offset is
-     what makes it legible against a square-cornered control. */
+  /* A visible focus ring on everything interactive, in the accent — one
+     of the four jobs the accent is allowed. :where() keeps specificity at
+     zero so a primitive can restyle it, and the offset is what makes it
+     legible against a square-cornered control. check-contrast asserts the
+     accent at >= 3:1 on all three grounds (WCAG 2.2 SC 1.4.11). */
   :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
-    outline: 2px solid var(--color-line-strong);
+    outline: 2px solid var(--color-accent);
     outline-offset: 2px;
   }
 
@@ -182,6 +215,26 @@
     stroke: var(--color-line);
   }
 
+  /* Axis ticks read the type scale, not a number in a chart prop. CSS
+     beats the font-size attribute Recharts renders on each <text>. */
+  .recharts-cartesian-axis-tick text {
+    font-family: var(--font-sans);
+    font-size: var(--fs-eyebrow);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Browser autofill paints a saved field in its own pale blue, which is
+     the one cool, off-palette surface left on a paper page. The UA style is
+     !important, so the only override is an inset fill the size of the
+     field — a ground, not a shadow: nothing is lifted or blurred. */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--color-ink);
+    -webkit-box-shadow: 0 0 0 1000px var(--color-canvas) inset;
+    caret-color: var(--color-ink);
+  }
+
   /* Range inputs are the one native control the product keeps, because a
      hand-built slider loses keyboard stepping and the OS's own touch
      target. Pin the fill to the accent so it is not the browser's blue. */
@@ -193,12 +246,22 @@
 /* ============================================================
    TYPE ROLES
 
-   Seven roles, and a component may use nothing else. An arbitrary size
-   (text-[13px]) is a design-lint failure.
+   Ten roles, and a component may use nothing else. An arbitrary size
+   (text-[13px]) and a default Tailwind size (text-sm, text-2xl) are both
+   design-lint failures. Every size comes from the --fs-* scale above.
 
-   Serif is reserved for page titles, section headings and editorial
-   statements. It never appears in a control, a label, a table cell, or a
-   number.
+   Two families with strict jobs:
+     Instrument Serif  page titles, section headlines, the landing hero,
+                       and the ONE hero figure in a block (type-figure).
+                       Never a paragraph, label, button or control, and
+                       never below 24px.
+     Inter             everything else: body, UI, labels, tables, chat
+                       answers, and every numeral that is not a hero
+                       figure (type-data).
+
+   Composition rule, checked by eye in the visual QA pass rather than by
+   the linter: at most three text sizes per screen, not counting the hero
+   figure.
    ============================================================ */
 
 /**
@@ -208,7 +271,7 @@
 @utility type-hero {
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(2.75rem, 1.6667rem + 4.4444vw, 4.75rem);
+  font-size: var(--fs-hero);
   line-height: 1.04;
   letter-spacing: -0.02em;
 }
@@ -217,66 +280,95 @@
 @utility type-display {
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(2.25rem, 1.8786rem + 1.5238vw, 3.25rem); /* 36 -> 52 */
+  font-size: var(--fs-display);
   line-height: 1.1;
   letter-spacing: -0.015em;
 }
 
-/** Section heading. */
+/** Section headline. The smallest the serif ever goes. */
 @utility type-heading {
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: 1.5rem; /* 24/30 */
+  font-size: var(--fs-heading); /* 24/30 */
   line-height: 1.25;
   letter-spacing: -0.01em;
+}
+
+/**
+ * THE hero figure: the score, the diagnostic result, the one big amount a
+ * block exists to show. One per block, standing alone — never in a column
+ * or a table, where the tabular Inter of type-data is what aligns. Serif
+ * here is the newspaper's big number: the figure is the headline.
+ */
+@utility type-figure {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--fs-figure);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  font-variant-numeric: lining-nums tabular-nums;
 }
 
 /** Sub-section, table group, card title. The first sans role. */
 @utility type-subhead {
   font-family: var(--font-sans);
   font-weight: 600;
-  font-size: 1rem; /* 16/22 */
+  font-size: var(--fs-body); /* 16/22 */
   line-height: 1.4;
 }
 
-/** Prose and descriptions. */
+/** Body text and descriptions. 16px is the floor for anything read. */
 @utility type-body {
   font-family: var(--font-sans);
   font-weight: 400;
-  font-size: 0.9375rem; /* 15/24 */
+  font-size: var(--fs-body); /* 16/26 */
   line-height: 1.6;
 }
 
-/** Field labels, chips, navigation, marginalia. */
+/**
+ * Long reading: coach answers, explanations, the landing's argument.
+ * Always inside `prose-measure` — 17px at 1200px wide is still unreadable.
+ */
+@utility type-reading {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: var(--fs-reading); /* 17/27 */
+  line-height: 1.6;
+}
+
+/** Field labels, chips, navigation, captions, marginalia. */
 @utility type-label {
   font-family: var(--font-sans);
   font-weight: 500;
-  font-size: 0.8125rem; /* 13/18 */
+  font-size: var(--fs-label); /* 14/20 */
   line-height: 1.4;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.005em;
 }
 
 /**
- * Metadata only, and sparingly: the one word that says what KIND of thing
- * follows. Never a heading, never a button, never a sentence — uppercase
- * is unreadable past about four words and it is the fastest way to make a
- * calm interface shout.
+ * The section label — a newspaper's section header. Small, uppercase,
+ * letter-spaced, muted. Metadata only: the few words that say what KIND
+ * of thing follows. Never a heading, a button or a sentence — uppercase is
+ * unreadable past about four words and it is the fastest way to make a
+ * calm interface shout. 12px, which is the product's floor for any text.
  */
 @utility type-eyebrow {
   font-family: var(--font-sans);
   font-weight: 600;
-  font-size: 0.6875rem; /* 11 */
+  font-size: var(--fs-eyebrow); /* 12 */
   line-height: 1.3;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 /**
- * EVERY numeral in the product: currency, percentages, dates, counts.
+ * EVERY numeral that is not a hero figure: currency, percentages, dates,
+ * counts.
  *
  * Not decoration. A column of rupee figures in proportional numerals does
  * not align, and a ledger that does not align is not a ledger. The size is
- * inherited so this role can sit inside any of the roles above.
+ * inherited so this role can sit inside any of the roles above, or take
+ * one of the amount sizes below.
  */
 @utility type-data {
   font-family: var(--font-sans);
@@ -284,6 +376,26 @@
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum";
   letter-spacing: -0.01em;
+}
+
+/*
+ * Amount sizes, for a type-data numeral that needs a size of its own
+ * (<Money size>, a slider readout, a citation marker). Each is a step of
+ * the scale above, so a figure can never sit at a size the text around it
+ * does not share. The largest step is not here: a figure that big is a
+ * hero figure, and takes type-figure.
+ */
+@utility amount-sm {
+  font-size: var(--fs-label);
+  line-height: 1.4;
+}
+@utility amount-md {
+  font-size: var(--fs-body);
+  line-height: 1.5;
+}
+@utility amount-lg {
+  font-size: var(--fs-heading);
+  line-height: 1.2;
 }
 
 /* ============================================================
@@ -310,7 +422,7 @@
  * THE SIGNATURE ELEMENT — the marginalia system.
  *
  * A fixed gutter in which annotations sit BESIDE what they annotate, the
- * way a clause reference sits beside a statutory paragraph. Below 1024px
+ * way a clause reference sits beside a statutory paragraph. Below 1280px
  * the gutter collapses and its notes move inline, above the element.
  *
  * What belongs in it: a regulatory citation, the rule behind a computed
@@ -322,7 +434,7 @@
   grid-template-columns: 1fr;
   gap: 0.5rem;
 
-  @media (width >= 64rem) {
+  @media (width >= 80rem) {
     grid-template-columns: var(--width-gutter) minmax(0, 1fr);
     gap: 0 2rem;
     align-items: start;
@@ -333,14 +445,14 @@
 @utility margin-note {
   font-family: var(--font-sans);
   font-weight: 500;
-  font-size: 0.8125rem;
+  font-size: var(--fs-label);
   line-height: 1.4;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.005em;
   color: var(--color-ink-muted);
   padding-left: 0.75rem;
   border-left: 1px solid var(--color-line);
 
-  @media (width >= 64rem) {
+  @media (width >= 80rem) {
     text-align: right;
     padding-left: 0;
     padding-right: 0.75rem;

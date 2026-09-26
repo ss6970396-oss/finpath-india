@@ -81,29 +81,34 @@ export function ChartFrame({
           </p>
         ) : null}
 
-        <table className="sr-only-text">
-          <caption>{title}</caption>
-          <thead>
-            <tr>
-              <th scope="col">{rowHeader}</th>
-              {series.map((s) => (
-                <th key={s.label} scope="col">
-                  {s.label}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {rowLabels.map((row, i) => (
-              <tr key={row}>
-                <th scope="row">{row}</th>
+        {/* The hiding sits on a wrapper, not the table: a <table> will not
+            shrink to 1px or clip its overflow, so an sr-only table still
+            pushed the page sideways at 375px. */}
+        <div className="sr-only-text">
+          <table>
+            <caption>{title}</caption>
+            <thead>
+              <tr>
+                <th scope="col">{rowHeader}</th>
                 {series.map((s) => (
-                  <td key={s.label}>{s.values[i] ?? ""}</td>
+                  <th key={s.label} scope="col">
+                    {s.label}
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {rowLabels.map((row, i) => (
+                <tr key={row}>
+                  <th scope="row">{row}</th>
+                  {series.map((s) => (
+                    <td key={s.label}>{s.values[i] ?? ""}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </figcaption>
     </figure>
   );

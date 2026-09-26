@@ -47,7 +47,7 @@ export function Citation({
       aria-label={`Source ${n}: ${where}`}
       aria-current={active ? "true" : undefined}
       className={cn(
-        "type-data mx-0.5 inline-flex min-w-5 items-center justify-center border px-1 align-baseline text-sm",
+        "type-data amount-sm mx-0.5 inline-flex min-w-5 items-center justify-center border px-1 align-baseline",
         "transition-colors duration-(--dur-fast) ease-(--ease-out)",
         active
           ? "border-line-strong bg-ink text-canvas"

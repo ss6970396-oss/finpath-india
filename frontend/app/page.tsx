@@ -93,7 +93,7 @@ export default function LandingPage() {
               See where your money is going, and what to do about it.
             </h1>
 
-            <p className="type-body prose-measure text-lg text-ink-secondary">
+            <p className="type-reading prose-measure text-ink-secondary">
               FinPath turns your own monthly figures into one health score, one
               clear opportunity, and a plan with four stages. Every number
               shows the rule behind it, and every answer cites the regulator
@@ -137,7 +137,7 @@ export default function LandingPage() {
             <ol className="grid gap-8 md:grid-cols-3">
               {STEPS.map((step) => (
                 <li key={step.n} className="flex flex-col gap-2 border-t-2 border-line-strong pt-4">
-                  <span className="type-data text-sm text-ink-muted">
+                  <span className="type-data amount-sm text-ink-muted">
                     {step.n}
                   </span>
                   <h3 className="type-heading text-ink">{step.title}</h3>
