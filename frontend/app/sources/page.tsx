@@ -3,6 +3,7 @@
 import * as React from "react";
 import {
   Badge,
+  CORPUS_PHRASE,
   Button,
   ButtonLink,
   DisclaimerNote,
@@ -114,7 +115,7 @@ export default function SourcesPage() {
 
           <Section
             title="The library"
-            description="Publications from the Reserve Bank of India, SEBI and the National Centre for Financial Education."
+            description={`The documents indexed for your coach: ${CORPUS_PHRASE}.`}
           >
             {state.kind === "loading" ? (
               <LoadingState label="Loading the source library" lines={5} />

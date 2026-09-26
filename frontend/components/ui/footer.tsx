@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { DisclaimerNote } from "./disclaimer";
+import { CORPUS_PHRASE } from "./trust";
 
 /**
  * SiteFooter (§36).
@@ -55,7 +56,7 @@ export function SiteFooter() {
             <p className="type-heading text-ink">FinPath</p>
             <p className="type-label prose-measure text-ink-muted">
               A financial-literacy companion for students in India, grounded
-              in RBI, SEBI and NCFE publications.
+              in {CORPUS_PHRASE}.
             </p>
           </div>
 

@@ -3,7 +3,11 @@ import { Instrument_Serif, Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "./providers/AuthProvider";
 import { FinPathProvider } from "./providers/FinPathProvider";
-import { ToastProvider, TooltipProvider } from "@/components/ui";
+import {
+  CORPUS_PHRASE,
+  ToastProvider,
+  TooltipProvider,
+} from "@/components/ui";
 
 /**
  * §15. Two families, self-hosted by next/font — no external request, and
@@ -35,11 +39,11 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "FinPath — See where your money is going",
+    default: "FinPath — Your money. One clear next step.",
     template: "%s · FinPath",
   },
   description:
-    "A financial-health companion for students in India. Score your month, find the one thing worth changing, and read answers traced to RBI, SEBI and NCFE sources.",
+    `A financial-health companion for students in India. Score your month, find the one thing worth changing, and read answers traced to ${CORPUS_PHRASE}.`,
 };
 
 /**

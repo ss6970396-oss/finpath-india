@@ -8,6 +8,7 @@ import {
   Button,
   ButtonLink,
   Citation,
+  CORPUS_PHRASE,
   DisclaimerNote,
   ErrorState,
   PageHeader,
@@ -245,8 +246,8 @@ export function Coach() {
           <div className="sticky top-24 flex flex-col gap-4">
             <h2 className="type-eyebrow text-ink-muted">About these answers</h2>
             <p className="type-body text-ink-secondary">
-              Each question is matched against a corpus of RBI, SEBI and NCFE
-              publications before anything is written. The numbered markers in
+              Each question is matched against {CORPUS_PHRASE} before
+              anything is written. The numbered markers in
               an answer open the passage they came from.
             </p>
             <ButtonLink href="/sources">

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { ArrowDown, ArrowUp } from "lucide-react";
 import {
   ButtonLink,
   ButtonRow,
@@ -129,15 +130,25 @@ export default function SpendingPage() {
         ) : (
           <ul className="flex flex-col">
             {offTrack.map((row) => (
+              // Every row here is off target, so every row carries the
+              // over-target treatment: a 2px ink rule down its left edge, ink
+              // medium-weight text and a direction arrow. Information, never red.
               <li
                 key={row.label}
-                className="ledger-rule flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-4"
+                className="ledger-rule flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-l-2 border-ink py-4 pl-2"
               >
-                <span className="type-subhead text-ink">{row.label}</span>
+                <span className="type-subhead inline-flex items-center gap-1 text-ink">
+                  {row.label === "Savings" ? (
+                    <ArrowDown className="lucide size-4 shrink-0" aria-hidden="true" />
+                  ) : (
+                    <ArrowUp className="lucide size-4 shrink-0" aria-hidden="true" />
+                  )}
+                  {row.label}
+                </span>
                 <span className="type-data text-ink">
                   {formatPercent(row.ratio, { digits: 0 })}
                 </span>
-                <span className="type-label w-full text-ink-muted">
+                <span className="type-label w-full text-ink">
                   {row.label === "Savings"
                     ? `Below the ${formatPercent(row.target, { digits: 0 })} target by ${formatPercent(row.over, { digits: 0 })} of your income.`
                     : `Above the ${formatPercent(row.target, { digits: 0 })} target by ${formatPercent(row.over, { digits: 0 })} of your income.`}

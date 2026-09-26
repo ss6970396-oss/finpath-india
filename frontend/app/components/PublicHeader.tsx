@@ -13,6 +13,10 @@ import { useAuth } from "../providers/AuthProvider";
  *
  * The right-hand action follows the session: someone already signed in
  * should never be shown "Get started" on their own product's front page.
+ *
+ * It is a SECONDARY button. The page underneath owns the one primary
+ * action (the landing hero); a filled button in the masthead would make
+ * two on every public screen.
  */
 export function PublicHeader() {
   const { status, session } = useAuth();
@@ -32,7 +36,7 @@ export function PublicHeader() {
           </Link>
 
           {status === "resolved" && session ? (
-            <ButtonLink href="/home" variant="primary">
+            <ButtonLink href="/home">
               Open FinPath
             </ButtonLink>
           ) : (
@@ -43,7 +47,7 @@ export function PublicHeader() {
               >
                 Sign in
               </Link>
-              <ButtonLink href="/signup" variant="primary">
+              <ButtonLink href="/signup">
                 Get started
               </ButtonLink>
             </>

@@ -66,6 +66,7 @@ export {
   TableScroll,
   type SortDirection,
 } from "./table";
+export { CORPUS_PHRASE, TRUST_LINE, TrustLine } from "./trust";
 export { Timeline, TimelineStage, type TimelineStatus } from "./timeline";
 export { ToastProvider, useToast } from "./toast";
 export { Tooltip, TooltipProvider } from "./tooltip";
