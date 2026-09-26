@@ -138,3 +138,36 @@ A screenshot of the empty state at 1280 px looked right.
 - `/ask` (empty): serif headline, trust line with a "How answers are sourced" link, four suggestions, composer at the bottom.
 - `/ask` (after a question): your question in a sunken block on the right; the answer on paper with a "Grounded in N sources" label; numbered sources in the left margin at ≥ 1280 px or listed under the answer on phones; "Read the passages" opens the side panel or bottom sheet; "Stop" appears while it streams.
 - Home → Ask with a question: the question waits in the composer.
+
+## Phase 9 — Profile · `41b7f92`
+
+**What changed.** `/profile` is four bordered blocks:
+- **Personal:** name and email, read-only because the auth contract can't change them; age is editable.
+- **Income and spending:** every declared figure.
+- **Goals:** goals plus priority.
+- **Security:** facts only, plus Sign out, with no Edit button.
+
+Edit switches a block to an inline form with Save (primary) and Cancel. One block is open at a time, and nothing reaches the scores until Save. Income's Edit is the page's one primary action. Also:
+- **Q12 / B-7:** profile, plan ticks and review are now stored per account (`finpath.*:<userId>`). A one-time migration moves the old global keys to the first account that loads or signs in, never on sign-up. 16 new tests (267 total); documented in the new `docs/refactor/MIGRATION.md`.
+- **B-8:** `?next=` now survives sign-up, onboarding and the guard's onboarding redirect, and is sanitised by `lib/safe-next.ts`.
+- **Plumbing:** the API base moved to `app/providers/api-base.ts` (still imported as `API`) to break an import cycle.
+
+**Files.** `app/(app)/profile/page.tsx`, `lib/{account-storage,persist,safe-next}.ts`, `lib/account-storage.test.ts`, `app/providers/{AuthProvider,FinPathProvider,api-base}.tsx`, `app/(auth)/{login/LoginForm,signup/SignupForm}.tsx`, `app/onboarding/page.tsx`, `app/(app)/layout.tsx`, `docs/refactor/MIGRATION.md`, `CLAUDE.md`.
+
+**Checked.**
+- **Your real browser data:** `finpath.profile` and `finpath.review` moved to your account's keys, the legacy keys are gone, and `/home` loaded normally without bouncing to onboarding. An idle-mutation check after a tab stall showed no render loop.
+- **`/profile`, by page structure:** Security has no Edit; exactly one primary button (Income's Edit). Opening Goals hides the other Edits and makes Save the only primary; Cancel restores the view. Nothing was saved.
+- **Screenshot at 1280 px:** the blocks look right.
+
+**Needs a human look.**
+- `/profile` at 375 px.
+- A second device account in the same browser: sign up, and confirm it starts clean at onboarding.
+- The `?next=` round trip through sign-up.
+
+**Deferred.**
+- The small Edit buttons are 32 px tall: Phase 12 (touch targets).
+- Two old hyphenated keys (`finpath-profile`, `finpath-roadmap`) in your browser are unused leftovers; safe to clear.
+
+**Where to see it**
+- `/profile`: four boxes. Personal shows your name and email with "cannot be changed on this build"; Income lists your figures with a green Edit; Goals lists goals and priority; Security lists where things are stored and a Sign out button.
+- Edit any block: it turns into a form with Save and Cancel, and the other Edit buttons disappear until you finish.
