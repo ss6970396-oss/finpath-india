@@ -53,3 +53,37 @@ Home · Actions · Ask · Profile from one `NAV`; slimmer header with an ink ind
 **Where to see it**
 - `/onboarding`: "STEP 2 OF 8" above a thin green bar; the heading takes focus on each step; Enter moves forward; an empty income gives an inline message instead of a greyed-out button.
 - Finishing lands directly on `/home`; there is no intermediate "ready" screen.
+
+## Phase 6 — Home · `a4f967e`
+
+**What changed.** `/home` is now six sections separated by hairlines:
+1. Greeting, plus one plain sentence on where you stand (the biggest opportunity, its figure, a link to the fix).
+2. The score, with a driver line such as "Discretionary spending is holding it back most: 0 of 30 points". "Since your last visit" is appended only when a real previous snapshot exists.
+3. The top three plan actions; the first carries the only primary button.
+4. Four tabular figures.
+5. An Ask box that prefills `/ask`.
+6. The Spending and What-if links.
+
+The three score meters are still there, one tap away under "How the score was built". The empty state for no spending data offers "Import a statement" or "Use an example month", which restores the example opt-in. New `lib/score.ts` `scoreDriver()` has 8 tests and a golden fixture over the 12 scenarios (242 tests total). Also:
+- **B-4 / Q10:** the sample CSV now loads as "A sample statement".
+- **Q6:** `?q=` prefills the composer and no longer sends.
+
+**Files.** `app/(app)/home/page.tsx`, `lib/score.ts`, `lib/score.test.ts`, `lib/__fixtures__/golden-score-driver.json`, `app/providers/FinPathProvider.tsx`, `app/components/SourceLine.tsx`, `app/(app)/spending/StatementImport.tsx`, `app/(app)/ask/Coach.tsx`.
+
+**Checked.**
+- At 1280 px, by screenshot: section order, standing sentence and driver line.
+- By page structure: exactly one primary button ("Start here").
+- At 375 px, by page structure: no overflow; the next-step link ends at 230 px, inside the first screen.
+- An idle-mutation check ruled out a render loop after one tab stalled.
+
+**Needs a human look.**
+- `/home` at 375 px (the capture failed).
+- The example-month and sample-statement flows end to end; both need the API running.
+
+**Deferred.** Home still uses the old `ActionCard`, and cards link to `/plan` for now. Phase 7 replaces them with the new card and gives each action its own destination.
+
+**Where to see it**
+- `/home`: one sentence under the greeting with a green link to the fix; the serif score with one driver line; "How the score was built" expands the meters; "Your next steps" with one green "Start here"; the "This month" figures; an Ask box.
+- `/home` with only onboarding figures: the ink-ruled note offering "Import a statement" or "Use an example month".
+- `/spending` → "Try it with a sample file": every page now says "Based on: A sample statement" with "Remove the sample".
+- Home → Ask with a question: it arrives in the composer, unsent.
