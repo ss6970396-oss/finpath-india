@@ -75,16 +75,24 @@ export type Spending = {
  * identical and mean completely different things.
  *
  *   statement  a file the student parsed in their own browser. Actuals.
+ *   sample     FinPath's own sample CSV, parsed the same way. It goes
+ *              through the real parser, so it is the honest way to show
+ *              what an import does — and it is labelled as a sample,
+ *              never as "your uploaded statement".
  *   declared   what they typed during onboarding. Their own estimate.
  *   example    the API's generated month. Illustration only, opt-in.
  */
-export type DataSource = "statement" | "declared" | "example";
+export type DataSource = "statement" | "sample" | "declared" | "example";
 
 export const SOURCE_LABEL: Record<DataSource, string> = {
   statement: "Your uploaded statement",
+  sample: "A sample statement",
   declared: "The figures you entered",
   example: "An example month",
 };
+
+/** Where an uploaded ledger came from. */
+export type UploadOrigin = "file" | "sample";
 
 const profileStore = createPersistedStore<FinancialProfile>(
   "finpath.profile",
@@ -128,7 +136,8 @@ type Ctx = {
   income: number;
   uncategorised: ParsedTxn[];
   uploaded: ParsedTxn[] | null;
-  setUploaded: (t: ParsedTxn[] | null) => void;
+  /** "sample" marks FinPath's own sample CSV, so it is never labelled as yours. */
+  setUploaded: (t: ParsedTxn[] | null, origin?: UploadOrigin) => void;
   assignCategory: (id: number, category: SpendCategory) => void;
 
   /** Opt in to the generated month. Off by default; never silently on. */
@@ -172,7 +181,16 @@ export function FinPathProvider({ children }: { children: React.ReactNode }) {
     reviewStore.getServer,
   );
 
-  const [uploaded, setUploaded] = useState<ParsedTxn[] | null>(null);
+  const [upload, setUpload] = useState<{
+    txns: ParsedTxn[];
+    origin: UploadOrigin;
+  } | null>(null);
+  const uploaded = upload?.txns ?? null;
+  const setUploaded = useCallback(
+    (t: ParsedTxn[] | null, origin: UploadOrigin = "file") =>
+      setUpload(t ? { txns: t, origin } : null),
+    [],
+  );
   const [useExample, setUseExample] = useState(false);
   const [nonce, setNonce] = useState(0);
 
@@ -237,11 +255,14 @@ export function FinPathProvider({ children }: { children: React.ReactNode }) {
   const reload = useCallback(() => setNonce((n) => n + 1), []);
 
   const assignCategory = useCallback((id: number, category: SpendCategory) => {
-    setUploaded((current) =>
+    setUpload((current) =>
       current
-        ? current.map((t) =>
-            t.id === id ? { ...t, category, categorySource: "user" } : t,
-          )
+        ? {
+            ...current,
+            txns: current.txns.map((t) =>
+              t.id === id ? { ...t, category, categorySource: "user" } : t,
+            ),
+          }
         : current,
     );
   }, []);
@@ -271,7 +292,7 @@ export function FinPathProvider({ children }: { children: React.ReactNode }) {
         totals[t.category as SpendCategory] += t.amount;
       }
       return {
-        source: "statement" as DataSource,
+        source: (upload?.origin === "sample" ? "sample" : "statement") as DataSource,
         // A statement says what left the account, not what arrives each
         // month. The declared income stays the denominator unless there is
         // none, in which case the credits in the file are the best estimate.
@@ -304,7 +325,7 @@ export function FinPathProvider({ children }: { children: React.ReactNode }) {
       income: 0,
       uncategorised: [] as ParsedTxn[],
     };
-  }, [uploaded, useExample, data, budget]);
+  }, [uploaded, upload?.origin, useExample, data, budget]);
 
   const { source, allowance, totals, transactions, income, uncategorised } =
     resolved;
@@ -334,7 +355,7 @@ export function FinPathProvider({ children }: { children: React.ReactNode }) {
       profile, saveProfile, onboarded, budget,
       source, allowance, totals, ratio, health, envelope,
       transactions, income, uncategorised,
-      uploaded, assignCategory, useExample,
+      uploaded, setUploaded, assignCategory, useExample,
       params, data, loading, error, reload,
       done, toggleTask, lastReview, recordReview,
     ],

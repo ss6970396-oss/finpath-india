@@ -59,8 +59,9 @@ const CATEGORIES: { value: SpendCategory; label: string }[] = [
 ];
 
 export function StatementImport() {
-  const { uploaded, setUploaded, assignCategory, uncategorised, profile, saveProfile } =
-    useFinPath();
+  const {
+    uploaded, setUploaded, assignCategory, uncategorised, profile, saveProfile, source,
+  } = useFinPath();
   const toast = useToast();
 
   const [result, setResult] = React.useState<ParseResult | null>(null);
@@ -93,6 +94,25 @@ export function StatementImport() {
     }
   }
 
+  // B-4: the sample used to be parsed and summarised but never loaded, so
+  // nothing else on the page moved and the button looked broken. It now
+  // loads through the same parser as a real file, marked "sample" so every
+  // page labels it "A sample statement". No allowance suggestion is made
+  // from it: accepting one would write a sample figure into the profile.
+  function loadSample() {
+    const parsed = parseStatement(SAMPLE_CSV);
+    setResult(parsed);
+    setSuggestion(null);
+    if (parsed.transactions.length) {
+      setUploaded(parsed.transactions, "sample");
+      toast.add({
+        title: "Sample statement loaded",
+        description:
+          "Every figure on the page now comes from FinPath's sample file, and is labelled that way. Remove it to go back to your own.",
+      });
+    }
+  }
+
   function clear() {
     setUploaded(null);
     setResult(null);
@@ -109,11 +129,11 @@ export function StatementImport() {
         disabled={busy}
         footer={
           <ButtonRow align="start">
-            <Button onClick={() => setResult(parseStatement(SAMPLE_CSV))}>
-              Try it with a sample file
-            </Button>
+            <Button onClick={loadSample}>Try it with a sample file</Button>
             {uploaded ? (
-              <Button onClick={clear}>Remove this statement</Button>
+              <Button onClick={clear}>
+                {source === "sample" ? "Remove the sample" : "Remove this statement"}
+              </Button>
             ) : null}
           </ButtonRow>
         }

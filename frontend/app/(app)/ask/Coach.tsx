@@ -145,14 +145,8 @@ export function Coach() {
     }
   }, [busy]);
 
-  // A question handed over from the header search runs itself, once.
-  const fired = React.useRef(false);
-  React.useEffect(() => {
-    if (opening && !fired.current) {
-      fired.current = true;
-      void ask(opening);
-    }
-  }, [opening, ask]);
+  // A question handed over from Home (?q=) is PREFILLED, not sent: the
+  // student reads it in the composer and presses Enter themselves.
 
   const panelTurn = turns.find((t) => t.id === panelFor) ?? null;
 

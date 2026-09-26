@@ -1,54 +1,64 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { ArrowRight, MessageCircleQuestion } from "lucide-react";
 import {
   ActionCard,
+  BareInput,
+  Button,
   ButtonLink,
-  ButtonRow,
   DisclaimerNote,
-  Insight,
-  Money,
+  Metric,
   ProgressMeter,
   ScoreDial,
-  Section,
 } from "@/components/ui";
 import { RULE } from "@/lib/finance";
-import { formatPercent } from "@/lib/format";
+import { formatINR, formatPercent } from "@/lib/format";
 import { rupeesToPaise } from "@/lib/money";
+import type { Opportunity } from "@/lib/plan";
+import { PART_LABEL, scoreDriver } from "@/lib/score";
 import { displayName, useAuth } from "../../providers/AuthProvider";
 import { useFinPath } from "../../providers/FinPathProvider";
 import { SourceLine } from "../../components/SourceLine";
-import { useOpportunity, usePlan } from "../../components/usePlan";
 import { SecondaryLinks } from "../../components/SecondaryLinks";
+import { useOpportunity, usePlan } from "../../components/usePlan";
 
 /**
- * /home (§6, §26).
+ * /home (§6, §26) — the primary screen. It answers one question within the
+ * first screenful on a phone: what should I do next?
  *
- * THE HIERARCHY IS THE DESIGN. Top to bottom, and nothing competes:
+ * Six sections, in this order, separated by hairlines and nothing else:
  *
- *   1. one score, at a size nothing else on the page approaches
- *   2. the three ratios that produced it, as meters against their targets
- *   3. THE one thing worth doing about it
- *   4. two or three concrete actions
- *   5. the long-term consequence
+ *   1. greeting — your name, and one plain sentence on where you stand
+ *      (the biggest opportunity, with its figure and a link to the fix)
+ *   2. the Money Health Score, with the one thing driving it
+ *   3. the top three actions from the plan; the first holds the screen's
+ *      only primary button
+ *   4. a few figures, in tabular numerals
+ *   5. a question box that opens Ask with the question prefilled
+ *   6. the way to Spending and What-if
  *
- * What it deliberately is NOT is four equally weighted tiles. Four numbers
- * of equal size is a page that has declined to say which one matters, which
- * leaves the reader to work out the priority — the work they opened the
- * product to have done for them.
+ * Nothing else. The three score meters are still here, one tap away under
+ * "How the score was built", because they are the working behind the
+ * number; the long-term paragraph and the separate opportunity block are
+ * gone, their content folded into sections 1 and 3.
  *
- * "SINCE YOUR LAST REVIEW" IS REAL OR ABSENT. The previous snapshot is read
+ * "SINCE YOUR LAST VISIT" IS REAL OR ABSENT. The previous snapshot is read
  * once on mount and this visit's snapshot is written after. With no prior
- * visit there is no delta and the line simply does not appear — a product
- * with no history must not manufacture a trend.
+ * visit there is no delta and the phrase simply does not appear.
  */
 export default function HomePage() {
+  const router = useRouter();
   const { session } = useAuth();
   const {
-    health, ratio, allowance, totals, envelope, budget, lastReview, recordReview,
+    health, ratio, allowance, totals, envelope, budget, source, data,
+    setUseExample, lastReview, recordReview,
   } = useFinPath();
   const plan = usePlan();
   const opportunity = useOpportunity();
+  const [question, setQuestion] = React.useState("");
 
   // Captured before this visit overwrites it, so the comparison is against
   // the LAST visit rather than against the value being written right now.
@@ -64,147 +74,115 @@ export default function HomePage() {
   }, [health.score, ratio.Savings, ratio.Wants, recordReview]);
 
   const delta = previous ? health.score - previous.score : null;
+  const driver = scoreDriver(health);
   const nextBest = plan.open.slice(0, 3);
+  const noSpending = source === "declared";
+
+  function ask(e: React.FormEvent) {
+    e.preventDefault();
+    const q = question.trim();
+    router.push(q ? `/ask?q=${encodeURIComponent(q)}` : "/ask");
+  }
 
   return (
-    <div className="enter flex flex-col gap-16">
-      {/* ------------------------------------------------ 1. the score */}
-      <section className="flex flex-col gap-8">
-        <div className="flex flex-col gap-2">
-          <h1 className="type-display text-ink">
-            {greeting()}, {displayName(session)}.
-          </h1>
-          <SourceLine />
-        </div>
+    <div className="enter flex flex-col gap-12">
+      {/* ------------------------------------------------ 1. greeting */}
+      <section className="flex flex-col gap-4">
+        <h1 className="type-display text-ink">
+          {greeting()}, {displayName(session)}.
+        </h1>
+        <p className="type-reading prose-measure text-ink">
+          <Standing opportunity={opportunity} />{" "}
+          {!opportunity.clear ? (
+            <Link
+              href={opportunity.href}
+              className="inline-flex items-center gap-1 text-accent underline underline-offset-4 hover:text-ink"
+            >
+              {/* lib/plan.ts still says "See the plan"; the page is Actions now. */}
+              {opportunity.href === "/plan" ? "See your actions" : opportunity.actionLabel}
+              <ArrowRight className="lucide size-4" aria-hidden="true" />
+            </Link>
+          ) : null}
+        </p>
+        <SourceLine />
+        {source === "example" ? <DisclaimerNote variant="example" /> : null}
+      </section>
 
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] lg:items-center">
-          <ScoreDial
-            score={health.score}
-            band={health.band}
-            caption={bandCaption(health.band)}
-          />
-
-          <div className="flex flex-col gap-4">
-            <h2 className="type-eyebrow text-ink-muted">
-              How the score was built
-            </h2>
-
+      {/* ------------------------------------------------ 2. the score */}
+      <section
+        aria-labelledby="score-heading"
+        className="flex flex-col gap-4 border-t border-line pt-8"
+      >
+        <h2 id="score-heading" className="type-eyebrow text-ink-muted">
+          Money health score
+        </h2>
+        <ScoreDial
+          score={health.score}
+          band={health.band}
+          caption={driverLine(driver, delta)}
+        />
+        <details className="mx-auto w-full max-w-(--container-prose)">
+          <summary className="type-label min-h-11 cursor-pointer py-2 text-ink-secondary underline underline-offset-4 hover:text-ink">
+            How the score was built
+          </summary>
+          <div className="flex flex-col gap-4 pt-4">
             <ProgressMeter
               label="Savings rate"
               value={ratio.Savings}
               target={RULE.savings}
               detail={formatPercent(ratio.Savings, { digits: 0 })}
-              status={
-                ratio.Savings >= RULE.savings
-                  ? `On target — ${health.parts.savings} of 40 points`
-                  : `Below the 20% target — ${health.parts.savings} of 40 points`
-              }
+              status={`${ratio.Savings >= RULE.savings ? "On target" : "Below the 20% target"} — ${health.parts.savings} of 40 points`}
             />
-
             <ProgressMeter
               label="Discretionary spending"
               value={ratio.Wants}
               target={RULE.wants}
               detail={formatPercent(ratio.Wants, { digits: 0 })}
-              status={
-                ratio.Wants > RULE.wants
-                  ? `Above the 30% target — ${health.parts.wants} of 30 points`
-                  : `Within target — ${health.parts.wants} of 30 points`
-              }
+              status={`${ratio.Wants > RULE.wants ? "Above the 30% target" : "Within target"} — ${health.parts.wants} of 30 points`}
             />
-
             <ProgressMeter
               label="Essentials"
               value={ratio.Needs}
               target={RULE.needs}
               detail={formatPercent(ratio.Needs, { digits: 0 })}
-              status={
-                ratio.Needs > RULE.needs
-                  ? `Above the 50% target — ${health.parts.needs} of 15 points`
-                  : `Within target — ${health.parts.needs} of 15 points`
-              }
+              status={`${ratio.Needs > RULE.needs ? "Above the 50% target" : "Within target"} — ${health.parts.needs} of 15 points`}
             />
-
-            {delta !== null && delta !== 0 ? (
-              <p className="type-label text-ink-muted">
-                {delta > 0 ? "Up" : "Down"} {Math.abs(delta)}{" "}
-                {Math.abs(delta) === 1 ? "point" : "points"} since your last
-                review. That is a comparison with your own previous visit, not
-                with anyone else.
-              </p>
-            ) : null}
+            <p className="type-label text-ink-muted">
+              Unspent buffer: {health.parts.buffer} of 15 points, for what is
+              left at the end of the month.{" "}
+              <Link
+                href="/sources#method"
+                className="underline underline-offset-4 hover:text-ink"
+              >
+                The full method
+              </Link>
+            </p>
           </div>
-        </div>
+        </details>
+        <DisclaimerNote className="mx-auto text-center" />
       </section>
 
-      <SecondaryLinks />
-
-      {/* ----------------------------------------------- 2. key numbers */}
-      <Section
-        title="Your month, in three numbers"
-        description="Everything else on this page is derived from these."
+      {/* --------------------------------------------- 3. top actions */}
+      <section
+        aria-labelledby="actions-heading"
+        className="flex flex-col gap-4 border-t border-line pt-8"
       >
-        <dl className="grid gap-8 sm:grid-cols-3">
-          <Figure
-            label="Money in"
-            amount={allowance}
-            note="The denominator every ratio is measured against."
-          />
-          <Figure
-            label="Discretionary spending"
-            amount={totals.Wants ?? 0}
-            note={`Target is ${formatPercent(RULE.wants, { digits: 0 })} of income, which for you is `}
-            noteAmount={allowance * RULE.wants}
-          />
-          <Figure
-            label="Free to spend, guilt-free"
-            amount={envelope.remaining}
-            note="What is left once essentials and your savings target are set aside. Roughly this much a day for the rest of the month: "
-            noteAmount={envelope.perDay}
-          />
-        </dl>
-      </Section>
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <h2 id="actions-heading" className="type-heading text-ink">
+            Your next steps
+          </h2>
+          <Link
+            href="/plan"
+            className="type-label inline-flex min-h-11 items-center text-accent underline underline-offset-4 hover:text-ink"
+          >
+            All {plan.totalCount} actions
+          </Link>
+        </div>
 
-      {/* ------------------------------------------ 3. the opportunity */}
-      <Insight
-        title={opportunity.title}
-        detail={opportunity.detail}
-        // lib/plan.ts marks both a revolving balance and wants above target
-        // as "critical". Only the balance is money actively being lost;
-        // overspending is information, so it renders in ink.
-        tone={
-          opportunity.tone === "critical" && budget.debtTotal <= 0
-            ? "default"
-            : opportunity.tone
-        }
-        amount={
-          opportunity.amount !== null ? (
-            <Money amount={rupeesToPaise(opportunity.amount)} size="xl" />
-          ) : undefined
-        }
-        amountLabel={
-          opportunity.amount !== null
-            ? "Worked out from your own figures, not a rule of thumb."
-            : undefined
-        }
-        action={
-          <ButtonLink href={opportunity.href} variant="primary">
-            {opportunity.actionLabel}
-          </ButtonLink>
-        }
-      />
-
-      {/* ------------------------------------------- 4. next actions */}
-      <Section
-        title="Your next best actions"
-        description={`${plan.completedCount} of ${plan.totalCount} actions completed across the whole plan.`}
-        actions={<ButtonLink href="/plan">See all actions</ButtonLink>}
-      >
         {nextBest.length === 0 ? (
           <p className="type-body prose-measure text-ink-secondary">
-            Nothing is outstanding right now. That is the point at which the
-            work becomes holding the line rather than fixing something — check
-            back after your next month lands.
+            Nothing is outstanding right now. The work now is holding the line
+            — check back after your next month lands.
           </p>
         ) : (
           <ol className="flex flex-col gap-4">
@@ -215,33 +193,123 @@ export default function HomePage() {
                   title={action.title}
                   why={action.why}
                   selfAttested={action.selfAttested}
-                  action={<ButtonLink href="/plan">Open in Actions</ButtonLink>}
+                  action={
+                    <ButtonLink
+                      href="/plan"
+                      variant={i === 0 ? "primary" : "secondary"}
+                    >
+                      {i === 0 ? "Start here" : "Open in Actions"}
+                    </ButtonLink>
+                  }
                 />
               </li>
             ))}
           </ol>
         )}
-      </Section>
+      </section>
 
-      {/* ------------------------------------- 5. long-term consequence */}
-      <Section
-        title="Where this goes over time"
-        description="The same figures, projected forward."
+      {/* ------------------------------------------- 4. progress figures */}
+      <section
+        aria-labelledby="figures-heading"
+        className="flex flex-col gap-4 border-t border-line pt-8"
       >
-        <p className="type-body prose-measure text-ink-secondary">
-          What you set aside each month is the only lever on this page whose
-          effect keeps growing after you stop touching it. The scenario
-          explorer shows what your current amount becomes, what a 10% annual
-          increase does to it, and what waiting a year costs.
+        <h2 id="figures-heading" className="type-eyebrow text-ink-muted">
+          This month
+        </h2>
+
+        {noSpending ? (
+          // The empty state for a student with no spending data yet — which
+          // is every student straight out of onboarding. One next step,
+          // named, with the example month as the honest alternative.
+          <div className="flex flex-col gap-2 border-l-2 border-ink pl-4">
+            <p className="type-body prose-measure text-ink">
+              These figures are the estimates you entered. Import a statement
+              or use an example month to see your actual spending.
+            </p>
+            <div className="flex flex-wrap items-center gap-4">
+              <ButtonLink href="/spending">Import a statement</ButtonLink>
+              <Button
+                variant="quiet"
+                onClick={() => setUseExample(true)}
+                disabled={!data}
+              >
+                Use an example month
+              </Button>
+            </div>
+            {!data ? (
+              <p className="type-label text-ink-muted">
+                The example month comes from the FinPath API, which is not
+                answering right now.
+              </p>
+            ) : null}
+          </div>
+        ) : null}
+
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <Metric
+            label="Money in"
+            amount={rupeesToPaise(allowance)}
+            note="The denominator every ratio uses."
+          />
+          <Metric
+            label="Discretionary spending"
+            amount={rupeesToPaise(totals.Wants ?? 0)}
+            note={`Target: ${formatINR(rupeesToPaise(allowance * RULE.wants))}, 30% of income.`}
+          />
+          <Metric
+            label="Free to spend, guilt-free"
+            amount={rupeesToPaise(envelope.remaining)}
+            note={`About ${formatINR(rupeesToPaise(envelope.perDay))} a day for the rest of the month.`}
+          />
+          <Metric
+            label="Actions done"
+            value={`${plan.completedCount} of ${plan.totalCount}`}
+            note="Across all four stages of your plan."
+          />
+        </div>
+        {budget.debtTotal > 0 ? (
+          <p className="type-label text-ink-muted">
+            You also told us you owe{" "}
+            {formatINR(rupeesToPaise(budget.debtTotal))} in outstanding
+            balances, which is why clearing it comes first.
+          </p>
+        ) : null}
+      </section>
+
+      {/* ------------------------------------------------- 5. ask */}
+      <section
+        aria-labelledby="ask-heading"
+        className="flex flex-col gap-2 border-t border-line pt-8"
+      >
+        <h2 id="ask-heading" className="type-eyebrow text-ink-muted">
+          Ask a question
+        </h2>
+        <form
+          onSubmit={ask}
+          className="flex max-w-(--container-prose) items-stretch gap-2"
+        >
+          <label htmlFor="home-ask" className="sr-only-text">
+            Ask about budgeting, SIPs, credit and more
+          </label>
+          <BareInput
+            id="home-ask"
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            placeholder="Ask about budgeting, SIPs, credit…"
+            className="min-h-11"
+          />
+          <Button type="submit" className="h-auto min-h-11 shrink-0">
+            <MessageCircleQuestion className="lucide size-4" aria-hidden="true" />
+            Ask
+          </Button>
+        </form>
+        <p className="type-label text-ink-muted">
+          Opens Ask with your question ready to send.
         </p>
-        <ButtonRow align="start">
-          <ButtonLink href="/what-if" variant="primary">
-            Explore scenarios
-          </ButtonLink>
-          <ButtonLink href="/spending">See where the money went</ButtonLink>
-        </ButtonRow>
-        <DisclaimerNote variant="projection" />
-      </Section>
+      </section>
+
+      {/* ------------------------------------------- 6. secondary */}
+      <SecondaryLinks />
     </div>
   );
 }
@@ -255,42 +323,39 @@ function greeting(): string {
   return "Good evening";
 }
 
-function bandCaption(band: string): string {
-  switch (band) {
-    case "Strong":
-      return "Saving above target with discretionary spending under control.";
-    case "Stable":
-      return "The fundamentals are sound. One or two things are off target.";
-    case "Strained":
-      return "More is going out than the guidelines allow. It is fixable this month.";
-    default:
-      return "Very little is reaching savings. Start with the single item below.";
-  }
+/**
+ * The one plain sentence under the greeting: the biggest opportunity, with
+ * its figure, stated neutrally. The wording is keyed on the opportunity
+ * `lib/plan.ts` chose; an unrecognised one falls back to its own title, so
+ * a new opportunity added to the engine still reads correctly.
+ */
+function Standing({ opportunity }: { opportunity: Opportunity }) {
+  const amount =
+    opportunity.amount !== null
+      ? formatINR(rupeesToPaise(opportunity.amount))
+      : null;
+
+  const phrase: Record<string, string> = {
+    "Your costliest money is borrowed money": `You have ${amount} outstanding, and clearing it comes before anything else.`,
+    "Discretionary spending is above your target": `${amount} went to wants this month above your 30% line.`,
+    "Your savings rate is below target": `You are ${amount} a month short of saving 20% of your income.`,
+    "Your emergency buffer is short of three months": `Your buffer is ${amount} short of three months of essentials.`,
+    "Nothing is off target this month":
+      "Nothing is off target this month. Hold the line as your income rises.",
+  };
+
+  return <>{phrase[opportunity.title] ?? `${opportunity.title}.`}</>;
 }
 
-function Figure({
-  label,
-  amount,
-  note,
-  noteAmount,
-}: {
-  label: string;
-  amount: number;
-  note: string;
-  noteAmount?: number;
-}) {
-  return (
-    <div className="flex flex-col gap-1">
-      <dt className="type-label text-ink-muted">{label}</dt>
-      <dd className="ledger-rule pb-2">
-        <Money amount={rupeesToPaise(amount)} size="lg" />
-      </dd>
-      <dd className="type-label text-ink-muted">
-        {note}
-        {noteAmount !== undefined ? (
-          <Money amount={rupeesToPaise(noteAmount)} size="sm" tone="muted" />
-        ) : null}
-      </dd>
-    </div>
-  );
+/** "Savings rate is holding it back most: 18 of 40 points." plus any real delta. */
+function driverLine(
+  driver: ReturnType<typeof scoreDriver>,
+  delta: number | null,
+): string {
+  const main = driver
+    ? `${PART_LABEL[driver.part]} is holding it back most: ${driver.earned} of ${driver.max} points.`
+    : "Every part of the score is at full marks.";
+  if (delta === null || delta === 0) return main;
+  const n = Math.abs(delta);
+  return `${main} ${delta > 0 ? "Up" : "Down"} ${n} ${n === 1 ? "point" : "points"} since your last visit.`;
 }
