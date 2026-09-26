@@ -87,3 +87,20 @@ The three score meters are still there, one tap away under "How the score was bu
 - `/home` with only onboarding figures: the ink-ruled note offering "Import a statement" or "Use an example month".
 - `/spending` → "Try it with a sample file": every page now says "Based on: A sample statement" with "Remove the sample".
 - Home → Ask with a question: it arrives in the composer, unsent.
+
+## Phase 7 — ActionCard · `8d1e9f5`
+
+**What changed.** New `components/ui/action-card.tsx`: a one-line title, at most two lines of explanation, priority as a word ("High priority"), "~N min", a link or button action, and a done state (ticked, muted, "Done" plus Undo). Only the card its parent marks primary gets the accent button. New `lib/action-meta.ts`, which opens with a **DRAFT** notice: the minute values need your review. It holds the minutes and the button behaviour per plan action, and `actionPriority()` derives high, medium or low from the plan's own ladder (9 tests, 251 in total). One adapter, `PlanActionCard`, serves both Home and Actions. Ticks persist through `toggleTask` exactly as the old checkboxes did, and the self-attested note is kept. The old `ActionCard` in `insight.tsx` is deleted.
+
+**Files.** `components/ui/{action-card,insight,index}.tsx`, `lib/action-meta.ts`, `lib/action-meta.test.ts`, `app/components/PlanActionCard.tsx`, `app/(app)/{home,plan}/page.tsx`, `app/styleguide/page.tsx`.
+
+**Checked.** By page structure on `/plan`: 8 cards, exactly one primary ("I have paid it in full"), and priorities follow the ladder (debt high, buffer medium, the rest low).
+
+**Needs a human look.** `/plan` and `/home` cards at 1280 and 375 px (the capture timed out).
+
+**Deferred.** Minute values: your review (`lib/action-meta.ts`).
+
+**Where to see it**
+- `/plan`: each stage's actions are bordered cards with a priority word, "~N min", the why and a button. Self-attested ones say so. The first open action has the only green button. Ticking shows "Done" with Undo.
+- `/home`: the three "Your next steps" cards match the ones on Actions and link to where each fix lives (Spending, What-if, Profile), or record a tick.
+- `/styleguide` → "Insight and ActionCard": primary, secondary-with-note and done examples.
