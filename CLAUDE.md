@@ -311,7 +311,7 @@ Two header-matching traps, both fixed and both regression-tested:
 `frontend/components/ui/` is the complete primitive inventory. **Import from
 the `@/components/ui` barrel, never from an individual file**, so the
 inventory stays one reviewable surface and `/styleguide` can prove it is
-complete.
+complete. `components/finpath/` and `app/components/ui.tsx` are gone.
 
 The barrel is only cheap because `package.json` declares
 `"sideEffects": ["*.css"]`. Without it every route shipped every primitive
@@ -320,7 +320,7 @@ code on import must be added to that list, or it will be tree-shaken away.
 `/api/spending` is fetched only once a screen calls `useRequestSpending()`
 (the `(app)` shell and the landing diagnostic), and only after the session
 resolves. The Tooltip and Toast providers live in the `(app)` shell, not the
-root layout. `components/finpath/` and `app/components/ui.tsx` are gone.
+root layout.
 
 `lib/money.ts` is the money layer: integer `Paise` with a brand, becoming a
 rupee number in exactly two places — `lib/format.ts` (and through it

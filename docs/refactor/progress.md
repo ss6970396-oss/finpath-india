@@ -215,3 +215,51 @@ Edit switches a block to an inline form with Save (primary) and Cancel. One bloc
 - `/styleguide`: "Button" has a Link row; "Input and Select" has the bare textarea; there are two new sections, "Wordmark, SkipLink and Menu" and "Notice, SectionLabel and TrustLine".
 - `/what-if`: the three scenario figures, unchanged in look, now drawn by `Metric`.
 - `/spending` after an import: the allowance suggestion is a filled card; the skip report is an outlined card with plain hairlines between rows.
+
+## Phase 11 — Performance · `e217162`
+
+**What changed.**
+- **Shared baseline.** Every route shipped the whole `@/components/ui` barrel: Dialog, Select, Menu, Slider, DropZone and more on the landing page. `package.json` now declares `"sideEffects": ["*.css"]`, so the barrel's unused re-exports tree-shake. Call sites still import from the barrel, as CLAUDE.md requires.
+- **Providers.** `TooltipProvider` and `ToastProvider` moved from the root layout into the `(app)` shell, the only place either is used. The styleguide already mounts its own.
+- **B-5, the fetch.** `/api/spending` is now requested only when a screen calls `useRequestSpending()` (the `(app)` shell and the landing diagnostic, which needs the API's rate), and only after the session resolves. Before, the first request went out with the signed-out fallback allowance (1,000) and was thrown away, so every app screen made two calls. Now it makes one, and the auth pages and `/sources` make none.
+- **Lazy chart.** `ScenarioChart` (Recharts) loads through `next/dynamic` behind a static `h-80` placeholder. The figures and ChartFrame's data table don't wait for it.
+- **B-6.** The five legacy routes use `permanentRedirect` and return 308, confirmed with curl.
+- **Deleted.** `lib/categories.ts`: no importers, and it referenced tokens that no longer exist.
+- **Q14, dependencies removed:** `motion`, `tw-animate-css`, `class-variance-authority`, `shadcn`. None was imported anywhere. The build passes after removal. `components.json` (shadcn CLI config) is kept; `npx shadcn` doesn't need the package installed.
+
+**Measured** with the Phase 1 method: gzip kB of every `/_next/static/**/*.js` each prerendered page references.
+
+| Route | Before (Phase 1) | Before this phase | After |
+| --- | --- | --- | --- |
+| `/` | 297.7 | 300.1 | **207.1** |
+| `/login` | 304.6 | 306.3 | **206.9** |
+| `/signup` | 304.7 | 306.5 | **207.1** |
+| `/forgot-password` | 304.3 | 305.8 | **205.7** |
+| `/sources` | 305.9 | 307.5 | **198.5** |
+| `/onboarding` | 306.2 | 307.8 | **209.5** |
+| `/home` | 310.0 | 313.0 | **287.5** |
+| `/plan` | 309.2 | 311.5 | **279.7** |
+| `/profile` | 307.9 | 309.9 | **282.6** |
+| `/ask` | 308.1 | 310.2 | **288.1** |
+| `/spending` | 312.9 | 314.5 | **302.1** |
+| `/what-if` | 406.8 | 408.3 | **278.3** (+ Recharts on demand) |
+| `/styleguide` | 314.0 | 316.9 | 317.7 |
+| legacy redirects | 297.7 | 299.3 | **191.0** |
+
+The app routes keep ~80 kB more than the public ones. That's the shell's real interactive layer: the header's Menu, the Toast and Tooltip providers, and Base UI's floating positioning.
+
+**Files.** `package.json`, `package-lock.json`, `app/layout.tsx`, `app/(app)/layout.tsx`, `app/providers/FinPathProvider.tsx`, `app/components/Diagnostic.tsx`, `app/(app)/what-if/ScenarioExplorer.tsx`, the five legacy `page.tsx`, `lib/categories.ts` (deleted), `CLAUDE.md`.
+
+**Checked** against the production build (`next start` on :3100) with headless Chrome:
+- **Styles:** they survive the `sideEffects` change on every public, auth and app page (canvas colour, Inter, the accent primary button).
+- **API calls:** `/api/spending` requests per page are 0 on `/login`, `/signup`, `/forgot-password` and `/sources`, and 1 each on `/`, `/home` and `/what-if`.
+- **Chart:** the Recharts SVG mounts on `/what-if`.
+- **Toast:** saving a profile block still shows "Your figures are saved".
+- **Redirects:** `/dashboard`, `/counselor` and `/vault` return 308.
+
+**Needs a human look.** `/what-if` on a slow connection, to see the placeholder hand over to the chart. Your backend's CORS allowlist only admits :3000, so on :3100 the data came from the fallback params; the numbers are the same.
+
+**Where to see it**
+- DevTools → Network on `/login`: no `/api/spending` request. On `/home`: exactly one, with your own allowance.
+- `/what-if`: a plain sunken block for a moment, then the chart.
+- `/dashboard` in the address bar: a 308 to `/home`.
