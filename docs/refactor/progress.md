@@ -299,3 +299,38 @@ The app routes keep ~80 kB more than the public ones. That's the shell's real in
 - `/profile`: the Edit buttons are full size.
 - `/spending` → Tab past "Statement": the tab panel now shows its ring.
 - `/login`: "Forgotten your password?" and "Create an account" are comfortable to tap.
+
+## Phase 13 — Rule conformance · `a2e12b3`
+
+**Scope, reconstructed.** `docs/refactor/BRIEF.md` isn't in the repo or its history, and the audit says Phases 13–14 are "as specified" there. What the repo does record: Phase 13 checks C-7 ("at most three text sizes per screen"). I ran it as a conformance pass of every screen against CLAUDE.md's design rules. **If the brief says something different for Phase 13, tell me and I'll redo it.**
+
+**The size rule, interpreted.** Counting every size literally is unsatisfiable by the approved system. Every screen has a display title plus body, label and eyebrow, and Phases 2–9 were approved on that basis. So the count is of **running-text** sizes: reading 17, body 16, label 14, eyebrow 12. Headings, the page title, site chrome and the one hero figure are excluded, and form-control text isn't counted.
+
+**What changed.** Three screens mixed `type-reading` (17 px) with `type-body` (16 px), two sizes 1 px apart that read as a mistake.
+- **`/home`:** the standing sentence is body.
+- **`/ask`:** the suggestions and your question block are reading, the same as the answers.
+- **`/`:** the diagnostic's explanation is reading, the same as the hero line.
+
+**Measured**, by headless Chrome from computed styles, at 1280 px, signed in with a declared profile:
+
+| Screen | Running-text sizes | Primary actions | Accent as text outside links/progress | Critical colour | Serif hero figures |
+| --- | --- | --- | --- | --- | --- |
+| `/` | 17 · 14 · 12 | 1 | none | none | 1 |
+| `/sources` | 16 · 14 | 0 | none | none | 0 |
+| `/login`, `/signup`, `/forgot-password` | 16 · 14 | 1 | none | none | 0 |
+| `/onboarding` | 16 · 14 · 12 | 1 | none | none | 0 |
+| `/home` | 16 · 14 · 12 | 1 | none | none | 1 (score) |
+| `/plan` | 16 · 14 · 12 | 1 | none | none | 0 |
+| `/ask` (empty) | 17 · 14 · 12 | 0 (Send disabled until you type) | none | none | 0 |
+| `/profile` | 16 · 14 · 12 | 1 | none | none | 0 |
+| `/spending` | 16 · 14 · 12 | 1 | none | none | 1 |
+| `/what-if` | 16 · 14 · 12 | 1 | none | none | 1 |
+
+**Needs your decision (pre-existing, not a regression).** CLAUDE.md says `DisclaimerNote` is "required on every coach answer, every projection, every plan stage and the `/home` hero". The code has one note under the coach's composer and one at the foot of `/plan`, exactly as `main` does. Either CLAUDE.md should say "every coach screen / the plan page", or each answer and each of the four stages gets its own note. I left both as they are.
+
+**Needs a human look.** `/ask` with a real answer, where notices (16 px) can appear beside 17 px text in failure states.
+
+**Where to see it**
+- `/home`: the sentence under the greeting is one step smaller, matching the text around it.
+- `/ask`: the four suggestions are the same size as an answer.
+- `/`: the sentence under ₹10,870 matches the hero's supporting line.
