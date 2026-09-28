@@ -263,3 +263,39 @@ The app routes keep ~80 kB more than the public ones. That's the shell's real in
 - DevTools → Network on `/login`: no `/api/spending` request. On `/home`: exactly one, with your own allowance.
 - `/what-if`: a plain sunken block for a moment, then the chart.
 - `/dashboard` in the address bar: a 308 to `/home`.
+
+## Phase 12 — Accessibility · `5cfd595`
+
+**What changed.**
+- **44 px targets.** Every control reaches 44 px.
+  - `Button` is 44 px (was 40). `sm` keeps its 32 px look with a 44 px hit area, and Profile's Edit buttons move to full size (the Phase 9 deferral).
+  - `Segmented`, `Tab` and the slider's box are 44 px.
+  - The Modal close is 44 px (was 24), and so is the Sheet close (38; its comment already claimed 44).
+  - The wordmark, the header nav's short "Ask", the account button, the footer links, the public header links, the password reveal, and all five auth-screen text links.
+- **Focus.** `TabPanel` is a tab stop in Base UI and had no ring; it now uses the accent ring. Every other stop on every route already drew it.
+- **Names.** No control on any route is missing an accessible name, before or after.
+- **New doc: `docs/refactor/a11y-walkthrough.md`.** The method, the key-by-key interaction checks, every fix with before and after sizes, the argued exceptions, and the full Tab order of 11 routes.
+
+**Files.** `components/ui/{button,segmented,tabs,slider,modal,sheet,header,footer,password-input}.tsx`, `app/components/{AppHeader,PublicHeader}.tsx`, `app/(auth)/{layout,login/LoginForm,signup/SignupForm,forgot-password/page}.tsx`, `app/(app)/profile/page.tsx`, `docs/refactor/a11y-walkthrough.md`.
+
+**Checked.** Headless Chrome with real key events:
+- **Target audit:** 11 routes at 375 and 1280 px; nothing under 44 px left except the argued exceptions.
+- **Tab walk:** every route, and every stop draws the ring.
+- **Skip link:** the next Tab lands in the content.
+- **Account menu:** Enter opens it, ↓ moves, Esc closes it and returns focus.
+- **Segmented:** arrow keys move the selection.
+- **Modal and Sheet:** focus is trapped inside, Esc closes, and focus returns to the trigger.
+- **Screenshots:** `/profile` at 375 px and `/plan` at 1280 px.
+
+**Exceptions** (argued in the doc):
+- Inline `[n]` citation markers, which sit inside a sentence (WCAG 2.5.8 exempts them).
+- The hidden file input; its label is the target.
+- No skip link on the auth screens; only the wordmark comes before the form.
+
+**Needs a human look.** A pass with a real screen reader (NVDA or VoiceOver); nothing here substitutes for one. Also the `/ask` inspector sheet with a real answer (same component as the tested Sheet).
+
+**Where to see it**
+- Any page: buttons are slightly taller (44 px). Tab from the address bar and every stop shows the green ring.
+- `/profile`: the Edit buttons are full size.
+- `/spending` → Tab past "Statement": the tab panel now shows its ring.
+- `/login`: "Forgotten your password?" and "Create an account" are comfortable to tap.
