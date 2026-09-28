@@ -334,3 +334,33 @@ The app routes keep ~80 kB more than the public ones. That's the shell's real in
 - `/home`: the sentence under the greeting is one step smaller, matching the text around it.
 - `/ask`: the four suggestions are the same size as an answer.
 - `/`: the sentence under ₹10,870 matches the hero's supporting line.
+
+## Phase 14 — Parity and migration · `09d7f60`
+
+**Scope, reconstructed** (BRIEF.md is missing; see Phase 13). The repo records two things for this phase: "the Phase 14 report will tick every line" of the inventory, and "Phase 14 extends [MIGRATION.md] with routes, components, deleted files and tokens". Both are done.
+
+**What changed.**
+- **New: `docs/refactor/14-feature-parity.md`.** All 71 inventory items, each with where it lives now and how that was established. 62 live assertions ran in headless Chrome against `next dev`, all passing. The rest cite the phase that checked them live, or name the file.
+  - **Result:** 66 present, 8 of them in a different form by a recorded decision.
+  - **Replaced outright by a decision:** 3 (28 long-term block → secondary links; 55 `?q=` auto-send → prefill; 61 one draft → per-block Save/Cancel).
+  - **Removed by a decision:** 2 (the landing specimen; the onboarding completion screen).
+  - **Nothing lost without a decision.**
+- **MIGRATION.md** now also covers:
+  - routes and behaviour (no URL changed, 307 → 308, `?q=` semantics, fewer API calls);
+  - components (new, renamed `quiet` → `ghost`, resized, moved providers, `useRequestSpending`);
+  - the deleted file, and every token before and after;
+  - dependencies and the `sideEffects` build field.
+
+**Files.** `docs/refactor/14-feature-parity.md` (new), `docs/refactor/MIGRATION.md`.
+
+**Checked.** `npm run verify` passes on the finished branch: typecheck, design-lint, contrast (15 tokens), 267 tests, build.
+
+**Found, not fixed** (pre-existing; both in the parity doc):
+- The footer's Account group offers "Sign in" to a signed-in student.
+- `DisclaimerNote` placement vs CLAUDE.md (Phase 13).
+
+**Needs a human look.** Everything under "Needs a human look" in Phases 4–13. The recurring ones are a real screen-reader pass, and the `/ask` flows that cost a Gemini call.
+
+**Where to see it**
+- `docs/refactor/14-feature-parity.md`: the checklist.
+- `docs/refactor/MIGRATION.md`: what anyone upgrading needs to know.
