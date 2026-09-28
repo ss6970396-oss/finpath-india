@@ -27,7 +27,7 @@ export { Citation, UnverifiedNote } from "./citation";
 export { DisclaimerNote, type DisclaimerVariant } from "./disclaimer";
 export { DistributionBar, type Slice } from "./distribution";
 export { DropZone } from "./drop-zone";
-export { SiteFooter } from "./footer";
+export { FooterAction, FooterLink, SiteFooter } from "./footer";
 export { Header, SkipLink, Wordmark } from "./header";
 export { Insight } from "./insight";
 export {

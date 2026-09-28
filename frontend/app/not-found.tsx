@@ -1,4 +1,5 @@
 import { ButtonLink, SiteFooter } from "@/components/ui";
+import { FooterAccount } from "./components/FooterAccount";
 import { PublicHeader } from "./components/PublicHeader";
 
 /**
@@ -39,7 +40,7 @@ export default function NotFound() {
         </div>
       </main>
 
-      <SiteFooter />
+      <SiteFooter account={<FooterAccount />} />
     </div>
   );
 }

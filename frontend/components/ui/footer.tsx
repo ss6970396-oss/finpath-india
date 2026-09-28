@@ -1,3 +1,4 @@
+import * as React from "react";
 import Link from "next/link";
 import { DisclaimerNote } from "./disclaimer";
 import { CORPUS_PHRASE } from "./trust";
@@ -37,17 +38,47 @@ const GROUPS: { heading: string; links: { href: string; label: string }[] }[] = 
       { href: "/styleguide", label: "Design system" },
     ],
   },
-  {
-    heading: "Account",
-    links: [
-      { href: "/profile", label: "Your profile" },
-      { href: "/onboarding", label: "Update your figures" },
-      { href: "/login", label: "Sign in" },
-    ],
-  },
 ];
 
-export function SiteFooter() {
+const LINK =
+  "type-label inline-flex min-h-11 min-w-11 items-center text-ink-secondary underline-offset-4 hover:text-ink hover:underline";
+
+/** A footer link. Exported for the `account` slot. */
+export function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <li>
+      <Link href={href} className={LINK}>
+        {children}
+      </Link>
+    </li>
+  );
+}
+
+/** A footer action styled as a link — Sign out, which is not a destination. */
+export function FooterAction({
+  onClick,
+  children,
+}: {
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <li>
+      <button type="button" onClick={onClick} className={LINK}>
+        {children}
+      </button>
+    </li>
+  );
+}
+
+/**
+ * `account` fills the Account column. It depends on the session, which a
+ * primitive cannot read (ui/ never imports app/), so each shell passes it
+ * in: app/components/FooterAccount.tsx. Without it the column is omitted
+ * rather than guessed — a signed-in student offered "Sign in" is a footer
+ * that does not know who it is talking to.
+ */
+export function SiteFooter({ account }: { account?: React.ReactNode }) {
   return (
     <footer className="mt-16 border-t border-line bg-canvas">
       <div className="page-shell flex flex-col gap-8 py-12">
@@ -65,18 +96,20 @@ export function SiteFooter() {
               <h2 className="type-eyebrow text-ink-muted">{group.heading}</h2>
               <ul className="mt-1 flex flex-col">
                 {group.links.map((link) => (
-                  <li key={link.href + link.label}>
-                    <Link
-                      href={link.href}
-                      className="type-label inline-flex min-h-11 min-w-11 items-center text-ink-secondary underline-offset-4 hover:text-ink hover:underline"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
+                  <FooterLink key={link.href + link.label} href={link.href}>
+                    {link.label}
+                  </FooterLink>
                 ))}
               </ul>
             </nav>
           ))}
+
+          {account ? (
+            <nav aria-label="Account">
+              <h2 className="type-eyebrow text-ink-muted">Account</h2>
+              <ul className="mt-1 flex flex-col">{account}</ul>
+            </nav>
+          ) : null}
         </div>
 
         <div className="flex flex-col gap-2 border-t border-line pt-8">

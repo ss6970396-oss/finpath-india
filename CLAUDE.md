@@ -331,8 +331,13 @@ string; `design-lint` fails on a bare `Intl.`, a `.toFixed(` or a hand-typed
 
 Compliance copy lives in `DisclaimerNote` (`components/ui/disclaimer.tsx`)
 and is never retyped at a call site — one edit changes the wording, one grep
-audits it. It is required on every coach answer, every projection, every plan
-stage and the `/home` hero.
+audits it. The rule is **one per page, never one per item**: a note repeated
+under every answer or stage stops being read. Each page that shows advice,
+a projection or a plan carries exactly one: `/home` (plus the `example`
+variant while the example month is on), `/plan`, `/spending`, `/profile`,
+`/what-if` and the landing diagnostic (`projection`), `/sources`, onboarding,
+and the site footer. On `/ask` it sits inside the sticky composer form, so
+it stays on screen beside the input however long the conversation gets.
 
 ### Gates
 

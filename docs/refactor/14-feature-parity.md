@@ -137,7 +137,11 @@ Every item from the Phase 1 inventory, with where it lives now and how that was 
 
 **Engines with no UI** (`lifestyleCreep`, `runway` + `SHOCKS`, `HABITS`, `equivalents`, `isImpulse`): still in `lib/`, untouched and still unsurfaced (Q13).
 
-## Found along the way (not fixed; pre-existing)
+## Found along the way, and resolved
 
-- **The footer's Account group shows "Sign in" to a signed-in student.** It has been there since before the refactor (`components/ui/footer.tsx`). `SiteFooter` is a server-safe primitive with no session, so fixing it means passing the session in from each shell. That's small, but it's a behaviour change I didn't want to slip into a documentation phase.
-- **`DisclaimerNote` placement vs CLAUDE.md:** see the Phase 13 report.
+- **The footer's Account group offered "Sign in" to a signed-in student.** It had been there since before the refactor. **Fixed** after the owner's decision: `SiteFooter` takes an `account` slot, and `app/components/FooterAccount.tsx` fills it from the session.
+  - Signed in: Your profile, Update your figures, Sign out.
+  - Signed out: Sign in, Create an account.
+  - Nothing renders until the session resolves.
+- **The three Sign out controls disagreed on where they landed.** The header menu went to `/`, while the footer went to `/login?next=…` because it lost a race with the route guard. All three now go through `app/components/useSignOut.ts`, which does a full load of `/`. Checked twice each: every one lands on `/` with the session cleared.
+- **`DisclaimerNote` placement.** Owner's decision: one per page. CLAUDE.md now says so and lists the pages. On `/ask` it sits inside the sticky composer form; checked mid-scroll through a 4,000 px thread, it stays on screen at 1280 px and above the phone bar at 375 px.

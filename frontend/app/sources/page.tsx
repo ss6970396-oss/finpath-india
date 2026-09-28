@@ -17,6 +17,7 @@ import {
 import { apiJson, describeApiFailure } from "@/lib/api";
 import { prettySource } from "@/lib/format";
 import { API } from "../providers/FinPathProvider";
+import { FooterAccount } from "../components/FooterAccount";
 import { PublicHeader } from "../components/PublicHeader";
 
 /**
@@ -236,7 +237,7 @@ export default function SourcesPage() {
         </div>
       </main>
 
-      <SiteFooter />
+      <SiteFooter account={<FooterAccount />} />
     </div>
   );
 }

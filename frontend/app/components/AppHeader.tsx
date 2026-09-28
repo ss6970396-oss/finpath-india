@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
   Avatar,
   Menu,
@@ -16,6 +16,7 @@ import {
 } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import { displayName, useAuth } from "../providers/AuthProvider";
+import { useSignOut } from "./useSignOut";
 import { NAV } from "./nav";
 
 /**
@@ -41,8 +42,8 @@ import { NAV } from "./nav";
  */
 export function AppHeader() {
   const pathname = usePathname();
-  const router = useRouter();
-  const { session, signOut, isDeviceLocal } = useAuth();
+  const { session, isDeviceLocal } = useAuth();
+  const signOut = useSignOut();
 
   const name = displayName(session);
 
@@ -114,9 +115,7 @@ export function AppHeader() {
             ) : null}
             <MenuSeparator />
             <MenuAction
-              onClick={() => {
-                void signOut().then(() => router.push("/"));
-              }}
+              onClick={signOut}
             >
               Sign out
             </MenuAction>

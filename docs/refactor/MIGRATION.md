@@ -103,6 +103,8 @@ Everything is still imported from the `@/components/ui` barrel.
 | **Renamed** Button variant `quiet` → **`ghost`** | Any external code passing `variant="quiet"` must change it. |
 | **Resized** `Button` | `md` is 44 px tall (was 40). `sm` still draws at 32 px, with a 44 px hit area. `Segmented`, `Tab`, the `Slider` box and the Modal and Sheet close buttons are all 44 px. |
 | **Moved** `TooltipProvider`, `ToastProvider` | From the root layout into the `(app)` shell. A new page outside `(app)` that calls `useToast()` must mount its own `ToastProvider`, as `/styleguide` does. |
+| **Changed** `SiteFooter` | It takes an `account` slot (`FooterLink` and `FooterAction` are exported for it); without one, the Account column is omitted. Every shell passes `<FooterAccount />`. |
+| **Changed** Sign out | Every Sign out control goes through `useSignOut()`, which ends in a **full page load** of `/`. That clears in-memory state, such as an uploaded statement, between people sharing a tab. |
 | **New** `useRequestSpending()` (`FinPathProvider`) | A screen that shows `/api/spending` figures outside the `(app)` shell must call it, or `data` stays null and `loading` stays true. |
 | **New** app-level files | `app/components/{Diagnostic,HeroCta,PlanActionCard,SecondaryLinks}.tsx`, `app/components/useMediaQuery.ts`, `app/providers/api-base.ts` |
 | **New** `lib/` files | `score.ts` (`scoreDriver`), `action-meta.ts`, `account-storage.ts`, `safe-next.ts`, each with tests. `lib/plan.ts`, `lib/finance.ts`, `lib/csv.ts` and `lib/onboarding.ts` are unchanged. |

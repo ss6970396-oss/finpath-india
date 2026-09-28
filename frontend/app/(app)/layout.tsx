@@ -10,6 +10,7 @@ import {
   TooltipProvider,
 } from "@/components/ui";
 import { AppHeader } from "../components/AppHeader";
+import { FooterAccount } from "../components/FooterAccount";
 import { NAV } from "../components/nav";
 import { useAuth } from "../providers/AuthProvider";
 import { useFinPath, useRequestSpending } from "../providers/FinPathProvider";
@@ -77,7 +78,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             )}
           </main>
 
-          <SiteFooter />
+          <SiteFooter account={<FooterAccount />} />
 
           {/* Bottom bar on phones only; the same four destinations as the
           header, so there is one mental model rather than two. */}

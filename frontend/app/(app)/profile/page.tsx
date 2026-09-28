@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   Button,
   ButtonRow,
@@ -30,6 +29,7 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "../../providers/AuthProvider";
 import { useFinPath } from "../../providers/FinPathProvider";
 import { AmountField } from "../../onboarding/AmountField";
+import { useSignOut } from "../../components/useSignOut";
 
 /**
  * /profile (§11) — everything FinPath holds about you, in four blocks.
@@ -54,8 +54,8 @@ import { AmountField } from "../../onboarding/AmountField";
 type BlockId = "personal" | "income" | "goals";
 
 export default function ProfilePage() {
-  const router = useRouter();
-  const { session, signOut, isDeviceLocal } = useAuth();
+  const { session, isDeviceLocal } = useAuth();
+  const signOut = useSignOut();
   const { profile, saveProfile } = useFinPath();
   const toast = useToast();
 
@@ -333,11 +333,7 @@ export default function ProfilePage() {
           </p>
         ) : null}
         <ButtonRow align="start">
-          <Button
-            onClick={() => {
-              void signOut().then(() => router.push("/"));
-            }}
-          >
+          <Button onClick={signOut}>
             Sign out
           </Button>
           <Link

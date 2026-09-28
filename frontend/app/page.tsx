@@ -8,6 +8,7 @@ import {
 } from "@/components/ui";
 import { Diagnostic } from "./components/Diagnostic";
 import { HeroCta } from "./components/HeroCta";
+import { FooterAccount } from "./components/FooterAccount";
 import { PublicHeader } from "./components/PublicHeader";
 
 /**
@@ -81,7 +82,7 @@ export default function LandingPage() {
         </section>
       </main>
 
-      <SiteFooter />
+      <SiteFooter account={<FooterAccount />} />
     </div>
   );
 }

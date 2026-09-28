@@ -303,6 +303,9 @@ export function Coach() {
             </Button>
           )}
         </div>
+        {/* The page's one disclaimer. It lives INSIDE the sticky form so it
+            stays beside the composer while the thread scrolls; moved out of
+            the form, it scrolls away with the first answer. */}
         <DisclaimerNote />
       </form>
 
