@@ -14,11 +14,18 @@ import { useAuth } from "../providers/AuthProvider";
  * The right-hand action follows the session: someone already signed in
  * should never be shown "Get started" on their own product's front page.
  *
- * It is a SECONDARY button. The page underneath owns the one primary
- * action (the landing hero); a filled button in the masthead would make
- * two on every public screen.
+ * It is a SECONDARY button by default. The page underneath owns the one
+ * primary action (the landing hero, the 404's "Go to Home"); a filled
+ * button in the masthead would make two. /sources has no action of its
+ * own, so there the header CTA is the page's primary (`primary`).
  */
-export function PublicHeader() {
+/**
+ * `primary` makes the header's CTA the page's one primary action. Only a
+ * public page with no primary of its own passes it (/sources); the landing
+ * page and the 404 each have their own, so there it stays secondary.
+ */
+export function PublicHeader({ primary = false }: { primary?: boolean }) {
+  const variant = primary ? "primary" : "secondary";
   const { status, session } = useAuth();
 
   return (
@@ -36,7 +43,7 @@ export function PublicHeader() {
           </Link>
 
           {status === "resolved" && session ? (
-            <ButtonLink href="/home">
+            <ButtonLink href="/home" variant={variant}>
               Open FinPath
             </ButtonLink>
           ) : (
@@ -47,7 +54,7 @@ export function PublicHeader() {
               >
                 Sign in
               </Link>
-              <ButtonLink href="/signup">
+              <ButtonLink href="/signup" variant={variant}>
                 Get started
               </ButtonLink>
             </>

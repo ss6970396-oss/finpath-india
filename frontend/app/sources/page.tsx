@@ -105,7 +105,7 @@ export default function SourcesPage() {
 
   return (
     <div className="flex min-h-dvh flex-col">
-      <PublicHeader />
+      <PublicHeader primary />
 
       <main id="main" className="page-shell w-full flex-1 py-8">
         <div className="flex flex-col gap-16">

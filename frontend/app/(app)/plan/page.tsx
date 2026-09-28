@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { ArrowDown } from "lucide-react";
 import {
   ButtonLink,
   DisclaimerNote,
@@ -43,7 +44,8 @@ export default function PlanPage() {
   const rank = React.useMemo(() => priorities(plan), [plan]);
   // The page's ONE primary action: the first open action in plan order,
   // which is also the first card Home shows.
-  const primaryId = plan.open[0]?.id;
+  const next = plan.open[0];
+  const primaryId = next?.id;
 
   return (
     <div className="enter flex flex-col gap-16">
@@ -52,6 +54,21 @@ export default function PlanPage() {
         purpose="Four stages, in the order a planner would take them. One is live at a time."
       >
         <div className="flex flex-col gap-4">
+          {/* The next step inside the first phone screen (§1): the live
+              stage and its card sit well below the fold on a 375px phone,
+              so the header names the action and jumps to it. */}
+          {next ? (
+            <p className="type-body prose-measure text-ink">
+              Your next step: {next.title}.{" "}
+              <a
+                href={`#action-${next.id}`}
+                className="inline-flex items-center gap-1 text-accent underline underline-offset-4 hover:text-ink"
+              >
+                Go to it
+                <ArrowDown className="lucide size-4" aria-hidden="true" />
+              </a>
+            </p>
+          ) : null}
           <SourceLine />
           <ProgressMeter
             label="Actions completed"
@@ -65,8 +82,6 @@ export default function PlanPage() {
           />
         </div>
       </PageHeader>
-
-      <SecondaryLinks />
 
       <Timeline>
         {plan.steps.map((step, i) => (
@@ -96,7 +111,7 @@ export default function PlanPage() {
 
             <ul className="flex flex-col gap-4">
               {step.actions.map((action) => (
-                <li key={action.id}>
+                <li key={action.id} id={`action-${action.id}`} className="scroll-mt-24">
                   <PlanActionCard
                     action={action}
                     priority={rank[action.id] ?? "low"}
@@ -135,6 +150,9 @@ export default function PlanPage() {
           <ButtonLink href="/profile">Change my priorities</ButtonLink>
         </div>
       </section>
+
+      {/* Last, as on Home: secondary places come after the page's own work. */}
+      <SecondaryLinks />
 
       <DisclaimerNote />
     </div>

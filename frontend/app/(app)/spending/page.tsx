@@ -100,6 +100,24 @@ export default function SpendingPage() {
         title="Spending"
         purpose="Where this month's money went, measured against the 50/30/20 guideline."
       >
+        {/* The next step inside the first phone screen (§1): the
+            adjustment sits two screens down on a 375px phone. Stated as a
+            fact, in ink, never as a scolding. */}
+        {wantsExcess > 0 ? (
+          <p className="type-body prose-measure text-ink">
+            <Money amount={rupeesToPaise(totals.Wants ?? 0)} size="sm" /> went
+            to discretionary spending this month —{" "}
+            <Money amount={rupeesToPaise(wantsExcess)} size="sm" /> above your{" "}
+            {formatPercent(RULE.wants, { digits: 0 })} line.{" "}
+            <a
+              href="#adjustment"
+              className="inline-flex items-center gap-1 text-accent underline underline-offset-4 hover:text-ink"
+            >
+              See the adjustment
+              <ArrowDown className="lucide size-4" aria-hidden="true" />
+            </a>
+          </p>
+        ) : null}
         <SourceLine />
       </PageHeader>
 
@@ -159,38 +177,40 @@ export default function SpendingPage() {
         )}
       </Section>
 
-      {wantsExcess > 0 ? (
-        <Insight
-          eyebrow="Recommended adjustment"
-          title="Bring discretionary spending back to the line"
-          // Overspending is information, not an error: stated in ink.
-          tone="default"
-          amount={<Money amount={rupeesToPaise(wantsExcess)} size="xl" />}
-          amountLabel={
-            "The amount above your target. Redirecting it needs no extra income."
-          }
-          detail={`Your target is ${formatPercent(RULE.wants, { digits: 0 })} of income. Cutting back to it frees this much every month — the scenario explorer will show what that becomes if it is invested instead.`}
-          action={
-            <>
-              <ButtonLink
-                href={`/what-if?monthly=${Math.round(wantsExcess)}`}
-                variant="primary"
-              >
-                See what it becomes
-              </ButtonLink>
-              <ButtonLink href="/plan">Apply to my plan</ButtonLink>
-            </>
-          }
-        />
-      ) : (
-        <Insight
-          eyebrow="Recommended adjustment"
-          title="Nothing needs cutting this month"
-          tone="positive"
-          detail="Discretionary spending is inside its target. The useful work now is holding it there as your income rises, which is where this usually slips."
-          action={<ButtonLink href="/what-if">Explore scenarios</ButtonLink>}
-        />
-      )}
+      <div id="adjustment" className="scroll-mt-24">
+        {wantsExcess > 0 ? (
+          <Insight
+            eyebrow="Recommended adjustment"
+            title="Bring discretionary spending back to the line"
+            // Overspending is information, not an error: stated in ink.
+            tone="default"
+            amount={<Money amount={rupeesToPaise(wantsExcess)} size="xl" />}
+            amountLabel={
+              "The amount above your target. Redirecting it needs no extra income."
+            }
+            detail={`Your target is ${formatPercent(RULE.wants, { digits: 0 })} of income. Cutting back to it frees this much every month — the scenario explorer will show what that becomes if it is invested instead.`}
+            action={
+              <>
+                <ButtonLink
+                  href={`/what-if?monthly=${Math.round(wantsExcess)}`}
+                  variant="primary"
+                >
+                  See what it becomes
+                </ButtonLink>
+                <ButtonLink href="/plan">Apply to my plan</ButtonLink>
+              </>
+            }
+          />
+        ) : (
+          <Insight
+            eyebrow="Recommended adjustment"
+            title="Nothing needs cutting this month"
+            tone="positive"
+            detail="Discretionary spending is inside its target. The useful work now is holding it there as your income rises, which is where this usually slips."
+            action={<ButtonLink href="/what-if">Explore scenarios</ButtonLink>}
+          />
+        )}
+      </div>
 
       <Section
         title="The ledger"
