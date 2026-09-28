@@ -364,3 +364,35 @@ The app routes keep ~80 kB more than the public ones. That's the shell's real in
 **Where to see it**
 - `docs/refactor/14-feature-parity.md`: the checklist.
 - `docs/refactor/MIGRATION.md`: what anyone upgrading needs to know.
+
+## Owner decisions · `4ac6523`
+
+**What changed.**
+- **Disclaimer:** one per page, now written into CLAUDE.md with the list of pages. On `/ask` it already sat inside the sticky composer; it's confirmed on screen mid-scroll at 1280 px and above the phone bar at 375 px, and a comment keeps it there.
+- **Footer:** the Account column follows the session.
+  - Signed in: Your profile, Update your figures, Sign out.
+  - Signed out: Sign in, Create an account.
+  - Nothing renders until the session resolves.
+- **Sign out:** all three controls go through `useSignOut()`, a full load of `/`. The footer's version lost a race with the route guard and landed on `/login?next=…`.
+- **`lib/action-meta.ts`:** left for the owner.
+
+## Phase 13b — Visual QA as specified · `93c28b6`
+
+**Why a "b".** Phase 13 ran before `BRIEF.md` was in the repo and covered only the text-size rule, primaries and accent/critical use, at 1280 px. The brief asks for every route at 375 and 1280 px, four specific checks, a codebase leak search, and `visual-qa.md`. This phase does that, and keeps the text-size check as one column.
+
+**What changed.**
+- **New doc: `docs/refactor/visual-qa.md`.** 42 route × viewport × state rows, measured from computed styles. Every rendered colour is checked against the 15 tokens (zero leaks). It also covers fonts, the one primary, the next step above the phone fold, leftovers and text sizes. It includes the leak search and a "could not check" list.
+- **`/plan`:** the header names the next action and jumps to its card. "Also in FinPath" moved to the foot of the page, as on Home.
+- **`/spending`:** the header states the excess in the brief's voice and jumps to the adjustment.
+- **`/sources`:** the header CTA is the page's one primary (`PublicHeader primary`).
+
+**Files.** `docs/refactor/visual-qa.md`, `app/(app)/plan/page.tsx`, `app/(app)/spending/page.tsx`, `app/components/PublicHeader.tsx`, `app/sources/page.tsx`.
+
+**Checked.** All 42 rows pass. Both jump links sit at 281 px on a phone, and each lands with its primary on screen (screenshots). The leak search found nothing to fix; the arbitrary values and inline styles are layout and data geometry, as audit §8 classed them.
+
+**Could not check.** `app/error.tsx` (it needs a route to throw), `/ask` with real answers, and Safari or Firefox.
+
+**Where to see it**
+- `/plan` on a phone: "Your next step: Pay your card's full statement balance… Go to it ↓" under the title; tapping it scrolls to the card. "Also in FinPath" is now at the bottom.
+- `/spending` on a phone: "₹… went to discretionary spending this month — ₹… above your 30% line. See the adjustment ↓".
+- `/sources`: the header button is filled green ("Get started", or "Open FinPath" when signed in).
