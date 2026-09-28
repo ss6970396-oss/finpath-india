@@ -34,7 +34,7 @@ Each phase is a work commit plus a progress-report commit (`git log --oneline --
 | 11 Performance | `e217162` |
 | 12 Accessibility | `5cfd595` |
 | 13 Visual QA | `a2e12b3`, then `93c28b6` (13b, as specified) |
-| 14 Deliverables | `09d7f60`, then 14b (this commit) |
+| 14 Deliverables | `09d7f60`, then `80869f5` (14b) |
 | Owner decisions | `4ac6523` |
 
 ## 1. The Phase 1 feature checklist

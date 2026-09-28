@@ -396,3 +396,24 @@ The app routes keep ~80 kB more than the public ones. That's the shell's real in
 - `/plan` on a phone: "Your next step: Pay your card's full statement balance… Go to it ↓" under the title; tapping it scrolls to the card. "Also in FinPath" is now at the bottom.
 - `/spending` on a phone: "₹… went to discretionary spending this month — ₹… above your 30% line. See the adjustment ↓".
 - `/sources`: the header button is filled green ("Get started", or "Open FinPath" when signed in).
+
+## Phase 14b — Deliverables as specified · `80869f5`
+
+**Why a "b".** Phase 14 ran before the brief was in the repo. It produced `14-feature-parity.md` and the MIGRATION.md work, both kept. The brief also asks for five diagrams, `before-after.md`, `screenshots.md` with the README placeholders, `CHANGELOG.md`, and a final report.
+
+**What changed.**
+- **`diagrams.md`:** the five Mermaid diagrams (repository workflow, user journey, component dependency graph, state flow, API flow), drawn from the current code. Each has notes on what changed since the audit's "before" diagrams. All five were parsed and rendered with Mermaid 11. The journey diagram was simplified after its first render overlapped labels.
+- **`before-after.md`:** 13 screen rows and 6 shared-chrome rows (before, now, why), plus the colour and type-role tables.
+- **`screenshots.md`:** 30 captures with file, route, viewport, state and what must be visible. No images were generated. The README's three images showed the old design and are now five placeholders; the old PNGs are marked for deletion after recapture.
+- **`CHANGELOG.md`** at the root.
+- **`final-report.md`:** the definition of done with evidence, the 71-item checklist, before/after bundle sizes, and what is deferred or open.
+- **README fixes:** the test count (234 → 267), the "both themes" claim (the site is light-only), and the routes line (it listed the legacy URLs as live).
+
+**Files.** `CHANGELOG.md`, `README.md`, `docs/README.md`, `docs/refactor/{diagrams,before-after,screenshots,final-report}.md`, `docs/refactor/MIGRATION.md`.
+
+**Checked.** `npm run verify` passes. Final bundle sizes were re-measured with the Phase 1 method. Existing fixtures are unchanged, and the backend diff since `main` is empty.
+
+**Where to see it**
+- `docs/refactor/final-report.md`: start here.
+- `docs/refactor/diagrams.md` renders on GitHub.
+- `README.md`: `<!-- SCREENSHOT: … -->` placeholders where the images were.
