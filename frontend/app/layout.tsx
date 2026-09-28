@@ -3,11 +3,7 @@ import { Instrument_Serif, Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "./providers/AuthProvider";
 import { FinPathProvider } from "./providers/FinPathProvider";
-import {
-  CORPUS_PHRASE,
-  ToastProvider,
-  TooltipProvider,
-} from "@/components/ui";
+import { CORPUS_PHRASE } from "@/components/ui";
 
 /**
  * §15. Two families, self-hosted by next/font — no external request, and
@@ -62,7 +58,10 @@ export const viewport: Viewport = {
  *   AuthProvider     owns the session. FinPath's own state is per-person,
  *                    so it has to be able to read who is signed in.
  *   FinPathProvider  owns the declared profile and the resolved figures.
- *   Tooltip/Toast    Base UI providers; portals only, no data.
+ *
+ * The Tooltip and Toast providers live in the (app) shell, the only place
+ * either is used. Mounting them here put Base UI's floating layer on the
+ * landing and auth pages, which show neither.
  *
  * There is no header or footer here. The public pages, the auth pages, the
  * onboarding flow and the signed-in app each have a different chrome, so
@@ -79,11 +78,7 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${instrumentSerif.variable}`}>
       <body className="type-body min-h-dvh bg-canvas text-ink">
         <AuthProvider>
-          <FinPathProvider>
-            <TooltipProvider>
-              <ToastProvider>{children}</ToastProvider>
-            </TooltipProvider>
-          </FinPathProvider>
+          <FinPathProvider>{children}</FinPathProvider>
         </AuthProvider>
       </body>
     </html>

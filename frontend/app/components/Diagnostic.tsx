@@ -6,7 +6,7 @@ import { lumpSumFutureValue } from "@/lib/finance";
 import { formatINR, formatPercent } from "@/lib/format";
 import { rupeesToPaise } from "@/lib/money";
 import { AmountField } from "../onboarding/AmountField";
-import { useFinPath } from "../providers/FinPathProvider";
+import { useFinPath, useRequestSpending } from "../providers/FinPathProvider";
 
 /**
  * The landing page's proof: one purchase, shown as what it becomes.
@@ -34,6 +34,8 @@ const EXAMPLE_AMOUNT = 3500;
 
 export function Diagnostic() {
   const { params } = useFinPath();
+  // The rate is the API's, so the landing page asks for it.
+  useRequestSpending();
   const [amount, setAmount] = React.useState(EXAMPLE_AMOUNT);
 
   const years = params.years;

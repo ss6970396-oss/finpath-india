@@ -168,6 +168,8 @@ type Ctx = {
   loading: boolean;
   error: string | null;
   reload: () => void;
+  /** Starts the /api/spending fetch. Call through `useRequestSpending`. */
+  requestData: () => void;
 
   /* ---- the plan checklist ---- */
   done: Record<string, boolean>;
@@ -184,7 +186,12 @@ export function FinPathProvider({ children }: { children: React.ReactNode }) {
   // Persisted state reads through useSyncExternalStore: no setState in an
   // effect, and the server snapshot keeps hydration consistent. Every read
   // and write is for the signed-in account; signed out reads the fallback.
-  const userId = useAuth().session?.userId ?? null;
+  const auth = useAuth();
+  const userId = auth.session?.userId ?? null;
+  // Until the session resolves, the profile read is the signed-out
+  // fallback, so a fetch then would ask about the wrong allowance and be
+  // thrown away a moment later.
+  const authResolved = auth.status === "resolved";
   const profile = useSyncExternalStore(
     profileStore.subscribe,
     () => profileStore.getFor(userId),
@@ -213,6 +220,11 @@ export function FinPathProvider({ children }: { children: React.ReactNode }) {
   );
   const [useExample, setUseExample] = useState(false);
   const [nonce, setNonce] = useState(0);
+  // Nothing is fetched until a screen that shows figures asks for it, so
+  // the auth screens and /sources never call the API. Once asked, it
+  // stays asked for the session.
+  const [wanted, setWanted] = useState(false);
+  const requestData = useCallback(() => setWanted(true), []);
 
   const onboarded = isComplete(profile);
   const budget = useMemo(() => deriveBudget(profile), [profile]);
@@ -234,6 +246,7 @@ export function FinPathProvider({ children }: { children: React.ReactNode }) {
   }>({ key: "", data: null, error: null });
 
   useEffect(() => {
+    if (!wanted || !authResolved) return;
     let cancelled = false;
     const key = reqKey;
     const url = `${API}/api/spending?allowance=${queryAllowance}`;
@@ -252,7 +265,7 @@ export function FinPathProvider({ children }: { children: React.ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [reqKey, queryAllowance]);
+  }, [wanted, authResolved, reqKey, queryAllowance]);
 
   const loading = res.key !== reqKey;
   const data = res.key === reqKey ? res.data : null;
@@ -372,7 +385,7 @@ export function FinPathProvider({ children }: { children: React.ReactNode }) {
       transactions, income, uncategorised,
       uploaded, setUploaded, assignCategory,
       useExample, setUseExample,
-      params, data, loading, error, reload,
+      params, data, loading, error, reload, requestData,
       done, toggleTask,
       lastReview, recordReview,
     }),
@@ -381,7 +394,7 @@ export function FinPathProvider({ children }: { children: React.ReactNode }) {
       source, allowance, totals, ratio, health, envelope,
       transactions, income, uncategorised,
       uploaded, setUploaded, assignCategory, useExample,
-      params, data, loading, error, reload,
+      params, data, loading, error, reload, requestData,
       done, toggleTask, lastReview, recordReview,
     ],
   );
@@ -395,4 +408,14 @@ export function useFinPath(): Ctx {
   const ctx = useContext(FinPathContext);
   if (!ctx) throw new Error("useFinPath must be used inside FinPathProvider");
   return ctx;
+}
+
+/**
+ * Declares that this screen shows figures from /api/spending. The fetch
+ * starts on first use and `loading` stays true until it answers, so a
+ * screen that calls this never flashes an empty state first.
+ */
+export function useRequestSpending(): void {
+  const { requestData } = useFinPath();
+  useEffect(() => requestData(), [requestData]);
 }

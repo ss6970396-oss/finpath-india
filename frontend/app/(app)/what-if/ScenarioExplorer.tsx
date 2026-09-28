@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import {
   ButtonLink,
@@ -12,6 +13,7 @@ import {
   PageHeader,
   Section,
   Segmented,
+  Skeleton,
   Slider,
 } from "@/components/ui";
 import { RULE, delayedSeries, flatSeries, stepUpSeries } from "@/lib/finance";
@@ -19,7 +21,15 @@ import { formatINR, formatPercent } from "@/lib/format";
 import { rupeesToPaise } from "@/lib/money";
 import { useFinPath } from "../../providers/FinPathProvider";
 import { SourceLine } from "../../components/SourceLine";
-import { ScenarioChart } from "./ScenarioChart";
+
+// Recharts is ~100 kB gzipped and only this plot uses it, so it loads after
+// the page. The placeholder is the chart's own box, static like every other
+// loading block, so nothing shifts when the plot arrives. The figures and
+// the data table in ChartFrame render without waiting for it.
+const ScenarioChart = dynamic(
+  () => import("./ScenarioChart").then((m) => m.ScenarioChart),
+  { ssr: false, loading: () => <Skeleton className="h-80" /> },
+);
 
 /**
  * /what-if (§8) — "Explore scenarios".
