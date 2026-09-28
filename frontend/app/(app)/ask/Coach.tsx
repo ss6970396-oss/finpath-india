@@ -232,7 +232,7 @@ export function Coach() {
                       // Straight into the box, so Enter sends it.
                       composer.current?.focus();
                     }}
-                    className="type-body row-hover min-h-11 w-full py-4 text-left text-ink"
+                    className="type-reading row-hover min-h-11 w-full py-4 text-left text-ink"
                   >
                     {suggestion}
                   </button>
@@ -348,7 +348,7 @@ function TurnView({
     <article className="flex flex-col gap-6" aria-label={`Question: ${turn.question}`}>
       {/* Your turn: a sunken block on the right. */}
       <div className="gutter-offset flex justify-end">
-        <p className="type-body max-w-full bg-surface-sunken px-4 py-2 text-ink sm:max-w-md">
+        <p className="type-reading max-w-full bg-surface-sunken px-4 py-2 text-ink sm:max-w-md">
           <span className="sr-only-text">You asked: </span>
           {turn.question}
         </p>

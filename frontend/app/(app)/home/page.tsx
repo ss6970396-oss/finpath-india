@@ -94,7 +94,7 @@ export default function HomePage() {
         <h1 className="type-display text-ink">
           {greeting()}, {displayName(session)}.
         </h1>
-        <p className="type-reading prose-measure text-ink">
+        <p className="type-body prose-measure text-ink">
           <Standing opportunity={opportunity} />{" "}
           {!opportunity.clear ? (
             <Link

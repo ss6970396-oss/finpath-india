@@ -67,7 +67,7 @@ export function Diagnostic() {
           <p className="ledger-rule w-fit pb-2">
             <Money amount={rupeesToPaise(future)} size="xl" />
           </p>
-          <p className="type-body prose-measure text-ink-secondary">
+          <p className="type-reading prose-measure text-ink-secondary">
             {amount > 0
               ? `${formatINR(rupeesToPaise(amount))} spent once today is ${formatINR(rupeesToPaise(future))} you would not have in ${years} years. Nobody is saying don't buy it — only that this is what it costs.`
               : "Enter an amount to see what it becomes."}
