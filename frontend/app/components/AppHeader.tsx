@@ -65,7 +65,7 @@ export function AppHeader() {
                     aria-current={active ? "page" : undefined}
                     className={cn(
                       // -mb-px lays the indicator bar ON the header's hairline.
-                      "type-label -mb-px flex items-center border-b-2 px-1",
+                      "type-label -mb-px flex min-w-11 items-center justify-center border-b-2 px-1",
                       "transition-colors duration-(--dur-fast) ease-(--ease-out)",
                       "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent",
                       active
@@ -88,7 +88,7 @@ export function AppHeader() {
               <button
                 type="button"
                 aria-label={`Account: ${name}`}
-                className="flex min-h-11 items-center gap-2 border border-transparent px-1 hover:border-line focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                className="flex min-h-11 min-w-11 items-center gap-2 border border-transparent px-1 hover:border-line focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
                 <Avatar name={session?.name || name} />
                 <span className="type-label hidden text-ink sm:inline">

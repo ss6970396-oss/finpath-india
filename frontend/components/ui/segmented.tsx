@@ -82,7 +82,10 @@ export function Segmented<T extends string>({
               "transition-colors duration-(--dur-fast) ease-(--ease-out)",
               "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent",
               i > 0 && "border-l border-line-strong",
-              size === "sm" ? "px-2 py-1" : "px-4 py-2",
+              // md is a 44px target; sm extends its hit area to 44px.
+              size === "sm"
+                ? "relative px-2 py-1 after:absolute after:inset-x-0 after:-inset-y-1.5"
+                : "min-h-11 px-4",
               selected
                 ? "bg-ink font-semibold text-canvas"
                 : "bg-transparent text-ink-secondary hover:bg-surface hover:text-ink",

@@ -71,7 +71,7 @@ export default function AuthLayout({
           <p className="type-label text-ink-muted">
             <Link
               href="/"
-              className="underline underline-offset-4 hover:text-ink"
+              className="inline-flex min-h-11 items-center underline underline-offset-4 hover:text-ink"
             >
               Back to the home page
             </Link>

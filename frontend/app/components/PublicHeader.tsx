@@ -30,7 +30,7 @@ export function PublicHeader() {
         <div className="flex items-center gap-4">
           <Link
             href="/sources"
-            className="type-label hidden text-ink-secondary hover:text-ink sm:inline"
+            className="type-label hidden min-h-11 items-center text-ink-secondary hover:text-ink sm:inline-flex"
           >
             Trusted sources
           </Link>
@@ -43,7 +43,7 @@ export function PublicHeader() {
             <>
               <Link
                 href="/login"
-                className="type-label text-ink-secondary hover:text-ink"
+                className="type-label inline-flex min-h-11 items-center text-ink-secondary hover:text-ink"
               >
                 Sign in
               </Link>

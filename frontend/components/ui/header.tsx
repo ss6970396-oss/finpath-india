@@ -30,7 +30,7 @@ export function SkipLink({ href = "#main" }: { href?: string }) {
         "type-label sr-only-text",
         // Becomes visible only on keyboard focus.
         "focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50",
-        "focus:border focus:border-line-strong focus:bg-canvas focus:px-2 focus:py-2 focus:text-ink",
+        "focus:flex focus:min-h-11 focus:items-center focus:border focus:border-line-strong focus:bg-canvas focus:px-4 focus:text-ink",
       )}
     >
       Skip to content
@@ -42,7 +42,7 @@ export function Wordmark({ href = "/" }: { href?: string }) {
   return (
     <Link
       href={href}
-      className="type-heading text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+      className="type-heading inline-flex min-h-11 items-center text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
     >
       FinPath
     </Link>

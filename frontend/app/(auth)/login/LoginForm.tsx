@@ -125,7 +125,7 @@ export function LoginForm() {
         <div className="flex justify-end">
           <Link
             href="/forgot-password"
-            className="type-label text-ink-secondary underline underline-offset-4 hover:text-ink"
+            className="type-label inline-flex min-h-11 items-center text-ink-secondary underline underline-offset-4 hover:text-ink"
           >
             Forgotten your password?
           </Link>
@@ -140,7 +140,7 @@ export function LoginForm() {
         New here?{" "}
         <Link
           href={next ? `/signup?next=${encodeURIComponent(next)}` : "/signup"}
-          className="text-accent underline underline-offset-4"
+          className="inline-flex min-h-11 items-center text-accent underline underline-offset-4"
         >
           Create an account
         </Link>

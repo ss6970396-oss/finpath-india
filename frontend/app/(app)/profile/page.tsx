@@ -396,7 +396,7 @@ function Block({
           {label}
         </SectionLabel>
         {onEdit && !editing && !locked ? (
-          <Button variant={primaryEdit ? "primary" : "secondary"} size="sm" onClick={onEdit}>
+          <Button variant={primaryEdit ? "primary" : "secondary"} onClick={onEdit}>
             Edit <span className="sr-only-text">{label.toLowerCase()}</span>
           </Button>
         ) : null}

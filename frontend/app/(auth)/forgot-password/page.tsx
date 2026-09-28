@@ -80,7 +80,7 @@ export default function ForgotPasswordPage() {
           <p className="type-body text-ink-secondary">
             <Link
               href="/login"
-              className="text-accent underline underline-offset-4"
+              className="inline-flex min-h-11 items-center text-accent underline underline-offset-4"
             >
               Back to sign in
             </Link>
@@ -108,7 +108,7 @@ export default function ForgotPasswordPage() {
           <p className="type-body text-ink-secondary">
             <Link
               href="/login"
-              className="underline underline-offset-4 hover:text-ink"
+              className="inline-flex min-h-11 items-center underline underline-offset-4 hover:text-ink"
             >
               Back to sign in
             </Link>

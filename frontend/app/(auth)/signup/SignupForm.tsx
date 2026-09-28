@@ -153,7 +153,7 @@ export function SignupForm() {
         Already have an account?{" "}
         <Link
           href={next ? `/login?next=${encodeURIComponent(next)}` : "/login"}
-          className="text-accent underline underline-offset-4"
+          className="inline-flex min-h-11 items-center text-accent underline underline-offset-4"
         >
           Sign in
         </Link>

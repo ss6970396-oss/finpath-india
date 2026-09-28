@@ -42,9 +42,13 @@ const VARIANTS: Record<Variant, string> = {
     "border border-critical bg-critical text-canvas hover:bg-critical/90 active:bg-critical",
 };
 
+// 44px is the touch-target floor (§39, WCAG 2.5.5). `md` meets it with its
+// own box. `sm` stays visually compact but its hit area reaches 44px
+// through a transparent ::after 6px above and below; keep 12px between
+// stacked sm buttons, or those areas overlap.
 const SIZES: Record<Size, string> = {
-  sm: "h-8 px-2 gap-1",
-  md: "h-10 px-4 gap-2",
+  sm: "relative h-8 px-2 gap-1 after:absolute after:inset-x-0 after:-inset-y-1.5",
+  md: "h-11 px-4 gap-2",
 };
 
 /**

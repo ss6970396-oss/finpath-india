@@ -63,12 +63,12 @@ export function SiteFooter() {
           {GROUPS.map((group) => (
             <nav key={group.heading} aria-label={group.heading}>
               <h2 className="type-eyebrow text-ink-muted">{group.heading}</h2>
-              <ul className="mt-2 flex flex-col gap-2">
+              <ul className="mt-1 flex flex-col">
                 {group.links.map((link) => (
                   <li key={link.href + link.label}>
                     <Link
                       href={link.href}
-                      className="type-label text-ink-secondary underline-offset-4 hover:text-ink hover:underline"
+                      className="type-label inline-flex min-h-11 min-w-11 items-center text-ink-secondary underline-offset-4 hover:text-ink hover:underline"
                     >
                       {link.label}
                     </Link>

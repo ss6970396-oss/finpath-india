@@ -75,7 +75,9 @@ export function Slider({
         aria-describedby={describedBy}
         aria-valuetext={valueText}
         onChange={(e) => onValueChange(Number(e.target.value))}
-        className="w-full disabled:cursor-not-allowed"
+        // The track draws thin; the box is 44px tall so the thumb is a
+        // full touch target.
+        className="h-11 w-full disabled:cursor-not-allowed"
       />
 
       {bounds ? (

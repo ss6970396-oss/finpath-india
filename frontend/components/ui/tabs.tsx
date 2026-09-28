@@ -78,7 +78,7 @@ export function Tab({
     <BaseTabs.Tab
       value={value}
       className={cn(
-        "type-label -mb-px shrink-0 whitespace-nowrap border-b-2 border-transparent px-1 py-2",
+        "type-label -mb-px inline-flex min-h-11 shrink-0 items-center whitespace-nowrap border-b-2 border-transparent px-1",
         "text-ink-muted transition-colors duration-(--dur-fast) ease-(--ease-out)",
         "hover:text-ink",
         // Weight and rule together, so the state survives greyscale.
@@ -102,7 +102,15 @@ export function TabPanel({
   children: React.ReactNode;
 }) {
   return (
-    <BaseTabs.Panel value={value} className={cn("outline-none", className)}>
+    // Base UI makes the panel a tab stop (so a panel with no focusable
+    // content is still reachable), which means it needs a visible ring.
+    <BaseTabs.Panel
+      value={value}
+      className={cn(
+        "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent",
+        className,
+      )}
+    >
       {children}
     </BaseTabs.Panel>
   );
