@@ -162,5 +162,5 @@ The old `ActionCard` export in `components/ui/insight.tsx` was removed as well. 
 ## Dependencies and build
 
 - **Removed:** `motion`, `tw-animate-css`, `class-variance-authority`, `shadcn`. None was imported. `components.json` (the shadcn CLI config) is kept.
-- **Added to `package.json`:** `"sideEffects": ["*.css"]`. It is what lets the barrel tree-shake, taking the landing page from 300 to 207 kB gzip. A module that must run code on import has to be added to that list.
+- **Added to `package.json`:** `"sideEffects": ["*.css"]`. It is what lets the barrel tree-shake, taking the landing page from about 300 to 210 kB gzip. A module that must run code on import has to be added to that list.
 - **Run `npm install`** after pulling, so `node_modules` loses the four packages.

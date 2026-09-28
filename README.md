@@ -4,8 +4,8 @@ An AI financial-literacy counselor for Indian college students that answers only
 
 Most Indian students receive no formal financial education before they start earning, and the apps that reach them first are distribution channels — they surface a fund, a policy, or a credit card, because that is how they earn. FinPath sells nothing: it teaches from RBI, SEBI and NCFE material, cites the page it used, and refuses to answer when the corpus doesn't cover the question.
 
-![FinPath India landing page](docs/screenshots/landing.png)
-*The landing page runs the diagnostic inline: a ₹3,500 purchase shown as the ₹10,870 it displaces over ten years.*
+<!-- SCREENSHOT: docs/screenshots/landing-1280.png (docs/refactor/screenshots.md, row 1)
+     Caption: The landing page: one next step, and the diagnostic that shows a ₹3,500 purchase as the ₹10,870 it displaces over ten years. -->
 
 ## What it does
 
@@ -13,13 +13,17 @@ Most Indian students receive no formal financial education before they start ear
 - **Behavioural nudge engine.** Classifies a month of UPI transactions into Needs / Wants / Savings, and when Wants clears 30% of allowance, projects the excess as a ten-year SIP at 12% p.a. — so the output is "this is ₹X in ten years", not "you overspent".
 - **Interactive what-if simulator.** Recomputes the projection per slider drag in the browser, against the server's own rate and horizon constants rather than a hardcoded copy.
 
-![The counselor answering with inline citations](docs/screenshots/counselor.png)
-*Every claim carries an inline `[n]`; the Citation Inspector on the left resolves each one to its source document, page and the exact retrieved passage.*
+<!-- SCREENSHOT: docs/screenshots/home-1280.png (docs/refactor/screenshots.md, row 10)
+     Caption: Home answers one question: what to do next. -->
 
-![The spending engine's statement upload](docs/screenshots/dashboard.png)
-*The spending engine accepts a real bank statement — the CSV is parsed in the browser and never reaches the API.*
+<!-- SCREENSHOT: docs/screenshots/ask-grounded-1280.png (docs/refactor/screenshots.md, row 21)
+     Caption: A grounded answer: every claim carries an inline [n], and the sources sit in the margin beside it. -->
 
-<!-- SCREENSHOT: what-if simulator -->
+<!-- SCREENSHOT: docs/screenshots/spending-sample-1280.png (docs/refactor/screenshots.md, row 16)
+     Caption: Spending from a statement parsed in the browser. The file never reaches the API. -->
+
+<!-- SCREENSHOT: docs/screenshots/what-if-1280.png (docs/refactor/screenshots.md, row 18)
+     Caption: The what-if explorer, recomputed on every slider move from the server's own rate and horizon. -->
 
 ## Architecture
 
@@ -88,14 +92,14 @@ behind `/api/spending`'s response contract.
 
 ```bash
 cd frontend
-npm test              # vitest, 234 tests across 4 files
+npm test              # vitest, 267 tests across 7 files
 npm run verify        # typecheck + design-lint + check-contrast + test + build
 ```
 
-- **Vitest suite** (`lib/*.test.ts`, 234 tests across 4 files) covers `lib/` only, in a `node` environment — everything under test is a pure function, so there is nothing to render. `lib/csv.test.ts` is the largest of them: the statement parser handles three amount shapes and two header-matching traps, each regression-tested.
+- **Vitest suite** (`lib/*.test.ts`, 267 tests across 7 files) covers `lib/` only, in a `node` environment — everything under test is a pure function, so there is nothing to render. `lib/csv.test.ts` is the largest of them: the statement parser handles three amount shapes and two header-matching traps, each regression-tested.
 - **Golden fixtures** (`lib/__fixtures__/`) freeze the financial engines against recorded output: 50/30/20 bucketing, the merchant classifier, compounding, step-up SIPs, FI-age, and stress tests. Each fixture asserts every scenario is covered *and no more*, so a silently dropped case fails the suite rather than passing quietly.
 - **`npm run design-lint`** (`scripts/design-lint.ts`) lexes the source and rejects colours outside the token file, stray radii and shadows, ad-hoc type sizes, hand-rolled currency formatting, and mock data on a production path. It blanks comments first, so prose describing a rule doesn't trip it.
-- **`npm run check-contrast`** (`scripts/check-contrast.mjs`) parses the literal hex values out of `globals.css` and asserts every rendered pairing against WCAG 2.2 AA in both themes, including two documented exemptions asserted *as* exemptions.
+- **`npm run check-contrast`** (`scripts/check-contrast.mjs`) parses the literal hex values out of `globals.css` and asserts every rendered pairing against WCAG 2.2 AA (the site is light-only), including two documented exemptions asserted *as* exemptions.
 
 `npm run verify` chains all four behind a typecheck and a production build, and
 is the gate a change has to pass. The backend has no test suite — backend
@@ -134,7 +138,7 @@ DATABASE_URL=postgresql+psycopg://finpath:finpath@localhost:5432/finpath
 
 The schema is applied automatically on API startup and before every ingest — no manual DDL.
 
-Routes: `/` landing · `/counselor` chat · `/spending` engine · `/simulator` · `/vault` corpus browser · `/roadmap` · `/styleguide` design tokens.
+Routes: `/` landing · `/home` · `/plan` (Actions) · `/ask` · `/profile` · `/spending` · `/what-if` · `/sources` · `/onboarding` · `/styleguide` design tokens. The old `/dashboard`, `/counselor`, `/simulator`, `/roadmap` and `/vault` redirect permanently (308). See [`docs/refactor/MIGRATION.md`](docs/refactor/MIGRATION.md).
 
 ## Disclaimer
 
