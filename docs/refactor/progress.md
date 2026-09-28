@@ -193,3 +193,25 @@ Edit switches a block to an inline form with Save (primary) and Cancel. One bloc
 - `/login` with a wrong password: a red-ruled "Not signed in" note, not a red box.
 - `/forgot-password` after submitting: calm ink-ruled notes.
 - `/spending` with a broken CSV: a red-ruled "That file could not be used" note.
+
+## Phase 10 — Component standardisation, part 2 · `4fa7aaa`
+
+**What changed.** The three items part 1 left open are done.
+- **`Card`:** `AllowancePrompt` (filled) and `SkipReport` (outlined) on `/spending`.
+- **`Metric`:** the import summary (in a `MetricRow`), the three What-if scenario figures (the step-up one at `xl`, the serif hero) and onboarding's running total.
+- **Ledger rule:** two `ledger-rule`s that sat under text with no amount (skipped-row lines, the onboarding welcome list) are now plain `line` hairlines. The rule means "a real number sits here".
+- **Styleguide:** it now shows every visual export of the barrel. New: a ButtonLink row, BareTextarea, a "Wordmark, SkipLink and Menu" section, and a "Notice, SectionLabel and TrustLine" section. The exports it doesn't render are non-visual: `buttonClass`, `isNavActive`, `CORPUS_PHRASE`, `TRUST_LINE`, and `SiteFooter`, which every public page renders.
+
+**Files.** `app/(app)/spending/StatementImport.tsx`, `app/(app)/what-if/ScenarioExplorer.tsx`, `app/onboarding/page.tsx`, `app/styleguide/page.tsx`.
+
+**Checked.** The Chrome extension was not connected. Checks used headless Chrome driven over the DevTools protocol, with a throwaway device account in a scratch profile (your browser data is untouched).
+- **Styleguide:** new sections by screenshot at 1280 and 375 px; no horizontal overflow at 375 px.
+- **Onboarding:** a full run through all 8 steps landed on `/home`.
+- **What-if:** the scenario figures by screenshot at 1280 px; no overflow at 375 px.
+
+**Needs a human look.** `/spending` after importing a real file (the allowance prompt and skip report need a statement with a recurring credit and a bad row).
+
+**Where to see it**
+- `/styleguide`: "Button" has a Link row; "Input and Select" has the bare textarea; there are two new sections, "Wordmark, SkipLink and Menu" and "Notice, SectionLabel and TrustLine".
+- `/what-if`: the three scenario figures, unchanged in look, now drawn by `Metric`.
+- `/spending` after an import: the allowance suggestion is a filled card; the skip report is an outlined card with plain hairlines between rows.
