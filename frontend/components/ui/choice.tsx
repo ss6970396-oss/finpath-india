@@ -56,7 +56,7 @@ export function Checkbox({
         className={cn(
           "mt-0.5 flex size-4 shrink-0 items-center justify-center border",
           "transition-colors duration-(--dur-fast) ease-(--ease-out)",
-          "peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-line-strong",
+          "peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent",
           checked
             ? "border-line-strong bg-ink text-canvas"
             : "border-line-strong bg-canvas",
@@ -99,7 +99,7 @@ export function Choice({
       className={cn(
         "group relative flex cursor-pointer items-start gap-4 border px-4 py-4",
         "transition-colors duration-(--dur-fast) ease-(--ease-out)",
-        "has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-line-strong",
+        "has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent",
         checked
           ? "border-line-strong bg-surface"
           : "border-line bg-transparent hover:bg-surface",

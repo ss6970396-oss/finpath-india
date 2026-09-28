@@ -12,12 +12,14 @@ import { SOURCE_LABEL, useFinPath } from "../providers/FinPathProvider";
  * that replaces it, declared figures link to the statement upload.
  */
 export function SourceLine({ className }: { className?: string }) {
-  const { source, setUseExample } = useFinPath();
+  const { source, setUseExample, setUploaded } = useFinPath();
 
   return (
     <Provenance
       source={SOURCE_LABEL[source]}
-      illustrative={source === "example"}
+      // Both illustrations get the stronger treatment: an example month
+      // and the sample statement must never read as the student's own.
+      illustrative={source === "example" || source === "sample"}
       className={className}
       action={
         source === "example" ? (
@@ -27,6 +29,14 @@ export function SourceLine({ className }: { className?: string }) {
             className="underline underline-offset-4 hover:text-ink"
           >
             Use my own figures instead
+          </button>
+        ) : source === "sample" ? (
+          <button
+            type="button"
+            onClick={() => setUploaded(null)}
+            className="underline underline-offset-4 hover:text-ink"
+          >
+            Remove the sample
           </button>
         ) : source === "declared" ? (
           <Link

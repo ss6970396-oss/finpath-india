@@ -36,7 +36,7 @@ export function Avatar({
       aria-hidden="true"
       className={cn(
         "avatar inline-flex shrink-0 items-center justify-center border border-line-strong bg-surface text-ink",
-        size === "sm" ? "size-6 text-sm" : "size-8 text-base",
+        size === "sm" ? "size-6" : "size-8",
         "type-label",
         className,
       )}

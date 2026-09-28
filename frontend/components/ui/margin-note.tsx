@@ -29,7 +29,7 @@ import { cn } from "@/lib/utils";
  * uncommon: a page where every paragraph has a marginal note is a page
  * where the margin means nothing.
  *
- * Below 1024px the gutter collapses and the note moves inline, above the
+ * Below 1280px the gutter collapses and the note moves inline, above the
  * element it annotates, still muted and still preceded by a rule.
  */
 

@@ -26,10 +26,12 @@ import {
   type DerivedBudget,
   type FinancialProfile,
 } from "@/lib/onboarding";
-import { createPersistedStore } from "@/lib/persist";
+import { createScopedStore } from "@/lib/persist";
 import { apiJson, describeApiFailure } from "@/lib/api";
+import { API } from "./api-base";
+import { useAuth } from "./AuthProvider";
 
-export const API = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
+export { API };
 
 /**
  * The API's fallback assumptions, used only until /api/spending answers.
@@ -75,22 +77,37 @@ export type Spending = {
  * identical and mean completely different things.
  *
  *   statement  a file the student parsed in their own browser. Actuals.
+ *   sample     FinPath's own sample CSV, parsed the same way. It goes
+ *              through the real parser, so it is the honest way to show
+ *              what an import does — and it is labelled as a sample,
+ *              never as "your uploaded statement".
  *   declared   what they typed during onboarding. Their own estimate.
  *   example    the API's generated month. Illustration only, opt-in.
  */
-export type DataSource = "statement" | "declared" | "example";
+export type DataSource = "statement" | "sample" | "declared" | "example";
 
 export const SOURCE_LABEL: Record<DataSource, string> = {
   statement: "Your uploaded statement",
+  sample: "A sample statement",
   declared: "The figures you entered",
   example: "An example month",
 };
 
-const profileStore = createPersistedStore<FinancialProfile>(
+/** Where an uploaded ledger came from. */
+export type UploadOrigin = "file" | "sample";
+
+/*
+ * PER ACCOUNT. Each store is keyed by the signed-in account's id
+ * (`finpath.profile:<userId>`), so two device accounts in one browser never
+ * see each other's figures, ticks or history. Data written under the old
+ * unscoped keys is migrated once, by AuthProvider, to the first account
+ * resolved or signed in — see lib/account-storage.ts.
+ */
+const profileStore = createScopedStore<FinancialProfile>(
   "finpath.profile",
   EMPTY_PROFILE,
 );
-const tasksStore = createPersistedStore<Record<string, boolean>>(
+const tasksStore = createScopedStore<Record<string, boolean>>(
   "finpath.plan",
   {},
 );
@@ -105,7 +122,16 @@ const tasksStore = createPersistedStore<Record<string, boolean>>(
  */
 export type Review = { score: number; savingsRate: number; wantsRate: number; at: string };
 
-const reviewStore = createPersistedStore<Review | null>("finpath.review", null);
+const reviewStore = createScopedStore<Review | null>("finpath.review", null);
+
+/**
+ * Whether an account has finished onboarding, read straight from storage.
+ * For the sign-in form, which has to decide where to go in the same event
+ * that established the session — before the provider has re-rendered.
+ */
+export function hasCompletedProfile(userId: string): boolean {
+  return isComplete(profileStore.getFor(userId));
+}
 
 type Ctx = {
   /* ---- the declared profile ---- */
@@ -128,7 +154,8 @@ type Ctx = {
   income: number;
   uncategorised: ParsedTxn[];
   uploaded: ParsedTxn[] | null;
-  setUploaded: (t: ParsedTxn[] | null) => void;
+  /** "sample" marks FinPath's own sample CSV, so it is never labelled as yours. */
+  setUploaded: (t: ParsedTxn[] | null, origin?: UploadOrigin) => void;
   assignCategory: (id: number, category: SpendCategory) => void;
 
   /** Opt in to the generated month. Off by default; never silently on. */
@@ -141,6 +168,8 @@ type Ctx = {
   loading: boolean;
   error: string | null;
   reload: () => void;
+  /** Starts the /api/spending fetch. Call through `useRequestSpending`. */
+  requestData: () => void;
 
   /* ---- the plan checklist ---- */
   done: Record<string, boolean>;
@@ -155,26 +184,47 @@ const FinPathContext = createContext<Ctx | null>(null);
 
 export function FinPathProvider({ children }: { children: React.ReactNode }) {
   // Persisted state reads through useSyncExternalStore: no setState in an
-  // effect, and the server snapshot keeps hydration consistent.
+  // effect, and the server snapshot keeps hydration consistent. Every read
+  // and write is for the signed-in account; signed out reads the fallback.
+  const auth = useAuth();
+  const userId = auth.session?.userId ?? null;
+  // Until the session resolves, the profile read is the signed-out
+  // fallback, so a fetch then would ask about the wrong allowance and be
+  // thrown away a moment later.
+  const authResolved = auth.status === "resolved";
   const profile = useSyncExternalStore(
     profileStore.subscribe,
-    profileStore.get,
+    () => profileStore.getFor(userId),
     profileStore.getServer,
   );
   const done = useSyncExternalStore(
     tasksStore.subscribe,
-    tasksStore.get,
+    () => tasksStore.getFor(userId),
     tasksStore.getServer,
   );
   const lastReview = useSyncExternalStore(
     reviewStore.subscribe,
-    reviewStore.get,
+    () => reviewStore.getFor(userId),
     reviewStore.getServer,
   );
 
-  const [uploaded, setUploaded] = useState<ParsedTxn[] | null>(null);
+  const [upload, setUpload] = useState<{
+    txns: ParsedTxn[];
+    origin: UploadOrigin;
+  } | null>(null);
+  const uploaded = upload?.txns ?? null;
+  const setUploaded = useCallback(
+    (t: ParsedTxn[] | null, origin: UploadOrigin = "file") =>
+      setUpload(t ? { txns: t, origin } : null),
+    [],
+  );
   const [useExample, setUseExample] = useState(false);
   const [nonce, setNonce] = useState(0);
+  // Nothing is fetched until a screen that shows figures asks for it, so
+  // the auth screens and /sources never call the API. Once asked, it
+  // stays asked for the session.
+  const [wanted, setWanted] = useState(false);
+  const requestData = useCallback(() => setWanted(true), []);
 
   const onboarded = isComplete(profile);
   const budget = useMemo(() => deriveBudget(profile), [profile]);
@@ -196,6 +246,7 @@ export function FinPathProvider({ children }: { children: React.ReactNode }) {
   }>({ key: "", data: null, error: null });
 
   useEffect(() => {
+    if (!wanted || !authResolved) return;
     let cancelled = false;
     const key = reqKey;
     const url = `${API}/api/spending?allowance=${queryAllowance}`;
@@ -214,34 +265,42 @@ export function FinPathProvider({ children }: { children: React.ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [reqKey, queryAllowance]);
+  }, [wanted, authResolved, reqKey, queryAllowance]);
 
   const loading = res.key !== reqKey;
   const data = res.key === reqKey ? res.data : null;
   const error = res.key === reqKey ? res.error : null;
   const params = data?.projection_params ?? FALLBACK_PARAMS;
 
-  const saveProfile = useCallback((next: FinancialProfile) => {
-    profileStore.set(next);
-  }, []);
+  const saveProfile = useCallback(
+    (next: FinancialProfile) => profileStore.setFor(userId, next),
+    [userId],
+  );
 
-  const toggleTask = useCallback((id: string) => {
-    const current = tasksStore.get();
-    tasksStore.set({ ...current, [id]: !current[id] });
-  }, []);
+  const toggleTask = useCallback(
+    (id: string) => {
+      const current = tasksStore.getFor(userId);
+      tasksStore.setFor(userId, { ...current, [id]: !current[id] });
+    },
+    [userId],
+  );
 
-  const recordReview = useCallback((review: Review) => {
-    reviewStore.set(review);
-  }, []);
+  const recordReview = useCallback(
+    (review: Review) => reviewStore.setFor(userId, review),
+    [userId],
+  );
 
   const reload = useCallback(() => setNonce((n) => n + 1), []);
 
   const assignCategory = useCallback((id: number, category: SpendCategory) => {
-    setUploaded((current) =>
+    setUpload((current) =>
       current
-        ? current.map((t) =>
-            t.id === id ? { ...t, category, categorySource: "user" } : t,
-          )
+        ? {
+            ...current,
+            txns: current.txns.map((t) =>
+              t.id === id ? { ...t, category, categorySource: "user" } : t,
+            ),
+          }
         : current,
     );
   }, []);
@@ -271,7 +330,7 @@ export function FinPathProvider({ children }: { children: React.ReactNode }) {
         totals[t.category as SpendCategory] += t.amount;
       }
       return {
-        source: "statement" as DataSource,
+        source: (upload?.origin === "sample" ? "sample" : "statement") as DataSource,
         // A statement says what left the account, not what arrives each
         // month. The declared income stays the denominator unless there is
         // none, in which case the credits in the file are the best estimate.
@@ -304,7 +363,7 @@ export function FinPathProvider({ children }: { children: React.ReactNode }) {
       income: 0,
       uncategorised: [] as ParsedTxn[],
     };
-  }, [uploaded, useExample, data, budget]);
+  }, [uploaded, upload?.origin, useExample, data, budget]);
 
   const { source, allowance, totals, transactions, income, uncategorised } =
     resolved;
@@ -326,7 +385,7 @@ export function FinPathProvider({ children }: { children: React.ReactNode }) {
       transactions, income, uncategorised,
       uploaded, setUploaded, assignCategory,
       useExample, setUseExample,
-      params, data, loading, error, reload,
+      params, data, loading, error, reload, requestData,
       done, toggleTask,
       lastReview, recordReview,
     }),
@@ -334,8 +393,8 @@ export function FinPathProvider({ children }: { children: React.ReactNode }) {
       profile, saveProfile, onboarded, budget,
       source, allowance, totals, ratio, health, envelope,
       transactions, income, uncategorised,
-      uploaded, assignCategory, useExample,
-      params, data, loading, error, reload,
+      uploaded, setUploaded, assignCategory, useExample,
+      params, data, loading, error, reload, requestData,
       done, toggleTask, lastReview, recordReview,
     ],
   );
@@ -349,4 +408,14 @@ export function useFinPath(): Ctx {
   const ctx = useContext(FinPathContext);
   if (!ctx) throw new Error("useFinPath must be used inside FinPathProvider");
   return ctx;
+}
+
+/**
+ * Declares that this screen shows figures from /api/spending. The fetch
+ * starts on first use and `loading` stays true until it answers, so a
+ * screen that calls this never flashes an empty state first.
+ */
+export function useRequestSpending(): void {
+  const { requestData } = useFinPath();
+  useEffect(() => requestData(), [requestData]);
 }

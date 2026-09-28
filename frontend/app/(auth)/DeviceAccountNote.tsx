@@ -1,5 +1,6 @@
 "use client";
 
+import { Notice } from "@/components/ui";
 import { useAuth } from "../providers/AuthProvider";
 
 /**
@@ -19,15 +20,12 @@ export function DeviceAccountNote() {
   if (!isDeviceLocal) return null;
 
   return (
-    <div className="border border-line bg-surface px-4 py-4">
-      <h2 className="type-label text-ink">About accounts on this build</h2>
-      <p className="type-body prose-measure mt-1 text-ink-secondary">
-        This installation has no authentication server, so your account and
-        everything you enter live in this browser and nowhere else. Your
-        password is never stored — only a one-way hash of it, used to check
-        the next sign-in. Clearing site data removes the account, and it will
-        not follow you to another device.
-      </p>
-    </div>
+    <Notice title="About accounts on this build">
+      This installation has no authentication server, so your account and
+      everything you enter live in this browser and nowhere else. Your
+      password is never stored — only a one-way hash of it, used to check
+      the next sign-in. Clearing site data removes the account, and it will
+      not follow you to another device.
+    </Notice>
   );
 }

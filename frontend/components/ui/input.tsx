@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
  * what §39's "accessible errors" actually requires: `aria-describedby` to
  * the message, `aria-invalid` on the control, and both surviving re-render.
  *
- * The control border is --line-strong. --line is 1.24:1 and would fail
+ * The control border is --line-strong. --line is 1.27:1 and would fail
  * WCAG 2.2 SC 1.4.11 for a component boundary.
  */
 
@@ -20,7 +20,7 @@ const CONTROL = [
   "placeholder:text-ink-muted",
   "transition-colors duration-(--dur-fast) ease-(--ease-out)",
   "hover:bg-surface",
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-line-strong",
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
   "disabled:cursor-not-allowed disabled:border-line disabled:bg-surface-sunken disabled:text-ink-disabled",
   "data-invalid:border-critical",
 ].join(" ");
@@ -107,3 +107,15 @@ export function BareInput({
     />
   );
 }
+
+/**
+ * A multi-line control with no label or field chrome — for a composer
+ * whose label is visually hidden and whose layout the caller owns (the
+ * coach). Same boundary, focus ring and states as Input.
+ */
+export const BareTextarea = React.forwardRef<
+  HTMLTextAreaElement,
+  React.ComponentProps<"textarea">
+>(function BareTextarea({ className, ...props }, ref) {
+  return <textarea ref={ref} className={cn(CONTROL, "resize-none", className)} {...props} />;
+});

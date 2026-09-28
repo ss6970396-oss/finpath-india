@@ -113,7 +113,7 @@ The guard is routing, not authorisation; server-side enforcement arrives with
 `/onboarding` sits outside `(app)` (it would otherwise guard itself into a
 loop) and requires only a session.
 
-Legacy paths are kept as `redirect()` pages so old links resolve:
+Legacy paths are kept as `permanentRedirect()` pages (308) so old links resolve:
 `/dashboard`→`/home`, `/counselor`→`/ask`, `/simulator`→`/what-if`,
 `/roadmap`→`/plan`, `/vault`→`/sources`.
 
@@ -121,15 +121,21 @@ Legacy paths are kept as `redirect()` pages so old links resolve:
 one page, with the token values read out of the DOM so it proves what the
 utilities compile to. Check a visual change there before a feature page.
 
-Primary navigation is five items, defined once in `app/components/nav.ts`:
-Home, Spending, Plan, What-if, Ask. The desktop header and the phone bottom
-bar render the SAME five — a navigation that changes shape between devices
-teaches two mental models. Internal subsystem names never appear as labels
-(no "Nudge Simulator", no "AI Counselor", no "Spending Engine").
+Primary navigation is four items, defined once in `app/components/nav.ts`:
+Home, Actions (`/plan` — the URL did not change), Ask, Profile. The desktop
+header and the phone bottom bar render the SAME four — a navigation that
+changes shape between devices teaches two mental models. Spending and
+What-if are not in it: Home covers them through `also` (so Home stays marked
+while you are there), and `SECONDARY` in `nav.ts` offers them as links on
+Home and Actions via `SecondaryLinks`. Active state is `isNavActive()` in
+`components/ui/sidebar.tsx`. Labels are student words, verbs where a verb
+fits ("Ask", not "AI"); internal subsystem names never appear (no "Nudge
+Simulator", no "AI Counselor", no "Spending Engine").
 
-The API base lives in exactly one place — `API` in
-`app/providers/FinPathProvider.tsx`, which reads `NEXT_PUBLIC_API_URL` and
-falls back to `http://127.0.0.1:8000`. Do not re-derive a base URL at a call
+The API base lives in exactly one place — `app/providers/api-base.ts`,
+re-exported as `API` from `app/providers/FinPathProvider.tsx` (import it from
+there). It reads `NEXT_PUBLIC_API_URL` and falls back to
+`http://127.0.0.1:8000`. Do not re-derive a base URL at a call
 site, and route every request through `lib/api.ts` (`design-lint` fails on a
 bare `fetch(`). CORS on the backend is an explicit allowlist
 (`ALLOWED_ORIGINS` in `main.py`), not `["*"]`.
@@ -173,10 +179,13 @@ an income with no expenses — a 100/100 built from unanswered questions.
 
 ### Where the numbers come from (§28)
 
-`FinPathProvider` resolves one of three sources, in precedence order, and
+`FinPathProvider` resolves one of four sources, in precedence order, and
 names it:
 
-1. `statement` — an uploaded file, parsed in the browser. Actuals.
+1. `statement` — an uploaded file, parsed in the browser. Actuals. Or
+   `sample` — FinPath's own `SAMPLE_CSV`, loaded through the same parser by
+   "Try it with a sample file" and labelled "A sample statement", never as
+   the student's own. No allowance suggestion is made from it.
 2. `declared` — the onboarding profile. The student's own estimate.
 3. `example` — the API's generated month. **Opt-in, never silently on.**
 
@@ -184,6 +193,12 @@ names it:
 on every page that shows a figure. A projection built from an example month
 and one built from a real statement look identical and mean entirely
 different things.
+
+Profile, plan ticks and `reviewStore` are stored PER ACCOUNT
+(`finpath.profile:<userId>` etc., `createScopedStore` in `lib/persist.ts`);
+`lib/account-storage.ts` migrates the old global keys once, to the first
+account resolved or signed in — never on sign-up. See
+`docs/refactor/MIGRATION.md`.
 
 `reviewStore` holds one snapshot of the health score, written by `/home` on
 each visit. It is the only history the product has, and "since your last
@@ -209,9 +224,13 @@ passing 0 for "not declared" would silently upgrade "we have no idea" into
 
 ### Design system
 
-`frontend/app/globals.css` is the whole system and it is closed.
+`frontend/app/globals.css` is the whole system and it is closed. The
+direction is "calm editorial": warm paper, clear type, numbers given room,
+sources in the margin (see `docs/refactor/`). The token block is
+`@theme static`, so every token is emitted as a CSS variable even before a
+utility uses it.
 
-**Fifteen colour tokens. No sixteenth.** Three grounds (`canvas`, `surface`,
+**Fifteen colour tokens. No sixteenth.** Three warm-paper grounds (`canvas`, `surface`,
 `surface-sunken`), four inks (`ink`, `ink-secondary`, `ink-muted`,
 `ink-disabled`), two rules (`line`, `line-strong`), one accent
 (`accent`, `accent-wash`) and two statuses (`critical`, `positive`, each with
@@ -220,15 +239,21 @@ asserts a WCAG ratio for every pair.
 
 Two splits carry most of the meaning:
 
-- `--line` is 1.24:1 and draws dividers, table rules and card edges ONLY.
-  Every interactive boundary — input, select, checkbox, button, focus ring —
-  takes `--line-strong` (13.92:1), because WCAG 2.2 SC 1.4.11 exempts
-  decorative boundaries and not control boundaries.
-- `--accent` is a deep pine green at 7.28:1 on canvas, which means it is
-  legible **as text**. That is the constraint that stops it becoming
-  decoration. It is never a status colour — `critical` and `positive` own
-  that job, and they always travel with a word and a glyph because they sit
-  only 1.21:1 apart in luminance.
+- `--line` is 1.27:1 and draws hairlines, table rules and card edges ONLY.
+  Every interactive boundary — input, select, checkbox, button — takes
+  `--line-strong` (13.95:1 even on the sunken ground), because WCAG 2.2
+  SC 1.4.11 exempts decorative boundaries and not control boundaries.
+- `--accent` is a deep pine green at 7.11:1 on canvas, legible **as text**.
+  It has exactly four jobs: the ONE primary button on a screen (accent
+  fill), progress (score arc, onboarding bar, plan progress), links, and
+  the focus ring (asserted ≥ 3:1 on every ground). Never decoration, never
+  a heading or an amount. It is never a status colour — `critical` and
+  `positive` own that job, and they always travel with a word and a glyph
+  because they sit only ~1.2:1 apart in luminance.
+- `critical` is for real problems only (errors, failed parses, a revolving
+  balance). Overspending is information: it renders in ink with a sentence
+  and a sign, never red. `lib/plan.ts` still returns `tone: "critical"` for
+  wants above target; the view layer maps it to default.
 
 Radius is zero everywhere and every `--radius-*` and `--shadow-*` token is
 pinned to 0, so a `rounded-md` that slips past the linter is inert rather
@@ -236,12 +261,19 @@ than visible. The one rounded element in the product is the avatar, via the
 `avatar` utility. **There is no dark mode** and no `prefers-color-scheme`
 block; `design-lint` fails on any `dark:` variant.
 
-**Eight type roles**, and a component may use nothing else — an arbitrary
-size (`text-[13px]`) is a design-lint failure: `type-hero` (landing headline,
-one per site), `type-display`, `type-heading`, `type-subhead`, `type-body`,
-`type-label`, `type-eyebrow` (metadata only, the one uppercase role), and
-`type-data` for EVERY numeral, always tabular. Fonts are Instrument Serif
-(display, single weight) and Inter (everything else including numerals),
+**Ten type roles over one `--fs-*` size scale**, and a component may use
+nothing else — an arbitrary size (`text-[13px]`) and a Tailwind default size
+(`text-sm`, `text-2xl`) are both design-lint failures: `type-hero` (landing
+headline, one per site), `type-display`, `type-heading` (24px, the serif
+floor), `type-figure` (the ONE serif hero figure per block — score,
+diagnostic result, the big amount; never in a column), `type-subhead`,
+`type-body` (16px, the floor for anything read), `type-reading` (17px/1.6
+for answers and explanations), `type-label` (14px), `type-eyebrow` (12px
+section label, the one uppercase role), and `type-data` for every other
+numeral, always tabular. A `type-data` numeral that needs its own size takes
+`amount-sm|md|lg`; `<Money size="xl">` is `type-figure`. At most three text
+sizes per screen, not counting the hero figure. Fonts are Instrument Serif
+(display, single weight, never below 24px) and Inter (everything else),
 self-hosted through `next/font`.
 
 `ledger-rule` is the product's signature: the 1px hairline an amount rests
@@ -250,8 +282,9 @@ somewhere" — so **never draw it as decoration**, not under a heading and not
 as a divider flourish.
 
 `margin-layout` / `margin-note` are the marginalia system: a fixed gutter for
-a citation, the rule behind a figure, or an as-of date. An empty margin is
-correct; the device earns its meaning by being uncommon.
+a citation, the rule behind a figure, or an as-of date. The gutter opens at
+≥ 1280px; below that, notes sit inline. An empty margin is correct; the
+device earns its meaning by being uncommon.
 
 `enter` (4px, 200ms, once) is the only entrance animation in the product.
 Loading placeholders are static blocks — no shimmer.
@@ -280,6 +313,15 @@ the `@/components/ui` barrel, never from an individual file**, so the
 inventory stays one reviewable surface and `/styleguide` can prove it is
 complete. `components/finpath/` and `app/components/ui.tsx` are gone.
 
+The barrel is only cheap because `package.json` declares
+`"sideEffects": ["*.css"]`. Without it every route shipped every primitive
+(~90 kB gzip of Base UI on the landing page). A module that genuinely runs
+code on import must be added to that list, or it will be tree-shaken away.
+`/api/spending` is fetched only once a screen calls `useRequestSpending()`
+(the `(app)` shell and the landing diagnostic), and only after the session
+resolves. The Tooltip and Toast providers live in the `(app)` shell, not the
+root layout.
+
 `lib/money.ts` is the money layer: integer `Paise` with a brand, becoming a
 rupee number in exactly two places — `lib/format.ts` (and through it
 `<Money>`) and `toEngineRupees`, the single documented crossing point into
@@ -289,8 +331,13 @@ string; `design-lint` fails on a bare `Intl.`, a `.toFixed(` or a hand-typed
 
 Compliance copy lives in `DisclaimerNote` (`components/ui/disclaimer.tsx`)
 and is never retyped at a call site — one edit changes the wording, one grep
-audits it. It is required on every coach answer, every projection, every plan
-stage and the `/home` hero.
+audits it. The rule is **one per page, never one per item**: a note repeated
+under every answer or stage stops being read. Each page that shows advice,
+a projection or a plan carries exactly one: `/home` (plus the `example`
+variant while the example month is on), `/plan`, `/spending`, `/profile`,
+`/what-if` and the landing diagnostic (`projection`), `/sources`, onboarding,
+and the site footer. On `/ask` it sits inside the sticky composer form, so
+it stays on screen beside the input however long the conversation gets.
 
 ### Gates
 

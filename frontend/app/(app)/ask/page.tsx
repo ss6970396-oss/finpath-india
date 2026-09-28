@@ -1,12 +1,12 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { LoadingState } from "@/components/ui";
+import { CORPUS_PHRASE, LoadingState } from "@/components/ui";
 import { Coach } from "./Coach";
 
 export const metadata: Metadata = {
-  title: "Your financial coach",
+  title: "Ask",
   description:
-    "Ask a question and get an answer traced to RBI, SEBI and NCFE publications.",
+    `Ask a question and get an answer traced to ${CORPUS_PHRASE}.`,
 };
 
 export default function AskPage() {

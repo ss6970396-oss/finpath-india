@@ -10,9 +10,12 @@ import { cn } from "@/lib/utils";
  * Square, bordered, no shadow. The variants are a hierarchy of *commitment*,
  * not of decoration:
  *
- *   primary    the one action the page exists for. Ink fill, canvas text.
+ *   primary    the one action the page exists for. Accent fill, paper
+ *              text — the accent's first job, so a second primary on the
+ *              same screen is visible as a mistake.
  *   secondary  a real alternative. Bordered, transparent.
- *   quiet      navigation and reversible actions. No border until hover.
+ *   ghost      navigation and reversible actions. No border until hover.
+ *              (Was `quiet` before the editorial refactor.)
  *   critical   destructive and irreversible. The only coloured button, and
  *              it must always be confirmed elsewhere.
  *
@@ -20,28 +23,32 @@ import { cn } from "@/lib/utils";
  * important, neither is.
  *
  * The border weight is deliberate: every interactive boundary takes
- * --line-strong (13.92:1), never --line (1.24:1), which would fail
- * WCAG 2.2 SC 1.4.11.
+ * --line-strong (or the accent, on primary), never --line (1.27:1), which
+ * would fail WCAG 2.2 SC 1.4.11.
  */
 
-export type ButtonVariant = "primary" | "secondary" | "quiet" | "critical";
+export type ButtonVariant = "primary" | "secondary" | "ghost" | "critical";
 type Variant = ButtonVariant;
 type Size = "sm" | "md";
 
 const VARIANTS: Record<Variant, string> = {
   primary:
-    "border border-line-strong bg-ink text-canvas hover:bg-ink-secondary active:bg-ink",
+    "border border-accent bg-accent text-canvas hover:bg-accent/90 active:bg-accent",
   secondary:
     "border border-line-strong bg-transparent text-ink hover:bg-surface active:bg-surface-sunken",
-  quiet:
+  ghost:
     "border border-transparent bg-transparent text-ink-secondary hover:border-line hover:bg-surface hover:text-ink active:bg-surface-sunken",
   critical:
     "border border-critical bg-critical text-canvas hover:bg-critical/90 active:bg-critical",
 };
 
+// 44px is the touch-target floor (§39, WCAG 2.5.5). `md` meets it with its
+// own box. `sm` stays visually compact but its hit area reaches 44px
+// through a transparent ::after 6px above and below; keep 12px between
+// stacked sm buttons, or those areas overlap.
 const SIZES: Record<Size, string> = {
-  sm: "h-8 px-2 gap-1",
-  md: "h-10 px-4 gap-2",
+  sm: "relative h-8 px-2 gap-1 after:absolute after:inset-x-0 after:-inset-y-1.5",
+  md: "h-11 px-4 gap-2",
 };
 
 /**

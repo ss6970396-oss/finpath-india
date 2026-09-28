@@ -3,6 +3,7 @@
 import * as React from "react";
 import {
   Badge,
+  CORPUS_PHRASE,
   Button,
   ButtonLink,
   DisclaimerNote,
@@ -16,6 +17,7 @@ import {
 import { apiJson, describeApiFailure } from "@/lib/api";
 import { prettySource } from "@/lib/format";
 import { API } from "../providers/FinPathProvider";
+import { FooterAccount } from "../components/FooterAccount";
 import { PublicHeader } from "../components/PublicHeader";
 
 /**
@@ -103,7 +105,7 @@ export default function SourcesPage() {
 
   return (
     <div className="flex min-h-dvh flex-col">
-      <PublicHeader />
+      <PublicHeader primary />
 
       <main id="main" className="page-shell w-full flex-1 py-8">
         <div className="flex flex-col gap-16">
@@ -114,7 +116,7 @@ export default function SourcesPage() {
 
           <Section
             title="The library"
-            description="Publications from the Reserve Bank of India, SEBI and the National Centre for Financial Education."
+            description={`The documents indexed for your coach: ${CORPUS_PHRASE}.`}
           >
             {state.kind === "loading" ? (
               <LoadingState label="Loading the source library" lines={5} />
@@ -182,7 +184,7 @@ export default function SourcesPage() {
                 ],
               ].map(([title, body], i) => (
                 <li key={title} className="ledger-rule flex gap-4 py-4">
-                  <span className="type-data shrink-0 text-sm text-ink-muted">
+                  <span className="type-data shrink-0 amount-sm text-ink-muted">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span className="flex flex-col gap-1">
@@ -235,7 +237,7 @@ export default function SourcesPage() {
         </div>
       </main>
 
-      <SiteFooter />
+      <SiteFooter account={<FooterAccount />} />
     </div>
   );
 }

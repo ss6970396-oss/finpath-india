@@ -8,12 +8,14 @@ import { cn } from "@/lib/utils";
  *
  *   say how many steps there are IN TOTAL, up front. "Step 3" with no
  *   denominator is an interview of unknown length.
- *   name the current step, so the bar is not the only signal.
+ *   show how far along you are at a glance: one thin bar, filled in the
+ *   accent — progress is one of the accent's four jobs.
  *   be announceable — this is a progressbar with a value, so a screen
  *   reader gets the same "three of eight" a sighted user gets.
  *
- * The segments are ticks, not chips: eight labelled circles at 390px is a
- * horizontal scroll, and the label of a step nobody has reached is noise.
+ * The count is in words ("Step 3 of 8") so the bar is never the only
+ * signal. The step's own title is the page's h1, directly below, so it is
+ * not repeated here.
  */
 
 export function Stepper({
@@ -25,7 +27,7 @@ export function Stepper({
   /** 1-based. */
   current: number;
   total: number;
-  /** The current step's own title. */
+  /** The current step's own title, for the spoken value. */
   label: string;
   className?: string;
 }) {
@@ -33,12 +35,9 @@ export function Stepper({
 
   return (
     <div className={cn("flex flex-col gap-2", className)}>
-      <div className="flex items-baseline justify-between gap-4">
-        <span className="type-eyebrow text-ink-muted">
-          Step {clamped} of {total}
-        </span>
-        <span className="type-label text-right text-ink-secondary">{label}</span>
-      </div>
+      <span className="type-eyebrow text-ink-muted">
+        Step {clamped} of {total}
+      </span>
 
       <div
         role="progressbar"
@@ -46,19 +45,13 @@ export function Stepper({
         aria-valuemax={total}
         aria-valuenow={clamped}
         aria-valuetext={`Step ${clamped} of ${total}: ${label}`}
-        className="flex w-full gap-1"
+        className="h-1 w-full bg-surface-sunken"
       >
-        {Array.from({ length: total }, (_, i) => (
-          <span
-            key={i}
-            aria-hidden="true"
-            className={cn(
-              "h-1 flex-1",
-              "transition-colors duration-(--dur-base) ease-(--ease-out)",
-              i < clamped ? "bg-ink" : "bg-surface-sunken",
-            )}
-          />
-        ))}
+        <div
+          aria-hidden="true"
+          className="h-full bg-accent transition-[width] duration-(--dur-base) ease-(--ease-out)"
+          style={{ width: `${(clamped / total) * 100}%` }}
+        />
       </div>
     </div>
   );

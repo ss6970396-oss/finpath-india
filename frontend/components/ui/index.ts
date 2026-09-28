@@ -27,10 +27,15 @@ export { Citation, UnverifiedNote } from "./citation";
 export { DisclaimerNote, type DisclaimerVariant } from "./disclaimer";
 export { DistributionBar, type Slice } from "./distribution";
 export { DropZone } from "./drop-zone";
-export { SiteFooter } from "./footer";
+export { FooterAction, FooterLink, SiteFooter } from "./footer";
 export { Header, SkipLink, Wordmark } from "./header";
-export { ActionCard, Insight } from "./insight";
-export { BareInput, Input, type InputProps } from "./input";
+export { Insight } from "./insight";
+export {
+  ActionCard,
+  type ActionCardAction,
+  type ActionCardPriority,
+} from "./action-card";
+export { BareInput, BareTextarea, Input, type InputProps } from "./input";
 export {
   Annotated,
   MarginBody,
@@ -41,15 +46,17 @@ export { Menu, MenuAction, MenuHeading, MenuLink, MenuSeparator } from "./menu";
 export { Metric, MetricRow } from "./metric";
 export { Modal, ModalClose } from "./modal";
 export { Money } from "./money";
+export { Notice } from "./notice";
 export { PageHeader, Section } from "./page-header";
 export { PasswordInput } from "./password-input";
 export { ProgressMeter } from "./progress-meter";
 export { Provenance } from "./provenance";
+export { SectionLabel } from "./section-label";
 export { ScoreDial } from "./score-dial";
 export { Segmented, type Segment } from "./segmented";
 export { Select, type SelectItem, type SelectProps } from "./select";
 export { Sheet } from "./sheet";
-export { MobileNav, Sidebar, type NavItem } from "./sidebar";
+export { MobileNav, Sidebar, isNavActive, type NavItem } from "./sidebar";
 export { Slider } from "./slider";
 export { SourcePanel, type SourceEntry } from "./source-panel";
 export { EmptyState, ErrorState, LoadingState, Skeleton } from "./states";
@@ -66,6 +73,7 @@ export {
   TableScroll,
   type SortDirection,
 } from "./table";
+export { CORPUS_PHRASE, TRUST_LINE, TrustLine } from "./trust";
 export { Timeline, TimelineStage, type TimelineStatus } from "./timeline";
 export { ToastProvider, useToast } from "./toast";
 export { Tooltip, TooltipProvider } from "./tooltip";

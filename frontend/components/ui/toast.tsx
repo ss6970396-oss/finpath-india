@@ -64,7 +64,7 @@ function ToastList() {
           </div>
           <BaseToast.Close
             aria-label="Dismiss"
-            className="-m-1 shrink-0 border border-transparent p-1 text-ink-muted hover:border-line hover:bg-surface hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-line-strong"
+            className="-m-1 shrink-0 border border-transparent p-1 text-ink-muted hover:border-line hover:bg-surface hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           >
             <X className="lucide size-4" aria-hidden="true" />
           </BaseToast.Close>

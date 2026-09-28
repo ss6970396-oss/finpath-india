@@ -80,7 +80,7 @@ export function PasswordInput({
             "placeholder:text-ink-muted",
             "transition-colors duration-(--dur-fast) ease-(--ease-out)",
             "hover:bg-surface",
-            "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-line-strong",
+            "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
             "data-invalid:border-critical",
           )}
         />
@@ -90,10 +90,10 @@ export function PasswordInput({
           aria-label={shown ? "Hide password" : "Show password"}
           aria-pressed={shown}
           className={cn(
-            "absolute inset-y-0 right-0 flex w-10 items-center justify-center",
+            "absolute inset-y-0 right-0 flex w-11 items-center justify-center",
             "text-ink-secondary hover:text-ink",
             "transition-colors duration-(--dur-fast) ease-(--ease-out)",
-            "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-line-strong",
+            "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent",
           )}
         >
           {shown ? (

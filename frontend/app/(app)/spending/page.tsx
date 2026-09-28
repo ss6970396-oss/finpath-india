@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { ArrowDown, ArrowUp } from "lucide-react";
 import {
   ButtonLink,
   ButtonRow,
@@ -99,6 +100,24 @@ export default function SpendingPage() {
         title="Spending"
         purpose="Where this month's money went, measured against the 50/30/20 guideline."
       >
+        {/* The next step inside the first phone screen (§1): the
+            adjustment sits two screens down on a 375px phone. Stated as a
+            fact, in ink, never as a scolding. */}
+        {wantsExcess > 0 ? (
+          <p className="type-body prose-measure text-ink">
+            <Money amount={rupeesToPaise(totals.Wants ?? 0)} size="sm" /> went
+            to discretionary spending this month —{" "}
+            <Money amount={rupeesToPaise(wantsExcess)} size="sm" /> above your{" "}
+            {formatPercent(RULE.wants, { digits: 0 })} line.{" "}
+            <a
+              href="#adjustment"
+              className="inline-flex items-center gap-1 text-accent underline underline-offset-4 hover:text-ink"
+            >
+              See the adjustment
+              <ArrowDown className="lucide size-4" aria-hidden="true" />
+            </a>
+          </p>
+        ) : null}
         <SourceLine />
       </PageHeader>
 
@@ -129,15 +148,25 @@ export default function SpendingPage() {
         ) : (
           <ul className="flex flex-col">
             {offTrack.map((row) => (
+              // Every row here is off target, so every row carries the
+              // over-target treatment: a 2px ink rule down its left edge, ink
+              // medium-weight text and a direction arrow. Information, never red.
               <li
                 key={row.label}
-                className="ledger-rule flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-4"
+                className="ledger-rule flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-l-2 border-ink py-4 pl-2"
               >
-                <span className="type-subhead text-ink">{row.label}</span>
+                <span className="type-subhead inline-flex items-center gap-1 text-ink">
+                  {row.label === "Savings" ? (
+                    <ArrowDown className="lucide size-4 shrink-0" aria-hidden="true" />
+                  ) : (
+                    <ArrowUp className="lucide size-4 shrink-0" aria-hidden="true" />
+                  )}
+                  {row.label}
+                </span>
                 <span className="type-data text-ink">
                   {formatPercent(row.ratio, { digits: 0 })}
                 </span>
-                <span className="type-label w-full text-ink-muted">
+                <span className="type-label w-full text-ink">
                   {row.label === "Savings"
                     ? `Below the ${formatPercent(row.target, { digits: 0 })} target by ${formatPercent(row.over, { digits: 0 })} of your income.`
                     : `Above the ${formatPercent(row.target, { digits: 0 })} target by ${formatPercent(row.over, { digits: 0 })} of your income.`}
@@ -148,37 +177,40 @@ export default function SpendingPage() {
         )}
       </Section>
 
-      {wantsExcess > 0 ? (
-        <Insight
-          eyebrow="Recommended adjustment"
-          title="Bring discretionary spending back to the line"
-          tone="critical"
-          amount={<Money amount={rupeesToPaise(wantsExcess)} size="xl" />}
-          amountLabel={
-            "The amount above your target. Redirecting it needs no extra income."
-          }
-          detail={`Your target is ${formatPercent(RULE.wants, { digits: 0 })} of income. Cutting back to it frees this much every month — the scenario explorer will show what that becomes if it is invested instead.`}
-          action={
-            <>
-              <ButtonLink
-                href={`/what-if?monthly=${Math.round(wantsExcess)}`}
-                variant="primary"
-              >
-                See what it becomes
-              </ButtonLink>
-              <ButtonLink href="/plan">Apply to my plan</ButtonLink>
-            </>
-          }
-        />
-      ) : (
-        <Insight
-          eyebrow="Recommended adjustment"
-          title="Nothing needs cutting this month"
-          tone="positive"
-          detail="Discretionary spending is inside its target. The useful work now is holding it there as your income rises, which is where this usually slips."
-          action={<ButtonLink href="/what-if">Explore scenarios</ButtonLink>}
-        />
-      )}
+      <div id="adjustment" className="scroll-mt-24">
+        {wantsExcess > 0 ? (
+          <Insight
+            eyebrow="Recommended adjustment"
+            title="Bring discretionary spending back to the line"
+            // Overspending is information, not an error: stated in ink.
+            tone="default"
+            amount={<Money amount={rupeesToPaise(wantsExcess)} size="xl" />}
+            amountLabel={
+              "The amount above your target. Redirecting it needs no extra income."
+            }
+            detail={`Your target is ${formatPercent(RULE.wants, { digits: 0 })} of income. Cutting back to it frees this much every month — the scenario explorer will show what that becomes if it is invested instead.`}
+            action={
+              <>
+                <ButtonLink
+                  href={`/what-if?monthly=${Math.round(wantsExcess)}`}
+                  variant="primary"
+                >
+                  See what it becomes
+                </ButtonLink>
+                <ButtonLink href="/plan">Apply to my plan</ButtonLink>
+              </>
+            }
+          />
+        ) : (
+          <Insight
+            eyebrow="Recommended adjustment"
+            title="Nothing needs cutting this month"
+            tone="positive"
+            detail="Discretionary spending is inside its target. The useful work now is holding it there as your income rises, which is where this usually slips."
+            action={<ButtonLink href="/what-if">Explore scenarios</ButtonLink>}
+          />
+        )}
+      </div>
 
       <Section
         title="The ledger"

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Wordmark } from "@/components/ui";
+import { CORPUS_PHRASE, Wordmark } from "@/components/ui";
 
 /**
  * The authentication shell (§4) — branding left, form right.
@@ -36,7 +36,7 @@ export default function AuthLayout({
               },
               {
                 title: "Answers cite a real document",
-                body: "The coach reads RBI, SEBI and NCFE publications and quotes the page. When it cannot, it says so.",
+                body: `The coach reads ${CORPUS_PHRASE} and quotes the page. When it cannot, it says so.`,
               },
               {
                 title: "Your statement stays in your browser",
@@ -71,7 +71,7 @@ export default function AuthLayout({
           <p className="type-label text-ink-muted">
             <Link
               href="/"
-              className="underline underline-offset-4 hover:text-ink"
+              className="inline-flex min-h-11 items-center underline underline-offset-4 hover:text-ink"
             >
               Back to the home page
             </Link>

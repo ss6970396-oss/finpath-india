@@ -11,14 +11,14 @@ imported by the application — it is the paper trail behind it.
 | [`audit.md`](./audit.md) | Full repository audit (2026-08-25) — baseline gates, per-file findings, and the risk register. Nothing in application code was changed to produce it. |
 | [`design-plan.md`](./design-plan.md) | The design direction the current UI was built from: the eleven-colour palette, the type roles, and the `LedgerRule` primitive. Companion to `audit.md`. |
 | [`screenshots/`](./screenshots) | Screenshots used by the main README. |
+| [`refactor/`](./refactor) | The editorial UX refactor: `BRIEF.md`, the Phase 1 audit, the per-phase progress log, the visual QA pass, the accessibility walkthrough, diagrams, before/after, migration notes, feature parity, and the screenshot capture list. |
+| [`features/`](./features) | `BRIEF.md` for Phase 15, the new-features phase. |
 
 ## Screenshots
 
-| File | Route | Shows |
-| --- | --- | --- |
-| `screenshots/landing.png` | `/` | The landing page, with the compounding diagnostic running inline. |
-| `screenshots/counselor.png` | `/counselor` | A grounded answer with inline `[n]` citations and the Citation Inspector resolving each to its source document and page. |
-| `screenshots/dashboard.png` | `/spending` | The spending engine's statement upload. (Named `dashboard` for the route's former name; `/dashboard` is now a redirect.) |
+The capture list, with route, viewport and state for each image, is [`refactor/screenshots.md`](./refactor/screenshots.md). The README holds a placeholder for each image it uses.
+
+`landing.png`, `counselor.png` and `dashboard.png` show the design **before** the editorial refactor and are no longer referenced. Delete them once their replacements are captured.
 
 Keep them at the width they were captured, and re-shoot rather than crop when a
 layout changes — the README leans on them to show the design system, so a stale

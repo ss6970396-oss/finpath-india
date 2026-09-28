@@ -75,7 +75,7 @@ export function TimelineStage({
           {status === "complete" ? (
             <Check className="lucide size-4" />
           ) : (
-            <span className="type-data text-sm">{String(n).padStart(2, "0")}</span>
+            <span className="type-data amount-sm">{String(n).padStart(2, "0")}</span>
           )}
         </span>
         {!last ? (

@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation";
+import { permanentRedirect } from "next/navigation";
 
 /**
  * Legacy route. The rebuild renamed this page to /sources (trusted sources);
@@ -7,5 +7,5 @@ import { redirect } from "next/navigation";
  * rather than a 404.
  */
 export default function LegacyRoute() {
-  redirect("/sources");
+  permanentRedirect("/sources");
 }

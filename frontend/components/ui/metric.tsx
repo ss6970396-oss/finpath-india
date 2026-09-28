@@ -56,8 +56,11 @@ export function Metric({
         ) : (
           <span
             className={cn(
-              "type-data",
-              size === "xl" ? "text-4xl" : size === "lg" ? "text-2xl" : "text-base",
+              size === "xl"
+                ? "type-figure"
+                : size === "lg"
+                  ? "type-data amount-lg"
+                  : "type-data amount-md",
               textTone,
             )}
           >

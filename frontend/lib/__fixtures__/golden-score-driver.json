@@ -1,0 +1,230 @@
+[
+  {
+    "id": "01-normal-income",
+    "health": {
+      "score": 87,
+      "band": "Strong",
+      "parts": {
+        "savings": 27,
+        "wants": 30,
+        "needs": 15,
+        "buffer": 15
+      }
+    },
+    "driver": {
+      "part": "savings",
+      "earned": 27,
+      "max": 40,
+      "missing": 13
+    }
+  },
+  {
+    "id": "02-zero-income",
+    "health": {
+      "score": 40,
+      "band": "Strained",
+      "parts": {
+        "savings": 40,
+        "wants": 0,
+        "needs": 0,
+        "buffer": 0
+      }
+    },
+    "driver": {
+      "part": "wants",
+      "earned": 0,
+      "max": 30,
+      "missing": 30
+    }
+  },
+  {
+    "id": "03-income-below-expenses",
+    "health": {
+      "score": 21,
+      "band": "At risk",
+      "parts": {
+        "savings": 0,
+        "wants": 18,
+        "needs": 3,
+        "buffer": 0
+      }
+    },
+    "driver": {
+      "part": "savings",
+      "earned": 0,
+      "max": 40,
+      "missing": 40
+    }
+  },
+  {
+    "id": "04-no-transactions",
+    "health": {
+      "score": 60,
+      "band": "Stable",
+      "parts": {
+        "savings": 0,
+        "wants": 30,
+        "needs": 15,
+        "buffer": 15
+      }
+    },
+    "driver": {
+      "part": "savings",
+      "earned": 0,
+      "max": 40,
+      "missing": 40
+    }
+  },
+  {
+    "id": "05-unclassifiable-merchant",
+    "health": {
+      "score": 60,
+      "band": "Stable",
+      "parts": {
+        "savings": 0,
+        "wants": 30,
+        "needs": 15,
+        "buffer": 15
+      }
+    },
+    "driver": {
+      "part": "savings",
+      "earned": 0,
+      "max": 40,
+      "missing": 40
+    }
+  },
+  {
+    "id": "06-unknown-merchant",
+    "health": {
+      "score": 60,
+      "band": "Stable",
+      "parts": {
+        "savings": 0,
+        "wants": 30,
+        "needs": 15,
+        "buffer": 15
+      }
+    },
+    "driver": {
+      "part": "savings",
+      "earned": 0,
+      "max": 40,
+      "missing": 40
+    }
+  },
+  {
+    "id": "07-negative-transaction",
+    "health": {
+      "score": 80,
+      "band": "Strong",
+      "parts": {
+        "savings": 20,
+        "wants": 30,
+        "needs": 15,
+        "buffer": 15
+      }
+    },
+    "driver": {
+      "part": "savings",
+      "earned": 20,
+      "max": 40,
+      "missing": 20
+    }
+  },
+  {
+    "id": "08-refund",
+    "health": {
+      "score": 60,
+      "band": "Stable",
+      "parts": {
+        "savings": 0,
+        "wants": 30,
+        "needs": 15,
+        "buffer": 15
+      }
+    },
+    "driver": {
+      "part": "savings",
+      "earned": 0,
+      "max": 40,
+      "missing": 40
+    }
+  },
+  {
+    "id": "09-duplicate-transaction",
+    "health": {
+      "score": 60,
+      "band": "Stable",
+      "parts": {
+        "savings": 0,
+        "wants": 30,
+        "needs": 15,
+        "buffer": 15
+      }
+    },
+    "driver": {
+      "part": "savings",
+      "earned": 0,
+      "max": 40,
+      "missing": 40
+    }
+  },
+  {
+    "id": "10-multiple-categories",
+    "health": {
+      "score": 93,
+      "band": "Strong",
+      "parts": {
+        "savings": 33,
+        "wants": 30,
+        "needs": 15,
+        "buffer": 15
+      }
+    },
+    "driver": {
+      "part": "savings",
+      "earned": 33,
+      "max": 40,
+      "missing": 7
+    }
+  },
+  {
+    "id": "11-large-transaction",
+    "health": {
+      "score": 15,
+      "band": "At risk",
+      "parts": {
+        "savings": 0,
+        "wants": 0,
+        "needs": 15,
+        "buffer": 0
+      }
+    },
+    "driver": {
+      "part": "savings",
+      "earned": 0,
+      "max": 40,
+      "missing": 40
+    }
+  },
+  {
+    "id": "12-unusual-distribution",
+    "health": {
+      "score": 27,
+      "band": "At risk",
+      "parts": {
+        "savings": 0,
+        "wants": 0,
+        "needs": 15,
+        "buffer": 12
+      }
+    },
+    "driver": {
+      "part": "savings",
+      "earned": 0,
+      "max": 40,
+      "missing": 40
+    }
+  }
+]

@@ -3,10 +3,16 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Button, Input, PasswordInput } from "@/components/ui";
+import {
+  Button,
+  Input,
+  Notice,
+  PasswordInput,
+} from "@/components/ui";
 import { AuthError, isEmailShaped } from "@/lib/auth";
 import { useAuth } from "../../providers/AuthProvider";
-import { useFinPath } from "../../providers/FinPathProvider";
+import { hasCompletedProfile } from "../../providers/FinPathProvider";
+import { safeNext } from "@/lib/safe-next";
 import { DeviceAccountNote } from "../DeviceAccountNote";
 
 /**
@@ -27,9 +33,8 @@ export function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
   const { signIn } = useAuth();
-  const { onboarded } = useFinPath();
-
-  const next = params.get("next");
+  // Sanitised: only a path on this site, never another origin (B-8).
+  const next = safeNext(params.get("next"));
 
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -50,10 +55,18 @@ export function LoginForm() {
 
     setSubmitting(true);
     try {
-      await signIn(email, password);
+      const session = await signIn(email, password);
       // Onboarding is what the app's own guard checks next, so send an
       // unfinished profile straight there rather than through a bounce.
-      router.replace(onboarded ? (next ?? "/home") : "/onboarding");
+      // Read from storage for THIS account: the provider still reflects the
+      // previous session in this same event.
+      router.replace(
+        hasCompletedProfile(session.userId)
+          ? (next ?? "/home")
+          : next
+            ? `/onboarding?next=${encodeURIComponent(next)}`
+            : "/onboarding",
+      );
     } catch (err) {
       setFailure(
         err instanceof AuthError
@@ -75,14 +88,11 @@ export function LoginForm() {
 
       <form noValidate onSubmit={onSubmit} className="flex flex-col gap-4">
         {failure ? (
-          // role="alert" so the failure is announced without moving focus
-          // away from the field the student is about to correct.
-          <p
-            role="alert"
-            className="type-label border border-critical bg-critical-wash px-2 py-2 text-critical"
-          >
+          // announce="alert" so the failure is announced without moving
+          // focus away from the field the student is about to correct.
+          <Notice tone="critical" announce="alert" title="Not signed in">
             {failure}
-          </p>
+          </Notice>
         ) : null}
 
         <Input
@@ -115,7 +125,7 @@ export function LoginForm() {
         <div className="flex justify-end">
           <Link
             href="/forgot-password"
-            className="type-label text-ink-secondary underline underline-offset-4 hover:text-ink"
+            className="type-label inline-flex min-h-11 items-center text-ink-secondary underline underline-offset-4 hover:text-ink"
           >
             Forgotten your password?
           </Link>
@@ -130,7 +140,7 @@ export function LoginForm() {
         New here?{" "}
         <Link
           href={next ? `/signup?next=${encodeURIComponent(next)}` : "/signup"}
-          className="text-accent underline underline-offset-4"
+          className="inline-flex min-h-11 items-center text-accent underline underline-offset-4"
         >
           Create an account
         </Link>

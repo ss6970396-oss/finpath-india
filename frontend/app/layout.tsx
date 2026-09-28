@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Instrument_Serif, Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "./providers/AuthProvider";
 import { FinPathProvider } from "./providers/FinPathProvider";
-import { ToastProvider, TooltipProvider } from "@/components/ui";
+import { CORPUS_PHRASE } from "@/components/ui";
 
 /**
  * §15. Two families, self-hosted by next/font — no external request, and
@@ -35,11 +35,21 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "FinPath — See where your money is going",
+    default: "FinPath — Your money. One clear next step.",
     template: "%s · FinPath",
   },
   description:
-    "A financial-health companion for students in India. Score your month, find the one thing worth changing, and read answers traced to RBI, SEBI and NCFE sources.",
+    `A financial-health companion for students in India. Score your month, find the one thing worth changing, and read answers traced to ${CORPUS_PHRASE}.`,
+};
+
+/**
+ * `viewportFit: "cover"` lets the page run under a phone's rounded corners
+ * and home indicator, which is what makes `env(safe-area-inset-*)` report a
+ * real value. The bottom bar then pads itself with `safe-bottom`; nothing
+ * else on the page sits near an edge. Width and scale keep Next's defaults.
+ */
+export const viewport: Viewport = {
+  viewportFit: "cover",
 };
 
 /**
@@ -48,7 +58,10 @@ export const metadata: Metadata = {
  *   AuthProvider     owns the session. FinPath's own state is per-person,
  *                    so it has to be able to read who is signed in.
  *   FinPathProvider  owns the declared profile and the resolved figures.
- *   Tooltip/Toast    Base UI providers; portals only, no data.
+ *
+ * The Tooltip and Toast providers live in the (app) shell, the only place
+ * either is used. Mounting them here put Base UI's floating layer on the
+ * landing and auth pages, which show neither.
  *
  * There is no header or footer here. The public pages, the auth pages, the
  * onboarding flow and the signed-in app each have a different chrome, so
@@ -65,11 +78,7 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${instrumentSerif.variable}`}>
       <body className="type-body min-h-dvh bg-canvas text-ink">
         <AuthProvider>
-          <FinPathProvider>
-            <TooltipProvider>
-              <ToastProvider>{children}</ToastProvider>
-            </TooltipProvider>
-          </FinPathProvider>
+          <FinPathProvider>{children}</FinPathProvider>
         </AuthProvider>
       </body>
     </html>

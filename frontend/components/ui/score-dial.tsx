@@ -98,7 +98,7 @@ export function ScoreDial({
         </svg>
 
         <div className="absolute inset-0 flex flex-col items-center justify-center pt-6">
-          <span aria-hidden="true" className="type-data text-6xl text-ink">
+          <span aria-hidden="true" className="type-figure text-ink">
             {rounded}
           </span>
           <span aria-hidden="true" className="type-label text-ink-muted">

@@ -1,9 +1,9 @@
 "use client";
 
 import * as React from "react";
+import { ArrowDown } from "lucide-react";
 import {
   ButtonLink,
-  Checkbox,
   DisclaimerNote,
   Money,
   PageHeader,
@@ -16,9 +16,12 @@ import { rupeesToPaise } from "@/lib/money";
 import { useFinPath } from "../../providers/FinPathProvider";
 import { SourceLine } from "../../components/SourceLine";
 import { usePlan } from "../../components/usePlan";
+import { PlanActionCard } from "../../components/PlanActionCard";
+import { priorities } from "@/lib/action-meta";
+import { SecondaryLinks } from "../../components/SecondaryLinks";
 
 /**
- * /plan (§10) — the roadmap, as a vertical ladder.
+ * /plan (§10) — "Actions" in the nav: the roadmap, as a vertical ladder.
  *
  * EXACTLY ONE STAGE IS LIVE. `lib/plan.ts` marks the first unfinished stage
  * "attention" and everything after it "upcoming", which is the entire point
@@ -31,20 +34,41 @@ import { usePlan } from "../../components/usePlan";
  * so in those words. A progress bar with no stated source is a claim the
  * product cannot back.
  *
- * The tick boxes are the student's own record, persisted locally. They
- * never change a computed figure — a ticked box cannot raise a savings rate.
+ * Each action is an ActionCard (via PlanActionCard, shared with Home). Its
+ * tick is the student's own record, persisted locally; it never changes a
+ * computed figure — a ticked card cannot raise a savings rate.
  */
 export default function PlanPage() {
-  const { done, toggleTask, profile } = useFinPath();
+  const { profile } = useFinPath();
   const plan = usePlan();
+  const rank = React.useMemo(() => priorities(plan), [plan]);
+  // The page's ONE primary action: the first open action in plan order,
+  // which is also the first card Home shows.
+  const next = plan.open[0];
+  const primaryId = next?.id;
 
   return (
     <div className="enter flex flex-col gap-16">
       <PageHeader
-        title="Your plan"
+        title="Your actions"
         purpose="Four stages, in the order a planner would take them. One is live at a time."
       >
         <div className="flex flex-col gap-4">
+          {/* The next step inside the first phone screen (§1): the live
+              stage and its card sit well below the fold on a 375px phone,
+              so the header names the action and jumps to it. */}
+          {next ? (
+            <p className="type-body prose-measure text-ink">
+              Your next step: {next.title}.{" "}
+              <a
+                href={`#action-${next.id}`}
+                className="inline-flex items-center gap-1 text-accent underline underline-offset-4 hover:text-ink"
+              >
+                Go to it
+                <ArrowDown className="lucide size-4" aria-hidden="true" />
+              </a>
+            </p>
+          ) : null}
           <SourceLine />
           <ProgressMeter
             label="Actions completed"
@@ -87,24 +111,12 @@ export default function PlanPage() {
 
             <ul className="flex flex-col gap-4">
               {step.actions.map((action) => (
-                <li
-                  key={action.id}
-                  className="flex flex-col gap-2 border border-line px-4 py-4"
-                >
-                  <Checkbox
-                    label={action.title}
-                    checked={Boolean(done[action.id])}
-                    onCheckedChange={() => toggleTask(action.id)}
+                <li key={action.id} id={`action-${action.id}`} className="scroll-mt-24">
+                  <PlanActionCard
+                    action={action}
+                    priority={rank[action.id] ?? "low"}
+                    primary={action.id === primaryId}
                   />
-                  <p className="type-body prose-measure pl-6 text-ink-secondary">
-                    {action.why}
-                  </p>
-                  {action.selfAttested ? (
-                    <p className="type-label pl-6 text-ink-muted">
-                      Nothing in your figures can confirm this one — the tick
-                      is your own record, and the stage above says so.
-                    </p>
-                  ) : null}
                 </li>
               ))}
             </ul>
@@ -138,6 +150,9 @@ export default function PlanPage() {
           <ButtonLink href="/profile">Change my priorities</ButtonLink>
         </div>
       </section>
+
+      {/* Last, as on Home: secondary places come after the page's own work. */}
+      <SecondaryLinks />
 
       <DisclaimerNote />
     </div>

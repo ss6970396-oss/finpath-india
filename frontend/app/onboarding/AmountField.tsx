@@ -15,38 +15,44 @@ import { Input } from "@/components/ui";
  * The text is held locally so the field can be EMPTY rather than being
  * forced through a literal 0 on every deletion — a zero someone has to
  * select and overwrite is the most annoying default in any money form.
- * Non-digits are dropped as they are typed, so there is no error state to
- * reach: the field cannot be wrong, only blank.
+ * Non-digits are dropped as they are typed, so the only error a field can
+ * be in is "required and blank", which the caller decides and passes as
+ * `error` (shown on blur and on Next, never mid-typing).
  *
  * `key` the field on the step id if a step ever needs to reset it; the
  * component deliberately does not sync from the prop afterwards, because
  * doing so overwrites a keystroke mid-edit.
  */
-export function AmountField({
-  label,
-  description,
-  value,
-  onValueChange,
-  autoFocus,
-}: {
-  label: string;
-  description?: string;
-  value: number;
-  onValueChange: (value: number) => void;
-  autoFocus?: boolean;
-}) {
+export const AmountField = React.forwardRef<
+  HTMLInputElement,
+  {
+    label: string;
+    description?: string;
+    value: number;
+    onValueChange: (value: number) => void;
+    error?: string;
+    onBlur?: () => void;
+    autoFocus?: boolean;
+  }
+>(function AmountField(
+  { label, description, value, onValueChange, error, onBlur, autoFocus },
+  ref,
+) {
   const [text, setText] = React.useState(value > 0 ? String(value) : "");
 
   return (
     <Input
+      ref={ref}
       label={label}
       description={description}
+      error={error}
       value={text}
       autoFocus={autoFocus}
       inputMode="numeric"
       autoComplete="off"
       numeric
       placeholder="0"
+      onBlur={onBlur}
       onChange={(e) => {
         const digits = e.target.value.replace(/[^0-9]/g, "").slice(0, 9);
         setText(digits);
@@ -54,4 +60,4 @@ export function AmountField({
       }}
     />
   );
-}
+});

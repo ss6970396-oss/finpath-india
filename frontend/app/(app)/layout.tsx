@@ -2,11 +2,18 @@
 
 import * as React from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { LoadingState, MobileNav, SiteFooter } from "@/components/ui";
+import {
+  LoadingState,
+  MobileNav,
+  SiteFooter,
+  ToastProvider,
+  TooltipProvider,
+} from "@/components/ui";
 import { AppHeader } from "../components/AppHeader";
+import { FooterAccount } from "../components/FooterAccount";
 import { NAV } from "../components/nav";
 import { useAuth } from "../providers/AuthProvider";
-import { useFinPath } from "../providers/FinPathProvider";
+import { useFinPath, useRequestSpending } from "../providers/FinPathProvider";
 
 /**
  * The signed-in shell, and the route guard (§30, §31).
@@ -31,15 +38,13 @@ import { useFinPath } from "../providers/FinPathProvider";
  * session check is the enforcement and this stays what it always was —
  * the routing half.
  */
-export default function AppLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AppLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const { status, session } = useAuth();
   const { onboarded } = useFinPath();
+  // Every screen in the shell shows figures, so the shell asks for them.
+  useRequestSpending();
 
   const ready = status === "resolved";
   const allowed = ready && Boolean(session) && onboarded;
@@ -52,26 +57,34 @@ export default function AppLayout({
       router.replace(`/login?next=${encodeURIComponent(pathname)}`);
       return;
     }
-    if (!onboarded) router.replace("/onboarding");
+    if (!onboarded) {
+      router.replace(`/onboarding?next=${encodeURIComponent(pathname)}`);
+    }
   }, [ready, session, onboarded, pathname, router]);
 
   return (
-    <div className="flex min-h-dvh flex-col">
-      <AppHeader />
+    // nav-clearance on the shell, not on <main>: the footer comes after
+    // main, and it is the footer the fixed bottom bar would otherwise cover.
+    <TooltipProvider>
+      <ToastProvider>
+        <div className="nav-clearance flex min-h-dvh flex-col md:pb-0">
+          <AppHeader />
 
-      <main id="main" className="page-shell w-full flex-1 py-8 pb-24 md:pb-8">
-        {allowed ? (
-          children
-        ) : (
-          <LoadingState label="Checking your session" lines={4} />
-        )}
-      </main>
+          <main id="main" className="page-shell w-full flex-1 py-8">
+            {allowed ? (
+              children
+            ) : (
+              <LoadingState label="Checking your session" lines={4} />
+            )}
+          </main>
 
-      <SiteFooter />
+          <SiteFooter account={<FooterAccount />} />
 
-      {/* Bottom bar on phones only; the same five destinations as the
+          {/* Bottom bar on phones only; the same four destinations as the
           header, so there is one mental model rather than two. */}
-      <MobileNav items={NAV} currentPath={pathname} className="md:hidden" />
-    </div>
+          <MobileNav items={NAV} currentPath={pathname} className="md:hidden" />
+        </div>
+      </ToastProvider>
+    </TooltipProvider>
   );
 }

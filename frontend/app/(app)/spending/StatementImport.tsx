@@ -4,17 +4,21 @@ import * as React from "react";
 import {
   Button,
   ButtonRow,
+  Card,
   DropZone,
   EmptyState,
+  Metric,
+  MetricRow,
   Money,
+  Notice,
   Select,
   Table,
+  TableScroll,
   TBody,
   TD,
   TH,
   THead,
   TR,
-  TableScroll,
   useToast,
 } from "@/components/ui";
 import {
@@ -59,8 +63,9 @@ const CATEGORIES: { value: SpendCategory; label: string }[] = [
 ];
 
 export function StatementImport() {
-  const { uploaded, setUploaded, assignCategory, uncategorised, profile, saveProfile } =
-    useFinPath();
+  const {
+    uploaded, setUploaded, assignCategory, uncategorised, profile, saveProfile, source,
+  } = useFinPath();
   const toast = useToast();
 
   const [result, setResult] = React.useState<ParseResult | null>(null);
@@ -93,6 +98,25 @@ export function StatementImport() {
     }
   }
 
+  // B-4: the sample used to be parsed and summarised but never loaded, so
+  // nothing else on the page moved and the button looked broken. It now
+  // loads through the same parser as a real file, marked "sample" so every
+  // page labels it "A sample statement". No allowance suggestion is made
+  // from it: accepting one would write a sample figure into the profile.
+  function loadSample() {
+    const parsed = parseStatement(SAMPLE_CSV);
+    setResult(parsed);
+    setSuggestion(null);
+    if (parsed.transactions.length) {
+      setUploaded(parsed.transactions, "sample");
+      toast.add({
+        title: "Sample statement loaded",
+        description:
+          "Every figure on the page now comes from FinPath's sample file, and is labelled that way. Remove it to go back to your own.",
+      });
+    }
+  }
+
   function clear() {
     setUploaded(null);
     setResult(null);
@@ -109,33 +133,28 @@ export function StatementImport() {
         disabled={busy}
         footer={
           <ButtonRow align="start">
-            <Button onClick={() => setResult(parseStatement(SAMPLE_CSV))}>
-              Try it with a sample file
-            </Button>
+            <Button onClick={loadSample}>Try it with a sample file</Button>
             {uploaded ? (
-              <Button onClick={clear}>Remove this statement</Button>
+              <Button onClick={clear}>
+                {source === "sample" ? "Remove the sample" : "Remove this statement"}
+              </Button>
             ) : null}
           </ButtonRow>
         }
       />
 
       {result?.errors.length ? (
-        <div role="alert" className="border border-critical bg-critical-wash px-4 py-4">
-          <h3 className="type-subhead text-critical">
-            That file could not be used
-          </h3>
-          <ul className="mt-2 flex flex-col gap-1">
+        <Notice tone="critical" announce="alert" title="That file could not be used">
+          <ul className="flex flex-col gap-1 text-ink">
             {result.errors.map((error) => (
-              <li key={error} className="type-body text-ink">
-                {error}
-              </li>
+              <li key={error}>{error}</li>
             ))}
           </ul>
           <p className="type-label mt-2 text-ink-muted">
             The file needs a date column, a description column, and at least
             one column carrying the amount.
           </p>
-        </div>
+        </Notice>
       ) : null}
 
       {result && result.transactions.length > 0 ? (
@@ -143,12 +162,12 @@ export function StatementImport() {
       ) : null}
 
       {result?.magnitudesOnly ? (
-        <p className="type-body prose-measure border-l-2 border-line-strong pl-4 text-ink-secondary">
+        <Notice title="Read as money going out">
           Every amount in that file was positive, so it has been read as a
           list of money going out. If it was meant to include credits, they
           would need a minus sign or their own column — otherwise an
           allowance arriving would be counted as spending.
-        </p>
+        </Notice>
       ) : null}
 
       {suggestion ? (
@@ -190,7 +209,7 @@ export function StatementImport() {
                 >
                   <span className="flex min-w-0 flex-col">
                     <span className="type-label text-ink">{txn.merchant}</span>
-                    <span className="type-data text-sm text-ink-muted">
+                    <span className="type-data amount-sm text-ink-muted">
                       {formatDate(txn.date)}
                     </span>
                   </span>
@@ -223,42 +242,27 @@ export function StatementImport() {
 
 function ImportSummary({ result }: { result: ParseResult }) {
   return (
-    <dl className="grid gap-8 sm:grid-cols-3">
-      {[
-        {
-          label: "Rows read",
-          value: String(result.transactions.length),
-          note:
-            result.skipped > 0
-              ? `${result.skipped} could not be read`
-              : "Nothing was skipped",
-        },
-        {
-          label: "Money out",
-          value: null,
-          amount: result.spend,
-          note: "Excludes anything arriving in the account",
-        },
-        {
-          label: "Money in",
-          value: null,
-          amount: result.income,
-          note: "Credits are never counted as spending",
-        },
-      ].map((item) => (
-        <div key={item.label} className="flex flex-col gap-1">
-          <dt className="type-label text-ink-muted">{item.label}</dt>
-          <dd className="ledger-rule pb-2">
-            {item.value !== null ? (
-              <span className="type-data text-2xl text-ink">{item.value}</span>
-            ) : (
-              <Money amount={rupeesToPaise(item.amount ?? 0)} size="lg" />
-            )}
-          </dd>
-          <dd className="type-label text-ink-muted">{item.note}</dd>
-        </div>
-      ))}
-    </dl>
+    <MetricRow>
+      <Metric
+        label="Rows read"
+        value={String(result.transactions.length)}
+        note={
+          result.skipped > 0
+            ? `${result.skipped} could not be read`
+            : "Nothing was skipped"
+        }
+      />
+      <Metric
+        label="Money out"
+        amount={rupeesToPaise(result.spend)}
+        note="Excludes anything arriving in the account"
+      />
+      <Metric
+        label="Money in"
+        amount={rupeesToPaise(result.income)}
+        note="Credits are never counted as spending"
+      />
+    </MetricRow>
   );
 }
 
@@ -275,7 +279,7 @@ function AllowancePrompt({
 }) {
   if (suggestion.amount === current) return null;
   return (
-    <section className="flex flex-col gap-2 border border-line bg-surface px-4 py-4">
+    <Card variant="filled" className="flex flex-col gap-2 px-4 py-4">
       <h3 className="type-subhead text-ink">
         A recurring credit looks like your monthly income
       </h3>
@@ -293,7 +297,7 @@ function AllowancePrompt({
         </Button>
         <Button onClick={onDismiss}>Keep what I entered</Button>
       </ButtonRow>
-    </section>
+    </Card>
   );
 }
 
@@ -326,7 +330,7 @@ function Ledger({
             {rows.map((txn) => (
               <TR key={txn.id}>
                 <TD>
-                  <span className="type-data text-sm">
+                  <span className="type-data amount-sm">
                     {formatDate(txn.date)}
                   </span>
                 </TD>
@@ -372,7 +376,7 @@ function Ledger({
 
 function SkipReport({ result }: { result: ParseResult }) {
   return (
-    <section className="flex flex-col gap-2 border border-line px-4 py-4">
+    <Card className="flex flex-col gap-2 px-4 py-4">
       <h3 className="type-subhead text-ink">
         {result.skipped} rows could not be read
       </h3>
@@ -384,7 +388,7 @@ function SkipReport({ result }: { result: ParseResult }) {
         {result.skippedRows.slice(0, 10).map((row) => (
           <li
             key={row.row}
-            className="ledger-rule flex flex-wrap items-baseline justify-between gap-4 py-2"
+            className="flex flex-wrap items-baseline justify-between gap-4 border-b border-line py-2"
           >
             <span className="type-label text-ink">
               Line {row.row}: {row.narration || "(no description)"}
@@ -393,6 +397,6 @@ function SkipReport({ result }: { result: ParseResult }) {
           </li>
         ))}
       </ul>
-    </section>
+    </Card>
   );
 }

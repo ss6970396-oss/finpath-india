@@ -70,7 +70,7 @@ export function DropZone({
         className={cn(
           "flex cursor-pointer flex-col items-center gap-2 border border-dashed px-4 py-8 text-center",
           "transition-colors duration-(--dur-fast) ease-(--ease-out)",
-          "focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-line-strong",
+          "focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-accent",
           over
             ? "border-line-strong bg-surface"
             : "border-line-strong bg-transparent hover:bg-surface",

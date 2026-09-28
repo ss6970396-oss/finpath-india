@@ -18,11 +18,17 @@ import { inrToWords, type Paise } from "@/lib/money";
 
 type MoneySize = "sm" | "md" | "lg" | "xl";
 
+/**
+ * Sizes are steps of the --fs-* scale in globals.css. `xl` is the hero
+ * figure — the one big amount a block exists to show — and is set in the
+ * display serif (type-figure). Use it once per block and never in a
+ * column: everything smaller stays in tabular Inter so figures align.
+ */
 const SIZES: Record<MoneySize, string> = {
-  sm: "text-sm",
-  md: "text-base",
-  lg: "text-2xl",
-  xl: "text-4xl",
+  sm: "type-data amount-sm",
+  md: "type-data amount-md",
+  lg: "type-data amount-lg",
+  xl: "type-figure",
 };
 
 export function Money({
@@ -58,7 +64,7 @@ export function Money({
   } as const;
 
   return (
-    <span className={cn("type-data", SIZES[size], tones[tone], className)}>
+    <span className={cn(SIZES[size], tones[tone], className)}>
       <span aria-hidden="true">
         {compact ? formatCompactINR(amount) : formatINR(amount, withPaise)}
       </span>
