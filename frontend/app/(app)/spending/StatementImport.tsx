@@ -4,8 +4,11 @@ import * as React from "react";
 import {
   Button,
   ButtonRow,
+  Card,
   DropZone,
   EmptyState,
+  Metric,
+  MetricRow,
   Money,
   Notice,
   Select,
@@ -239,42 +242,27 @@ export function StatementImport() {
 
 function ImportSummary({ result }: { result: ParseResult }) {
   return (
-    <dl className="grid gap-8 sm:grid-cols-3">
-      {[
-        {
-          label: "Rows read",
-          value: String(result.transactions.length),
-          note:
-            result.skipped > 0
-              ? `${result.skipped} could not be read`
-              : "Nothing was skipped",
-        },
-        {
-          label: "Money out",
-          value: null,
-          amount: result.spend,
-          note: "Excludes anything arriving in the account",
-        },
-        {
-          label: "Money in",
-          value: null,
-          amount: result.income,
-          note: "Credits are never counted as spending",
-        },
-      ].map((item) => (
-        <div key={item.label} className="flex flex-col gap-1">
-          <dt className="type-label text-ink-muted">{item.label}</dt>
-          <dd className="ledger-rule pb-2">
-            {item.value !== null ? (
-              <span className="type-data amount-lg text-ink">{item.value}</span>
-            ) : (
-              <Money amount={rupeesToPaise(item.amount ?? 0)} size="lg" />
-            )}
-          </dd>
-          <dd className="type-label text-ink-muted">{item.note}</dd>
-        </div>
-      ))}
-    </dl>
+    <MetricRow>
+      <Metric
+        label="Rows read"
+        value={String(result.transactions.length)}
+        note={
+          result.skipped > 0
+            ? `${result.skipped} could not be read`
+            : "Nothing was skipped"
+        }
+      />
+      <Metric
+        label="Money out"
+        amount={rupeesToPaise(result.spend)}
+        note="Excludes anything arriving in the account"
+      />
+      <Metric
+        label="Money in"
+        amount={rupeesToPaise(result.income)}
+        note="Credits are never counted as spending"
+      />
+    </MetricRow>
   );
 }
 
@@ -291,7 +279,7 @@ function AllowancePrompt({
 }) {
   if (suggestion.amount === current) return null;
   return (
-    <section className="flex flex-col gap-2 border border-line bg-surface px-4 py-4">
+    <Card variant="filled" className="flex flex-col gap-2 px-4 py-4">
       <h3 className="type-subhead text-ink">
         A recurring credit looks like your monthly income
       </h3>
@@ -309,7 +297,7 @@ function AllowancePrompt({
         </Button>
         <Button onClick={onDismiss}>Keep what I entered</Button>
       </ButtonRow>
-    </section>
+    </Card>
   );
 }
 
@@ -388,7 +376,7 @@ function Ledger({
 
 function SkipReport({ result }: { result: ParseResult }) {
   return (
-    <section className="flex flex-col gap-2 border border-line px-4 py-4">
+    <Card className="flex flex-col gap-2 px-4 py-4">
       <h3 className="type-subhead text-ink">
         {result.skipped} rows could not be read
       </h3>
@@ -400,7 +388,7 @@ function SkipReport({ result }: { result: ParseResult }) {
         {result.skippedRows.slice(0, 10).map((row) => (
           <li
             key={row.row}
-            className="ledger-rule flex flex-wrap items-baseline justify-between gap-4 py-2"
+            className="flex flex-wrap items-baseline justify-between gap-4 border-b border-line py-2"
           >
             <span className="type-label text-ink">
               Line {row.row}: {row.narration || "(no description)"}
@@ -409,6 +397,6 @@ function SkipReport({ result }: { result: ParseResult }) {
           </li>
         ))}
       </ul>
-    </section>
+    </Card>
   );
 }

@@ -6,6 +6,8 @@ import {
   ButtonLink,
   ChartFrame,
   DisclaimerNote,
+  Metric,
+  MetricRow,
   Money,
   PageHeader,
   Section,
@@ -201,7 +203,7 @@ export function ScenarioExplorer() {
         title="The three scenarios side by side"
         description={`All three at ${formatINR(rupeesToPaise(monthly))} a month to start with, over ${years} years.`}
       >
-        <dl className="grid gap-8 md:grid-cols-3">
+        <MetricRow className="gap-8">
           <Scenario
             label="Same amount every year"
             amount={flatEnd}
@@ -218,7 +220,7 @@ export function ScenarioExplorer() {
             amount={delayedEnd}
             note="Same amount, same return — twelve months later."
           />
-        </dl>
+        </MetricRow>
 
         <div className="flex flex-col gap-4 border-t border-line pt-8">
           <p className="type-body prose-measure text-ink-secondary">
@@ -264,15 +266,11 @@ function Scenario({
   emphasis?: boolean;
 }) {
   return (
-    <div className="flex flex-col gap-1">
-      <dt className="type-label text-ink-muted">{label}</dt>
-      <dd className="ledger-rule pb-2">
-        <Money
-          amount={rupeesToPaise(amount)}
-          size={emphasis ? "xl" : "lg"}
-        />
-      </dd>
-      <dd className="type-label text-ink-muted">{note}</dd>
-    </div>
+    <Metric
+      label={label}
+      amount={rupeesToPaise(amount)}
+      note={note}
+      size={emphasis ? "xl" : "lg"}
+    />
   );
 }

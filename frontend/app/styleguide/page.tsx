@@ -7,7 +7,9 @@ import {
   Avatar,
   Badge,
   BareInput,
+  BareTextarea,
   Button,
+  ButtonLink,
   ButtonRow,
   ChartFrame,
   Checkbox,
@@ -29,22 +31,30 @@ import {
   MarginBody,
   MarginLayout,
   MarginNote,
+  Menu,
+  MenuAction,
+  MenuHeading,
+  MenuLink,
+  MenuSeparator,
   Metric,
   MetricRow,
   MobileNav,
   Modal,
   ModalClose,
   Money,
+  Notice,
   PageHeader,
   PasswordInput,
   ProgressMeter,
   Provenance,
   ScoreDial,
   Section,
+  SectionLabel,
   Segmented,
   Select,
   Sheet,
   Sidebar,
+  SkipLink,
   Skeleton,
   Slider,
   SourcePanel,
@@ -67,7 +77,9 @@ import {
   ToastProvider,
   Tooltip,
   TooltipProvider,
+  TrustLine,
   UnverifiedNote,
+  Wordmark,
   useToast,
 } from "@/components/ui";
 
@@ -671,6 +683,15 @@ export default function StyleGuidePage() {
                   Delete account
                 </Button>
               </Row>
+              <Row label="Link" hint="ButtonLink: navigation that looks like a button">
+                <ButtonLink href="/styleguide" variant="primary">
+                  Start here
+                </ButtonLink>
+                <ButtonLink href="/styleguide">Open Actions</ButtonLink>
+                <ButtonLink href="/styleguide" variant="ghost">
+                  How answers are sourced
+                </ButtonLink>
+              </Row>
               <Row label="Loading" hint="width holds; label stays as the name">
                 <Button variant="primary" loading>
                   Import transactions
@@ -721,6 +742,18 @@ export default function StyleGuidePage() {
                 />
                 <span className="type-label text-ink-muted">
                   For a composed control that already has its own label.
+                </span>
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="type-label text-ink">Bare textarea</span>
+                <BareTextarea
+                  rows={3}
+                  placeholder="Ask about saving, credit or investing"
+                  aria-label="Your question"
+                />
+                <span className="type-label text-ink-muted">
+                  The coach&rsquo;s composer. Same control styles as Input,
+                  never resizable.
                 </span>
               </div>
             </div>
@@ -1140,6 +1173,52 @@ export default function StyleGuidePage() {
                   className="absolute"
                 />
               </div>
+            </div>
+          </Section>
+
+          <Section
+            title="Wordmark, SkipLink and Menu"
+            description="The skip link is invisible until focused: tab into this section to see it. The menu is the header's profile menu."
+          >
+            <div className="flex w-full flex-wrap items-center gap-8">
+              <Wordmark href="/styleguide" />
+              <SkipLink href="#main" />
+              <Menu
+                label="Account"
+                trigger={<Button variant="secondary">Open the menu</Button>}
+                align="start"
+              >
+                <MenuHeading title="Priya Sharma" detail="priya@example.com" />
+                <MenuLink href="/styleguide">Profile</MenuLink>
+                <MenuSeparator />
+                <MenuAction onClick={() => undefined}>Sign out</MenuAction>
+              </Menu>
+            </div>
+          </Section>
+
+          <Section
+            title="Notice, SectionLabel and TrustLine"
+            description="A notice is a calm inline note, never a panel. Critical is for a problem the reader must fix, and always carries its word and glyph."
+          >
+            <div className="flex w-full flex-col gap-8">
+              <Notice title="Answers are paused for a minute">
+                The question limit was reached. Nothing you typed is lost.
+              </Notice>
+              <Notice
+                tone="critical"
+                title="That file could not be used"
+                action={<Button size="sm">Choose another file</Button>}
+              >
+                No row carried a date and an amount FinPath could read.
+              </Notice>
+              <div className="flex flex-col gap-2">
+                <SectionLabel as="p">Money health score</SectionLabel>
+                <p className="type-body text-ink-secondary">
+                  SectionLabel names what kind of thing follows. It is the
+                  one uppercase role, and usually the section&rsquo;s h2.
+                </p>
+              </div>
+              <TrustLine />
             </div>
           </Section>
 

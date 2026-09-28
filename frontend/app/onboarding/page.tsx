@@ -9,7 +9,7 @@ import {
   Choice,
   DisclaimerNote,
   LoadingState,
-  Money,
+  Metric,
   Stepper,
   Wordmark,
 } from "@/components/ui";
@@ -255,7 +255,7 @@ function StepBody({
               ["What you choose to spend", "Eating out, shopping, subscriptions."],
               ["What you set aside and what you owe", "Savings, buffer, balances."],
             ].map(([title, body]) => (
-              <li key={title} className="ledger-rule py-2">
+              <li key={title} className="border-b border-line py-2">
                 <p className="type-subhead text-ink">{title}</p>
                 <p className="type-body text-ink-secondary">{body}</p>
               </li>
@@ -451,13 +451,8 @@ function Running({
   note?: string;
 }) {
   return (
-    <div aria-live="polite" className="flex flex-col gap-1 border-t border-line pt-4">
-      <span className="type-label text-ink-muted">{label}</span>
-      <span className="ledger-rule w-fit pb-1">
-        <Money amount={rupeesToPaise(value)} size="lg" />
-      </span>
-      {note ? <span className="type-label text-ink-muted">{note}</span> : null}
+    <div aria-live="polite" className="border-t border-line pt-4">
+      <Metric label={label} amount={rupeesToPaise(value)} note={note} />
     </div>
   );
 }
-
